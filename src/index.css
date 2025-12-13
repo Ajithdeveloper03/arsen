@@ -1,0 +1,221 @@
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    margin: 0;
+    box-sizing: border-box;
+    padding: 0;
+  }
+}
+
+@layer utilities {
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+@keyframes logoDrop {
+  0% {
+    transform: translateY(-80px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+  @keyframes logo-zoom {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(0.4);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.3) translate(-300%, -220%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes logo-container {
+    0% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  @keyframes bounce-slow {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 1s ease-out;
+  }
+
+  .animate-logo-zoom {
+    animation: logo-zoom 3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .animate-logo-container {
+    animation: logo-container 3s ease-in-out forwards;
+  }
+
+  .animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+  }
+}
+
+* {
+  scroll-behavior: smooth;
+}
+@keyframes logoFloat {
+  0% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 0 rgba(255, 166, 43, 0));
+  }
+  50% {
+    transform: translateY(-4px) scale(1.05);
+    filter: drop-shadow(0 8px 18px rgba(255, 166, 43, 0.35));
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 0 rgba(255, 166, 43, 0));
+  }
+}
+
+.animate-logoFloat {
+  animation: logoFloat 2s ease-in-out infinite;
+}
+
+/* hero section */
+/* Progress bar animation */
+@keyframes progressFill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+.animate-progress {
+  animation: progressFill 6s linear forwards;
+}
+
+/* Futuristic hologram glow */
+.hero-holo-glow {
+  background: radial-gradient(
+    circle at 50% 70%,
+    rgba(255, 255, 255, 0.12),
+    transparent 60%
+  );
+  mix-blend-mode: overlay;
+}
+
+/* Floating particle effect */
+.hero-particles {
+  background-image: url("https://i.ibb.co/5KpYRFJ/particles.png");
+  background-size: cover;
+  opacity: 0.14;
+  animation: particleFloat 14s linear infinite;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(-10%) scale(1.1);
+  }
+}
+
+/* ========================================================== */
+/* 1. KEYFRAMES FOR ANIMATIONS */
+/* ========================================================== */
+
+/* The main logo reveal effect (scanned/loaded) */
+@keyframes logo-reveal {
+  /* Starts clipped (hidden) at the bottom */
+  0% {
+    clip-path: inset(100% 0 0 0);
+  }
+  /* Ends fully revealed */
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Subtle, slow pulse for the outer ring */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4; /* Slightly more visible at peak */
+  }
+}
+
+/* Fading animation for the background scanlines (subtle motion) */
+@keyframes scanline-bg {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  50% {
+    opacity: 0.15;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0.05;
+    transform: translateY(20px);
+  }
+}
+
+/* ========================================================== */
+/* 2. UTILITY CLASSES (Equivalent to Tailwind animations) */
+/* ========================================================== */
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-logo-reveal {
+  animation: logo-reveal 1.5s ease-out forwards;
+}
+
+.animate-scanline-bg {
+  animation: scanline-bg 3s ease-in-out;
+}
