@@ -104,7 +104,7 @@ export default function InteriorFooter() {
 
             <li className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-[#F4D06F]" />
-              hello@arseninterio.com
+              hello@arseninterio.in
             </li>
           </ul>
         </div>

@@ -1,374 +1,225 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   motion,
   AnimatePresence,
   useMotionValue,
   useAnimationFrame,
 } from "framer-motion";
-// Added more related icons for interior design
-import { 
-    ChevronLeft, 
-    ChevronRight, 
-    Ruler, 
-    Lightbulb, 
-    Palette, 
-    Sofa, 
-    HardHat, // Architecture/Construction
-    Square // Abstract design element
-} from "lucide-react"; 
-import heroBg from "../assets/hero-bg.png"; // Assuming this path is correct
+import {
+  ChevronLeft,
+  ChevronRight,
+  HardHat,
+  Sofa,
+  Pencil
+} from "lucide-react";
 
-/* ================= THEME ================= */
 const THEME = {
-  navy: "#0B1E39",
-  forest: "rgb(0 97 107)",
-  gold: "rgb(240 158 45)",
-  sand: "#f5e6cd",
+  forest: "rgb(26, 74, 56)",
+  gold: "#f09f2d",
   white: "#ffffff",
 };
 
-/* ================= SLIDES (Subtitles Enhanced) ================= */
 const slides = [
-  { 
-    image: "https://images.pexels.com/photos/1082355/pexels-photo-1082355.jpeg", 
-    title: "Minimalist Haven", 
-    subtitle: "A philosophy of 'less is more,' featuring clean lines, soft natural light, and a selection of purposeful, high-quality furniture pieces.", 
-    badge: "INTERIOR" 
+  {
+    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop",
+    title: "Precision Management",
+    subtitle: "Orchestrating complex architectural visions with absolute technical rigor.Ensuring seamless project delivery through expert vendor and site synergy.",
+    badge: "PMC"
   },
-  { 
-    image: "https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg", 
-    title: "Urban Sanctuary", 
-    subtitle: "Creating a peaceful retreat amidst the city bustle. Our residential designs focus on sound-dampening materials.", 
-    badge: "RESIDENTIAL" 
+  {
+    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2069&auto=format&fit=crop",
+    title: "Executive Elegance",
+    subtitle: "Redefining the modern workspace with sophisticated, high-performance design.Crafting environments that amplify brand identity and corporate productivity.",
+    badge: "COMMERCIAL"
   },
-  { 
-    image: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg", 
-    title: "Executive Elegance", 
-    subtitle: "Timeless workspaces crafted with refined detail. We integrate sophisticated technology seamlessly into bespoke furniture.", 
-    badge: "COMMERCIAL" 
-  },
-  { 
-    image: "https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg", 
-    title: "Warm Nordic", 
-    subtitle: "Inspired by Scandinavian design, this style emphasizes soft palettes, airy proportions, and the extensive use of natural materials.", 
-    badge: "INTERIOR" 
-  },
-  { 
-    image: "https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg", 
-    title: "Bespoke Living", 
-    subtitle: "Every detail is a reflection of the client's unique style. We specialize in custom-crafted cabinetry, tailored millwork.", 
-    badge: "RESIDENTIAL" 
-  },
-  { 
-    image: "https://images.pexels.com/photos/534172/pexels-photo-534172.jpeg", 
-    title: "Sculpted Light", 
-    subtitle: "Expert lighting design that shapes form and emotion. We use a combination of ambient, task, and accent lighting.", 
-    badge: "LIGHTING" 
-  },
-  { 
-    image: "https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg", 
-    title: "Industrial Modern", 
-    subtitle: "A stylish juxtaposition of raw textures like exposed brick and concrete, refined with sleek, contemporary finishes.", 
-    badge: "DESIGN" 
-  },
-  { 
-    image: "https://images.pexels.com/photos/1572051/pexels-photo-1572051.jpeg", 
-    title: "Soft Contemporary", 
-    subtitle: "Achieving balanced modern warmth. This approach utilizes curved furniture, plush textiles, and a neutral color scheme with pops.", 
-    badge: "INTERIOR" 
-  },
-  { 
-    image: "https://images.pexels.com/photos/37347/office-sitting-room-executive-sitting-room.jpg", 
-    title: "Boardroom Luxury", 
-    subtitle: "A professional environment where leadership meets design. Our focus is on ergonomic luxury, superior acoustic treatment.", 
-    badge: "COMMERCIAL" 
-  },
-  { 
-    image: "https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg", 
-    title: "Timeless Harmony", 
-    subtitle: "Blending classic architectural forms with a modern soul. We prioritize enduring materials and balanced proportions.", 
-    badge: "DESIGN" 
-  },
+  {
+    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
+    title: "Bespoke Living",
+    subtitle: "Tailoring intimate residential sanctuaries to your unique personal narrativeWhere curated luxury meets the functional warmth of a modern home.",
+    badge: "RESIDENTIAL"
+  }
+  // ... other slides following the same pattern
 ];
 
-const AUTO_DURATION = 6;
-
-/* ================= MASK ================= */
-const MASK_OUTER = "polygon(0 0, 80% 0, 62% 50%, 80% 100%, 0 100%)";
-const MASK_INNER = "polygon(0 0, 78% 0, 57% 50%, 78% 100%, 0 100%)";
-
-/* ================= HERO ================= */
 export default function HeroLuxuryFinal() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const progress = useMotionValue(0);
 
-  // Auto-slide animation logic
+  const nextSlide = useCallback(() => {
+    progress.set(0);
+    setIndex((prev) => (prev + 1) % slides.length);
+  }, [progress]);
+
+  const prevSlide = useCallback(() => {
+    progress.set(0);
+    setIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  }, [progress]);
+
   useAnimationFrame((_, delta) => {
     if (paused) return;
-    const next = progress.get() + delta / (AUTO_DURATION * 1000);
-    if (next >= 1) {
-      // **CORRECTION:** Reset progress before changing index
-      progress.set(0); 
-      setIndex((i) => (i + 1) % slides.length);
-    } else {
-      progress.set(next);
-    }
+    const currentProgress = progress.get();
+    const nextValue = currentProgress + delta / 6000;
+    if (nextValue >= 1) nextSlide();
+    else progress.set(nextValue);
   });
-
-  // Manual slide change functions
-  const nextSlide = () => {
-    // **CORRECTION:** Only reset progress bar, auto-pause is handled by mouseEnter/Leave
-    progress.set(0); 
-    setIndex((i) => (i + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    // **CORRECTION:** Only reset progress bar, auto-pause is handled by mouseEnter/Leave
-    progress.set(0); 
-    setIndex((i) => (i - 1 + slides.length) % slides.length);
-  };
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden"
-      // Added mouse events to pause/resume auto-sliding
+      className="relative w-full h-screen overflow-hidden bg-[#1a4a38]"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* ================= BACKGROUND ================= */}
-      <AnimatePresence mode="sync">
-        <motion.img
-          key={index}
-          src={slides[index].image}
-          className="absolute inset-0 w-full h-full object-cover"
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.8 } }}
-          transition={{ duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }} 
-        />
-      </AnimatePresence>
-
-      {/* IMAGE OVERLAY */}
-      <div
-        className="absolute inset-0"
-        style={{
-          // Darker overlay for better text contrast
-          background:
-            "linear-gradient(to right, rgba(11,30,57,0.7), rgba(11, 30, 57, 0.75), transparent)",
-        }}
-      />
-
-      {/* ================= LEFT PANEL ================= */}
-      <div
-        className="absolute inset-y-0 left-0 z-30"
-        style={{
-          width: "82%", 
-          clipPath: MASK_OUTER,
-          background: THEME.forest,
-        }}
-      >
-        {/* Pattern Background Image */}
-        <img
-          src={heroBg}
-          className="absolute inset-0 w-full h-full object-cover opacity-100"
-          style={{ clipPath: MASK_INNER }}
-        />
-
-        {/* Elegant light gradient (reduced opacity) */}
-        <div
-          className="absolute inset-0"
-          style={{
-            clipPath: MASK_INNER,
-            background: `
-              linear-gradient(
-                135deg,
-                rgba(245, 230, 205, 0.35),
-                rgba(250, 238, 220, 0.45),
-                rgba(240, 159, 45, 0.4)
-              )
-            `,
-          }}
-        />
-
-        {/* CONTENT */}
-        <div
-          className="relative z-10 h-full flex items-center px-8 md:px-28"
-          style={{ clipPath: MASK_INNER }}
-        >
+      {/* 1. BACKGROUND IMAGE LAYER */}
+      <div className="absolute inset-0 z-0">
+        <AnimatePresence mode="wait">
           <motion.div
-            key={slides[index].title}
-            initial={{ y: 80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ 
-                duration: 1.0, 
-                ease: [0.25, 0.46, 0.45, 0.94], 
-                delay: 0.2
-            }}
-            className="max-w-2xl" 
+            key={index}
+            className="absolute inset-0 w-full h-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
           >
-            <span
-              className="inline-block mb-4 px-4 py-1 text-sm font-medium tracking-widest uppercase" 
-              style={{ background: THEME.gold, color: THEME.white }}
-            >
-              {slides[index].badge}
-            </span>
-
-            <h1
-              className="text-5xl md:text-7xl font-extrabold leading-snug" 
-              style={{ color: THEME.forest }}
-            >
-              {slides[index].title}
-            </h1>
-
-            <p
-              className="mt-6 text-xl md:text-2xl max-w-xl leading-snug" 
-              style={{ color: THEME.navy }}
-            >
-              {slides[index].subtitle}
-            </p>
-
-            <div className="mt-10 flex gap-6"> 
-              <button
-                className="px-8 py-4 font-bold uppercase tracking-wider transition-transform hover:scale-[1.03]"
-                style={{ background: THEME.gold, color: THEME.white }}
-              >
-                Explore Projects
-              </button>
-              <button
-                className="px-8 py-4 border font-bold uppercase tracking-wider transition-colors hover:bg-white/10"
-                style={{ borderColor: THEME.navy, color: THEME.navy }}
-              >
-                Contact Us
-              </button>
-            </div>
-
-            {/* PROGRESS WITH SLIDER COUNT */}
-            <div className="mt-16"> 
-              <div className="flex items-center gap-4 mb-3">
-                <p className="text-sm tracking-widest font-semibold" style={{ color: THEME.navy }}>
-                  PROGRESS
-                </p>
-                {/* Active/Total Slider Count */}
-                <span className="text-xl font-bold" style={{ color: THEME.navy }}>
-                  {(index + 1).toString().padStart(2, '0')} 
-                  <span className="text-lg opacity-50 font-normal"> / {slides.length.toString().padStart(2, '0')}</span>
-                </span>
-              </div>
-              
-              <div className="w-80 h-[4px] bg-black/10"> 
-                <motion.div
-                  className="h-full"
-                  style={{
-                    background: THEME.gold,
-                    scaleX: progress,
-                    transformOrigin: "left",
-                  }}
-                />
-              </div>
-            </div>
+            <motion.img
+              src={slides[index].image}
+              className="w-full h-full object-cover"
+              initial={{ scale: 1.15 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+            />
+            <div className="absolute inset-0 bg-black/40 md:bg-black/25" />
           </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* 2. THE SWEEPING POLYGON (Gradient Filled for Premium Feel) */}
+      <div className="absolute inset-0 z-10 pointer-events-none hidden md:block">
+        <svg className="w-full h-full scale-[1.01]" viewBox="0 0 1880 1080" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="forestGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgb(18, 52, 39)" />
+              <stop offset="100%" stopColor="rgb(26, 74, 56)" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M0,0 L1150,0 C900,300 1050,700 550,1080 L0,1080 Z"
+            fill="url(#forestGrad)"
+            className="pointer-events-auto shadow-2xl"
+          />
+          <path
+            d="M1150,0 C900,300 1050,700 550,1080"
+            fill="none"
+            stroke={THEME.gold}
+            strokeWidth="18"
+            strokeOpacity="0.9"
+          />
+        </svg>
+      </div>
+
+      {/* Mobile-only Gradient Overlays */}
+      <div className="absolute inset-0 z-10 md:hidden bg-gradient-to-t from-[#1a4a38] via-[#1a4a38]/40 to-transparent" />
+      <div className="absolute inset-0 z-10 md:hidden bg-gradient-to-r from-black/40 to-transparent" />
+
+      {/* 3. FLOATING ICONS */}
+      <div className="absolute inset-0 z-20 pointer-events-none hidden lg:block">
+        <FloatingIcon Icon={Pencil} top="15%" left="58%" delay={0} />
+        <FloatingIcon Icon={HardHat} top="45%" left="88%" delay={1} />
+        <FloatingIcon Icon={Sofa} top="75%" left="82%" delay={2} />
+      </div>
+
+      {/* 4. MAIN TEXT LAYOUT */}
+      <div className="relative z-30 h-full lg:pt-16 flex items-center px-6 md:px-16 lg:px-18">
+        <div className="max-w-7xl w-full">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={index}
+              initial={{ x: -40, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 30, opacity: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="max-w-2xl space-y-4"
+            >
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-block px-4 py-1.5 bg-[#f09f2d] text-white text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-sm"
+              >
+                {slides[index].badge}
+              </motion.span>
+
+              <h1 className="text-white text-4xl sm:text-6xl md:text-7xl lg:text-7xl font-bold tracking-tight leading-[1.1] drop-shadow-sm">
+                {slides[index].title.split(' ')[0]} <br />
+                <span className="font-serif italic font-normal text-white/90">
+                  {slides[index].title.split(' ').slice(1).join(' ')}
+                </span>
+              </h1>
+
+              <p className="text-white/90 text-base md:text-lg lg:text-xl font-light leading-relaxed max-w-xl whitespace-pre-line drop-shadow-sm">
+                {slides[index].subtitle}
+              </p>
+
+              <div className="flex flex-wrap gap-4 pt-3">
+                <button className="px-8 py-4 bg-[#f09f2d] text-white font-bold uppercase tracking-widest text-xs hover:bg-[#d98b1a] transition-all transform hover:-translate-y-1 shadow-lg">
+                  Explore Projects
+                </button>
+                <button className="px-8 py-4 border border-white/30 text-white font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-all backdrop-blur-sm">
+                  Contact Us
+                </button>
+              </div>
+
+              {/* PROGRESS BAR */}
+              <div className="pt-10 flex items-center gap-6">
+                <div className="text-white/60 font-mono text-[10px] md:text-xs tracking-widest">
+                  <span className="text-white">0{index + 1}</span> / 0{slides.length}
+                </div>
+                <div className="w-40 md:w-64 h-[2px] bg-white/10 relative overflow-hidden">
+                  <motion.div
+                    className="absolute inset-y-0 left-0 bg-[#f09f2d]"
+                    style={{ width: "100%", scaleX: progress, transformOrigin: "left" }}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* ================= FLOATING INTERIOR ELEMENTS (More animation and relevance) ================= */}
-      
-      {/* Element 1: Ruler/Measure icon (Design/Planning) - Complex Float */}
-      <motion.div
-        className="absolute top-16 left-[55%] z-50 p-3 rounded-full shadow-lg"
-        style={{ background: THEME.white, color: THEME.gold }}
-        animate={{ 
-            y: [0, -20, 0], 
-            rotate: [0, 5, -5, 0], 
-            scale: [1, 1.05, 1],
-        }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <Ruler size={36} strokeWidth={1.5} />
-      </motion.div>
-      
-      {/* Element 2: Lightbulb icon (Lighting/Idea) - Gentle Float */}
-      <motion.div
-        className="absolute top-24 right-40 z-50 p-3 rounded-full shadow-xl"
-        style={{ background: THEME.gold, color: THEME.white }}
-        animate={{ 
-            y: [0, -40, 0], 
-            scale: [1, 1.1, 1], 
-        }}
-        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-      >
-        <Lightbulb size={40} strokeWidth={1.5} />
-      </motion.div>
-
-      {/* Element 3: Sofa icon (Furniture/Comfort) - Side Sway */}
-      <motion.div
-        className="absolute bottom-40 right-10 z-50 p-3 rounded-xl shadow-2xl"
-        style={{ background: THEME.navy, color: THEME.white }}
-        animate={{ 
-            x: [0, -15, 0], 
-            rotate: [0, 2, 0, -2, 0], // Small horizontal rotation
-        }}
-        transition={{ duration: 9, repeat: Infinity, ease: "sineInOut" }}
-      >
-        <Sofa size={44} strokeWidth={1.5} />
-      </motion.div>
-      
-      {/* Element 4: Palette icon (Color/Materials) - Slow Vertical Drift */}
-      <motion.div
-        className="absolute bottom-16 left-[60%] z-50 p-2 rounded-full shadow-lg"
-        style={{ background: THEME.white, color: THEME.forest }}
-        animate={{ 
-            y: [0, 25, 0], 
-            rotate: [0, -10, 10, 0],
-        }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeOut" }}
-      >
-        <Palette size={32} strokeWidth={1.5} />
-      </motion.div>
-      
-      {/* Element 5: Hard Hat (Construction/Project Management) - New Icon */}
-      <motion.div
-        className="absolute top-60 right-10 z-50 p-2 rounded-lg shadow-xl"
-        style={{ background: THEME.navy, color: THEME.gold }}
-        animate={{ 
-            x: [0, 20, 0],
-            rotate: [0, -5, 0],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <HardHat size={30} strokeWidth={1.5} />
-      </motion.div>
-
-      {/* Element 6: Square (Abstract Geometry) - New Icon */}
-      <motion.div
-        className="absolute bottom-10 right-48 z-50 p-1 border"
-        style={{ width: 40, height: 40, borderColor: THEME.gold }}
-        animate={{ 
-            rotate: [0, 90, 0],
-            y: [0, -10, 0],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-      />
-      
-      {/* ================= NAV ================= */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-5">
-        <button
-          onClick={prevSlide}
-          className="p-3 bg-white/30 backdrop-blur border border-white/50 text-white hover:bg-white/50 transition"
-          aria-label="Previous Slide"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="p-3 bg-white/30 backdrop-blur border border-white/50 text-white hover:bg-white/50 transition"
-          aria-label="Next Slide"
-        >
-          <ChevronRight size={24} />
-        </button>
+      {/* 5. NAVIGATION ARROWS */}
+      <div className="absolute bottom-8 right-8 md:bottom-12 md:right-12 z-50 flex gap-4">
+        <NavButton onClick={prevSlide} Icon={ChevronLeft} />
+        <NavButton onClick={nextSlide} Icon={ChevronRight} />
       </div>
     </section>
+  );
+}
+
+function NavButton({ onClick, Icon }) {
+  return (
+    <button
+      onClick={onClick}
+      className="p-4 rounded-full bg-white/5 backdrop-blur-lg border border-white/10 text-white hover:bg-[#f09f2d] hover:border-[#f09f2d] transition-all group shadow-xl"
+    >
+      <Icon size={24} className="group-active:scale-90 transition-transform" />
+    </button>
+  );
+}
+
+function FloatingIcon({ Icon, top, left, delay }) {
+  return (
+    <motion.div
+      className="absolute p-5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-white/40 shadow-2xl"
+      style={{ top, left }}
+      animate={{
+        y: [0, -25, 0],
+        rotate: [0, 8, 0],
+        opacity: [0.3, 0.6, 0.3]
+      }}
+      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay }}
+    >
+      <Icon size={24} strokeWidth={1} />
+    </motion.div>
   );
 }

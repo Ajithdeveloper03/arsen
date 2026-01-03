@@ -9,6 +9,8 @@
     margin: 0;
     box-sizing: border-box;
     padding: 0;
+    overflow-x: hidden;
+    width: 100%;
   }
 }
 
@@ -219,3 +221,4 @@
 .animate-scanline-bg {
   animation: scanline-bg 3s ease-in-out;
 }
+
