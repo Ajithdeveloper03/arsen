@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 const THEME = {
-  forest: "rgb(26, 74, 56)",
+  forest: "#00626b",
   gold: "#f09f2d",
   white: "#ffffff",
 };
@@ -39,8 +39,44 @@ const slides = [
     title: "Bespoke Living",
     subtitle: "Tailoring intimate residential sanctuaries to your unique personal narrativeWhere curated luxury meets the functional warmth of a modern home.",
     badge: "RESIDENTIAL"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop",
+    title: "Precision Management",
+    subtitle: "Orchestrating complex architectural visions with absolute technical rigor.Ensuring seamless project delivery through expert vendor and site synergy.",
+    badge: "PMC"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2069&auto=format&fit=crop",
+    title: "Executive Elegance",
+    subtitle: "Redefining the modern workspace with sophisticated, high-performance design.Crafting environments that amplify brand identity and corporate productivity.",
+    badge: "COMMERCIAL"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
+    title: "Bespoke Living",
+    subtitle: "Tailoring intimate residential sanctuaries to your unique personal narrativeWhere curated luxury meets the functional warmth of a modern home.",
+    badge: "RESIDENTIAL"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop",
+    title: "Precision Management",
+    subtitle: "Orchestrating complex architectural visions with absolute technical rigor.Ensuring seamless project delivery through expert vendor and site synergy.",
+    badge: "PMC"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2069&auto=format&fit=crop",
+    title: "Executive Elegance",
+    subtitle: "Redefining the modern workspace with sophisticated, high-performance design.Crafting environments that amplify brand identity and corporate productivity.",
+    badge: "COMMERCIAL"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
+    title: "Bespoke Living",
+    subtitle: "Tailoring intimate residential sanctuaries to your unique personal narrativeWhere curated luxury meets the functional warmth of a modern home.",
+    badge: "RESIDENTIAL"
   }
-  // ... other slides following the same pattern
+
 ];
 
 export default function HeroLuxuryFinal() {
@@ -68,8 +104,8 @@ export default function HeroLuxuryFinal() {
 
   return (
     <section
-      className="relative w-full h-screen overflow-hidden bg-[#1a4a38]"
-      onMouseEnter={() => setPaused(true)}
+      className="relative w-full h-screen overflow-hidden bg-[#00626b83]"
+      onMouseEnter={() => setPaused(false)}
       onMouseLeave={() => setPaused(false)}
     >
       {/* 1. BACKGROUND IMAGE LAYER */}
@@ -81,7 +117,7 @@ export default function HeroLuxuryFinal() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.5 }}
           >
             <motion.img
               src={slides[index].image}
@@ -99,10 +135,13 @@ export default function HeroLuxuryFinal() {
       <div className="absolute inset-0 z-10 pointer-events-none hidden md:block">
         <svg className="w-full h-full scale-[1.01]" viewBox="0 0 1880 1080" preserveAspectRatio="none">
           <defs>
-            <linearGradient id="forestGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="rgb(18, 52, 39)" />
-              <stop offset="100%" stopColor="rgb(26, 74, 56)" />
+            <linearGradient id="forestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#031E22" />
+              <stop offset="55%" stopColor="#063A40" />
+              <stop offset="100%" stopColor="#0A2E36" />
             </linearGradient>
+
+
           </defs>
           <path
             d="M0,0 L1150,0 C900,300 1050,700 550,1080 L0,1080 Z"
@@ -120,7 +159,7 @@ export default function HeroLuxuryFinal() {
       </div>
 
       {/* Mobile-only Gradient Overlays */}
-      <div className="absolute inset-0 z-10 md:hidden bg-gradient-to-t from-[#1a4a38] via-[#1a4a38]/40 to-transparent" />
+      <div className="absolute inset-0 z-10 md:hidden bg-gradient-to-t from-[#00626b] via-[#1a4a38]/40 to-transparent" />
       <div className="absolute inset-0 z-10 md:hidden bg-gradient-to-r from-black/40 to-transparent" />
 
       {/* 3. FLOATING ICONS */}
@@ -188,7 +227,7 @@ export default function HeroLuxuryFinal() {
       </div>
 
       {/* 5. NAVIGATION ARROWS */}
-      <div className="absolute bottom-8 right-8 md:bottom-12 md:right-12 z-50 flex gap-4">
+      <div className="absolute bottom-12 right-8 md:bottom-12 md:right-12 z-50 flex gap-4">
         <NavButton onClick={prevSlide} Icon={ChevronLeft} />
         <NavButton onClick={nextSlide} Icon={ChevronRight} />
       </div>

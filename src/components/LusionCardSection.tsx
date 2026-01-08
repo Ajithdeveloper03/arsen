@@ -9,49 +9,75 @@ export default function LusionCardSection({ features }) {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 0.8", "end start"],
+    // Start animating when the top of the container is 80% down the viewport
+    offset: ["start 0.9", "end start"],
   });
 
+  // Smoother Spring physics: less "heavy", more "fluid"
   const progress = useSpring(scrollYProgress, {
-    stiffness: 50,
-    damping: 15,
-    mass: 0.8,
+    stiffness: 40,
+    damping: 20,
+    restDelta: 0.001
   });
 
-  const pathLength = useTransform(progress, [0.1, 0.8], [0, 1]);
-  const lineOpacity = useTransform(progress, [0, 0.2], [0, 1]);
+  const pathLength = useTransform(progress, [0, 0.8], [0, 1]);
+  const lineOpacity = useTransform(progress, [0, 0.1], [0, 0.4]);
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full  bg-[#f1f5ff] overflow-hidden"
-      style={{ perspective: "2000px" }}
+      className="relative w-full bg-[#f8faff] py-24 overflow-hidden"
     >
-      <div className="absolute inset-0 top-0 w-full h-full pointer-events-none z-0">
-        <svg className="w-full h-full opacity-30" viewBox="0 0 1200 900" fill="none">
+      {/* Background Decorative Path */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <svg 
+          className="w-full h-full" 
+          viewBox="0 0 1200 1000" 
+          fill="none" 
+          preserveAspectRatio="none"
+        >
           <motion.path
-            d="M600,0 C600,200 200,200 200,400 C200,600 1000,600 1000,400 C1000,200 600,600 600,800"
+            d="M600,0 C600,300 150,300 150,500 C150,700 1050,700 1050,500 C1050,300 600,700 600,1000"
             stroke="#16697A"
-            strokeWidth="13"
-            strokeDasharray="10 10"
-            style={{ pathLength, opacity: lineOpacity }}
+            strokeWidth="8"
+            strokeDasharray="15 15"
+            strokeLinecap="round"
+            style={{ 
+              pathLength, 
+              opacity: lineOpacity,
+            }}
           />
         </svg>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10 pt-10">
-        <div className="text-center mb-32">
-          <span className="text-[#FFA62B] font-bold tracking-[0.2em] uppercase mb-3 block text-sm">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* Header Section */}
+        <div className="text-center mb-24">
+          <motion.span 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-[#FFA62B] font-bold tracking-[0.3em] uppercase mb-4 block text-sm"
+          >
             Our Values
-          </span>
-          <h2 className="text-4xl md:text-5xl font-black text-[#16697A]">
+          </motion.span>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-5xl md:text-6xl font-black text-[#16697A] tracking-tight"
+          >
             Why Choose Us
-          </h2>
+          </motion.h2>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16 pb-10 min-h-[800px]">
+        {/* Responsive Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
           {features.map((feature, i) => (
-            <LusionCard key={i} feature={feature} index={i} progress={progress} />
+            <LusionCard 
+              key={i} 
+              feature={feature} 
+              index={i} 
+              progress={progress} 
+            />
           ))}
         </div>
       </div>

@@ -1,5 +1,3 @@
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,22 +9,44 @@
     padding: 0;
     overflow-x: hidden;
     width: 100%;
+    /* Added smooth font rendering for premium feel */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer utilities {
-  @keyframes slideIn {
-    from {
+  /* 1. Improved Logo Zoom - Made responsive using Viewport Units */
+  @keyframes logo-zoom {
+    0% {
+      transform: scale(0.8);
       opacity: 0;
-      transform: translateY(30px);
     }
-    to {
+    50% {
+      transform: scale(0.5); /* Slightly larger for better mobile visibility */
       opacity: 1;
-      transform: translateY(0);
+    }
+    100% {
+      /* Uses vw/vh instead of fixed percentages for adaptive movement */
+      transform: scale(0.3) translate(-25vw, -35vh);
+      opacity: 0;
     }
   }
 
-  @keyframes fade-in {
+  /* 2. Responsive Logo Drop */
+  @keyframes logoDrop {
+    0% {
+      transform: translateY(-10vh);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* 3. Global Section Animations */
+  @keyframes slideIn {
     from {
       opacity: 0;
       transform: translateY(20px);
@@ -36,189 +56,89 @@
       transform: translateY(0);
     }
   }
-@keyframes logoDrop {
-  0% {
-    transform: translateY(-80px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
 
-  @keyframes logo-zoom {
-    0% {
-      transform: scale(0.8);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(0.4);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(0.3) translate(-300%, -220%);
-      opacity: 0;
-    }
+  /* 4. Particle Scaling for performance on mobile */
+  @keyframes particleFloat {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-5%) scale(1.05); }
   }
 
-  @keyframes logo-container {
-    0% {
-      opacity: 1;
-    }
-    85% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-      pointer-events: none;
-    }
-  }
-
-  @keyframes bounce-slow {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fade-in 1s ease-out;
-  }
-
+  /* --- UTILITY CLASSES --- */
   .animate-logo-zoom {
-    animation: logo-zoom 3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: logo-zoom 3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
   }
 
   .animate-logo-container {
     animation: logo-container 3s ease-in-out forwards;
   }
 
-  .animate-bounce-slow {
-    animation: bounce-slow 3s ease-in-out infinite;
+  .animate-progress {
+    animation: progressFill 6s linear forwards;
   }
 }
+
+/* ========================================================== */
+/* RESPONSIVE OVERRIDES */
+/* ========================================================== */
+
+/* Mobile Specific Fixes */
+@media (max-width: 768px) {
+  .animate-logo-zoom {
+    /* Reduce movement intensity on mobile to keep logo on screen */
+    animation-name: logo-zoom-mobile;
+  }
+
+  @keyframes logo-zoom-mobile {
+    0% { transform: scale(0.7); opacity: 0; }
+    50% { transform: scale(0.4); opacity: 1; }
+    100% { transform: scale(0.2) translate(-10vw, -30vh); opacity: 0; }
+  }
+
+  /* Slow down particles for mobile battery/performance */
+  .hero-particles {
+    opacity: 0.08;
+    animation-duration: 20s;
+  }
+
+  /* Ensure long titles don't overflow */
+  h1 {
+    word-break: break-word;
+    hyphens: auto;
+  }
+}
+
+/* ========================================================== */
+/* PERSISTENT STYLES */
+/* ========================================================== */
 
 * {
   scroll-behavior: smooth;
 }
-@keyframes logoFloat {
-  0% {
-    transform: translateY(0) scale(1);
-    filter: drop-shadow(0 0 0 rgba(255, 166, 43, 0));
-  }
-  50% {
-    transform: translateY(-4px) scale(1.05);
-    filter: drop-shadow(0 8px 18px rgba(255, 166, 43, 0.35));
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    filter: drop-shadow(0 0 0 rgba(255, 166, 43, 0));
-  }
-}
 
-.animate-logoFloat {
-  animation: logoFloat 2s ease-in-out infinite;
-}
-
-/* hero section */
-/* Progress bar animation */
-@keyframes progressFill {
-  0% {
-    width: 0%;
-  }
-  100% {
-    width: 100%;
-  }
-}
-.animate-progress {
-  animation: progressFill 6s linear forwards;
-}
-
-/* Futuristic hologram glow */
+/* Futuristic hologram glow - Updated to be fluid */
 .hero-holo-glow {
   background: radial-gradient(
     circle at 50% 70%,
-    rgba(255, 255, 255, 0.12),
-    transparent 60%
+    rgba(255, 255, 255, 0.1),
+    transparent 80%
   );
   mix-blend-mode: overlay;
+  pointer-events: none;
 }
 
-/* Floating particle effect */
-.hero-particles {
-  background-image: url("https://i.ibb.co/5KpYRFJ/particles.png");
-  background-size: cover;
-  opacity: 0.14;
-  animation: particleFloat 14s linear infinite;
+/* Ensure Logo Float doesn't cause layout shift */
+.animate-logoFloat {
+  animation: logoFloat 3s ease-in-out infinite;
+  will-change: transform;
+  /* color: #004952; */
 }
 
-@keyframes particleFloat {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    transform: translateY(-10%) scale(1.1);
-  }
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.02); }
 }
 
-/* ========================================================== */
-/* 1. KEYFRAMES FOR ANIMATIONS */
-/* ========================================================== */
-
-/* The main logo reveal effect (scanned/loaded) */
-@keyframes logo-reveal {
-  /* Starts clipped (hidden) at the bottom */
-  0% {
-    clip-path: inset(100% 0 0 0);
-  }
-  /* Ends fully revealed */
-  100% {
-    clip-path: inset(0 0 0 0);
-  }
+@keyframes progressFill {
+  0% { width: 0%; }
+  100% { width: 100%; }
 }
-
-/* Subtle, slow pulse for the outer ring */
-@keyframes pulse-slow {
-  0%, 100% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 0.4; /* Slightly more visible at peak */
-  }
-}
-
-/* Fading animation for the background scanlines (subtle motion) */
-@keyframes scanline-bg {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  50% {
-    opacity: 0.15;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0.05;
-    transform: translateY(20px);
-  }
-}
-
-/* ========================================================== */
-/* 2. UTILITY CLASSES (Equivalent to Tailwind animations) */
-/* ========================================================== */
-
-.animate-pulse-slow {
-  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.animate-logo-reveal {
-  animation: logo-reveal 1.5s ease-out forwards;
-}
-
-.animate-scanline-bg {
-  animation: scanline-bg 3s ease-in-out;
-}
-

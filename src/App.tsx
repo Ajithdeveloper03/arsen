@@ -16,6 +16,8 @@ import Career from "./pages/Career";
 import About from "./pages/About";
 import PMCPage from "./pages/PMCPage";
 import Commercial from "./pages/Commercial";
+import Ongoing from "./pages/Ongoing";
+import Completed from "./pages/Completed";
 
 function App() {
   const [isLogoAnimating, setIsLogoAnimating] = useState(true);
@@ -54,6 +56,8 @@ function App() {
             <Route path="/career" element={<Career />} />
             <Route path="/residential" element={<Residential />} />
             <Route path="/commercial" element={<Commercial />} />
+            <Route path="/ongoing" element={<Ongoing />} />
+            <Route path="/completed" element={<Completed />} />
           </Routes>
         </main>
 

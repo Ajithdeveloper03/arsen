@@ -3,159 +3,173 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-    Compass, Layout, Award,
-    Sparkles, PencilLine, Box
-} from "lucide-react";
+import { Compass, Layout, Award, Sparkles, PencilLine, Box, ArrowUpRight } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const features = [
-    { icon: Compass, title: "Spatial Vision", desc: "Harmonizing volume and light" },
-    { icon: Layout, title: "ROI Centric", desc: "Design as a business asset" },
-    { icon: Award, title: "Elite Quality", desc: "Uncompromising artisanal standards" },
-    { icon: Sparkles, title: "Innovation", desc: "Integration of smart aesthetics" },
-    { icon: PencilLine, title: "Bespoke Design", desc: "Signature custom interiors" },
-    { icon: Box, title: "Full Turnkey", desc: "Seamless project management" },
+  { icon: Compass, title: "Spatial", subtitle: "Vision", img: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=1200" },
+  { icon: Layout, title: "ROI", subtitle: "Centric", img: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=1200" },
+  { icon: Award, title: "Elite", subtitle: "Quality", img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200" },
+  { icon: Sparkles, title: "Smart", subtitle: "Logic", img: "https://images.unsplash.com/photo-1431540015161-0bf868a2d407?auto=format&fit=crop&q=80&w=1200" },
+  { icon: PencilLine, title: "Bespoke", subtitle: "Art", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000" },
+  { icon: Box, title: "Full", subtitle: "Turnkey", img: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=1200" },
 ];
 
-export default function LuxuryInteriorExpertise() {
-    const triggerRef = useRef(null);
-    const cardsRef = useRef([]);
+export default function CommercialExcellence() {
+  const sectionRef = useRef(null);
+  const cardsRef = useRef([]);
+  const gridBgRef = useRef(null);
 
-    useEffect(() => {
-        const cards = cardsRef.current;
-        const mm = gsap.matchMedia();
+  // Helper for Spotlight effect
+  const handleMouseMove = (e, index) => {
+    const card = cardsRef.current[index];
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty("--mouse-x", `${x}px`);
+    card.style.setProperty("--mouse-y", `${y}px`);
+  };
 
-        // Initial setup
-        gsap.set(cards, {
-            xPercent: -50,
-            left: "50%",
-            position: "absolute",
-            bottom: "15%",
-            opacity: 0,
-            scale: 0.8,
-            rotation: 0
-        });
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Background Grid Parallax
+      gsap.to(gridBgRef.current, {
+        yPercent: 10,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
 
-        mm.add({
-            // Desktop
-            isDesktop: "(min-width: 1024px)",
-            // Tablet/Mobile
-            isMobile: "(max-width: 1023px)"
-        }, (context) => {
-            const { isDesktop } = context.conditions;
+      // 2. Title Mask Animation
+      gsap.from(".reveal-text-inner", {
+        yPercent: 100,
+        duration: 1,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+        }
+      });
 
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: triggerRef.current,
-                    start: "top top",
-                    end: isDesktop ? "+=3000" : "+=2000", // Faster scroll on mobile
-                    scrub: 2, // Lower scrub for better touch responsiveness
-                    pin: true,
-                }
-            });
+      // 3. Card Entrance
+      cardsRef.current.forEach((card, i) => {
+        gsap.fromTo(card, 
+          { 
+            clipPath: "inset(100% 0% 0% 0%)",
+            y: 50,
+            opacity: 0 
+          },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            delay: i * 0.1,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 95%",
+              toggleActions: "play none none reverse"
+            }
+          }
+        );
+      });
+    }, sectionRef);
 
-            tl.to(cards, {
-                opacity: 1,
-                scale: 1,
-                stagger: 0.1,
-                duration: 1
-            })
-            .to(cards, {
-                xPercent: (i) => {
-                    // Responsive Spread
-                    const spread = isDesktop ? 120 : 45; 
-                    return (i - (cards.length - 1) / 2) * spread - 50;
-                },
-                rotation: (i) => {
-                    // More subtle rotation on mobile
-                    const rot = isDesktop ? 8 : 4;
-                    return (i - (cards.length - 1) / 2) * rot;
-                },
-                y: (i) => {
-                    // Responsive Arc Depth
-                    const depth = isDesktop ? 12 : 6;
-                    return Math.pow(Math.abs(i - (cards.length - 1) / 2), 2) * depth;
-                },
-                duration: 2,
-                ease: "power2.out",
-            });
-        });
+    return () => ctx.revert();
+  }, []);
 
-        return () => mm.revert();
-    }, []);
+  return (
+    <section ref={sectionRef} className="relative bg-[#080808] py-16 md:py-32 px-6 overflow-hidden">
+      
+      {/* MODERN GRID BACKGROUND */}
+      <div 
+        ref={gridBgRef}
+        className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none"
+        style={{
+          backgroundImage: `radial-gradient(#fff 1px, transparent 1px), linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)`,
+          backgroundSize: '40px 40px, 200px 200px, 200px 200px',
+        }}
+      />
 
-    return (
-        <div ref={triggerRef} className="bg-[#020d0f] overflow-hidden">
-            <section className="relative w-full h-screen flex flex-col items-center justify-start py-12 md:py-20">
-
-                {/* Background Decor */}
-                <div className="absolute inset-0 opacity-30 pointer-events-none">
-                    <div className="absolute top-[-10%] left-[-10%] w-[70%] md:w-[50%] h-[50%] bg-[#10b981]/10 rounded-full blur-[80px] md:blur-[120px]" />
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[70%] md:w-[50%] h-[50%] bg-teal-900/20 rounded-full blur-[80px] md:blur-[120px]" />
-                </div>
-
-                {/* Responsive Header */}
-                <div className="text-center z-10 px-4">
-                    <div className="relative">
-                        <h2 className="text-teal-900/25 text-5xl md:text-8xl lg:text-[11rem] absolute -top-8 md:-top-14 left-1/2 -translate-x-1/2 whitespace-nowrap select-none italic font-serif">
-                            ARSEN INTERIOR
-                        </h2>
-                        <h2 className="relative text-white text-3xl md:text-5xl lg:text-7xl font-medium tracking-tighter">
-                            Commercial 
-                            <span className="font-serif italic text-teal-400 block md:inline md:pl-5">EXPERTISE</span>
-                        </h2>
-                    </div>
-                </div>
-
-                {/* Card Gallery Container */}
-                <div className="absolute inset-0 flex items-center justify-center z-[15] pointer-events-none">
-                    <div className="relative w-full max-w-[95vw] md:max-w-[85vw] h-[300px] md:h-[400px] mt-20 md:mt-36">
-                        {features.map((f, i) => (
-                            <div
-                                key={i}
-                                ref={(el) => (cardsRef.current[i] = el)}
-                                className="group w-[160px] h-[240px] md:w-[240px] md:h-[340px] pointer-events-auto"
-                            >
-                                <div className="relative w-full h-full transition-all duration-500 ease-out group-hover:-translate-y-12 md:group-hover:-translate-y-20 group-hover:scale-105">
-
-                                    {/* Card Body */}
-                                    <div className="w-full h-full bg-gradient-to-br from-teal-900/70 to-[#020d0f] backdrop-blur-xl border border-teal-500/20 rounded-2xl md:rounded-[2rem] p-4 md:p-8 flex flex-col justify-between shadow-2xl overflow-hidden relative">
-                                        
-                                        <div className="relative z-10">
-                                            <div className="flex justify-between items-start md:items-center mb-4 md:mb-10">
-                                                <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-teal-500/30 flex items-center justify-center bg-teal-500/5">
-                                                    <f.icon className="w-4 h-4 md:w-5 md:h-5 text-teal-400" strokeWidth={1.5} />
-                                                </div>
-                                                <span className="text-[#d4af37]/30 italic text-lg md:text-2xl">0{i + 1}</span>
-                                            </div>
-
-                                            <h3 className="text-sm md:text-xl font-light text-white tracking-tight leading-tight">
-                                                {f.title}
-                                            </h3>
-                                        </div>
-
-                                        <div className="relative z-10">
-                                            <p className="text-teal-100/40 text-[8px] md:text-[10px] leading-relaxed mb-3 md:mb-6 uppercase tracking-widest font-medium">
-                                                {f.desc}
-                                            </p>
-                                            <div className="h-[1px] w-full bg-white/5 relative">
-                                                <div className="h-full w-0 bg-teal-500 group-hover:w-full transition-all duration-700" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <style jsx>{`
-                @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@1,400;1,700&display=swap');
-                .font-serif { font-family: 'Bodoni Moda', serif; }
-            `}</style>
+      <div className="max-w-[1400px] mx-auto relative z-10">
+        
+        {/* Header Section */}
+        <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between mb-12 md:mb-20 gap-8">
+          <div className="overflow-hidden">
+            <div className="reveal-text-inner">
+                <span className="text-teal-500 tracking-[0.3em] uppercase text-[10px] md:text-xs mb-4 block font-bold">Arsen Intelligence</span>
+                <h2 className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-[900] tracking-tighter leading-[0.9] uppercase">
+                  Commercial <br />
+                  <span className="text-transparent" style={{ WebkitTextStroke: '1.5px #FDBA74' }}>Excellence.</span>
+                </h2>
+            </div>
+          </div>
+          <p className="text-zinc-500 max-w-[320px] text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] leading-relaxed border-l border-zinc-800 pl-6">
+            Blending industrial strength with avant-garde aesthetics to redefine commercial spaces.
+          </p>
         </div>
-    );
+
+        {/* The Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {features.map((f, i) => (
+            <div
+              key={i}
+              ref={(el) => (cardsRef.current[i] = el)}
+              onMouseMove={(e) => handleMouseMove(e, i)}
+              className="group relative h-[400px] md:h-[450px] lg:h-[500px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-zinc-900 shadow-2xl transition-all duration-500 hover:-translate-y-2"
+            >
+              {/* Image Content */}
+              <div 
+                className="absolute inset-0 bg-cover bg-center transition-all duration-1000 grayscale group-hover:grayscale-0 group-hover:scale-110"
+                style={{ backgroundImage: `url(${f.img})` }}
+              />
+              
+              {/* Overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90" />
+              <div className="absolute inset-0 bg-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              {/* Interaction Content */}
+              <div className="absolute inset-0 p-8 md:p-10 flex flex-col justify-between z-20">
+                <div className="flex justify-between items-start">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 flex items-center justify-center transition-all duration-500 group-hover:bg-teal-500 group-hover:border-teal-400 group-hover:rotate-[15deg]">
+                    <f.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                  </div>
+                  <div className="p-2 rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0">
+                    <ArrowUpRight className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <span className="text-teal-500 font-mono text-[9px] md:text-[10px] tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 block">
+                    Module_{i + 1}
+                  </span>
+                  <h3 className="text-4xl md:text-5xl font-[900] text-white uppercase tracking-tighter leading-none">
+                    {f.title} <br />
+                    <span className="text-zinc-600 transition-colors duration-500 group-hover:text-white group-hover:italic">{f.subtitle}</span>
+                  </h3>
+                </div>
+              </div>
+
+              {/* Spotlight Effect */}
+              <div 
+                className="absolute inset-0 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: `radial-gradient(600px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(20, 184, 166, 0.15), transparent 80%)`
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }

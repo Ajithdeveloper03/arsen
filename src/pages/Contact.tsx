@@ -29,9 +29,9 @@ const ArsenContact = () => {
   };
 
   const infoItems = [
-    { icon: Phone, label: "Call Us", val: "+91 98765 43210" },
-    { icon: Mail, label: "Email Us", val: "hello@arseninterior.com" },
-    { icon: MapPin, label: "Visit Studio", val: "High Street, Design District, India" },
+    { icon: Phone, label: "Call Us", val: "+91 8095015533" },
+    { icon: Mail, label: "Email Us", val: "sales@arseninterior.in" },
+    { icon: MapPin, label: "Visit Studio", val: "#4, Noombal Road, Velappanchavadi Chennai – 600 077." },
   ];
 
   return (
@@ -165,10 +165,7 @@ const ArsenContact = () => {
 
       {/* MINIMAL MAP */}
       <section className="h-[50vh] grayscale invert opacity-[100] hover:opacity-80 transition-opacity">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.9537353153167!3d-37.81732767975171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b349649%3A0xb6899234e561db11!2sEnvato!5e0!3m2!1sen!2sau!4v1494541738749"
-          width="100%" height="100%" loading="lazy" style={{ border: 0 }}
-        />
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3694.3144964597136!2d80.13401887794907!3d13.059761754424159!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52619c21f6aaab%3A0xa0156fe70dda837c!2sARSEN%20INTERIO%20PVT%20LTD!5e1!3m2!1sen!2sin!4v1767782935525!5m2!1sen!2sin" width="100%" height="100%" loading="lazy" ></iframe>
       </section>
 
     </main>
