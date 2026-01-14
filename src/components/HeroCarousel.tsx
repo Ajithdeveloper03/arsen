@@ -14,6 +14,19 @@ import {
   Sofa,
   Pencil
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import hero7 from '../assets/hero-slider-pmc.jpg';
+import hero8 from '../assets/hero-slider-pmc2.jpg';
+// commercial
+import hero1 from '../assets/home-slider-commercial.jpg';
+import hero2 from '../assets/home-slider-commercial2.jpg';
+import hero3 from '../assets/home-slider-commercial3.jpg';
+// residential
+import hero4 from '../assets/home-slider-residential.jpeg';
+import hero5 from '../assets/home-slider-residential2.jpg';
+import hero6 from '../assets/home-slider-residential3.jpg';
+// pmc
+
 
 const THEME = {
   forest: "#00626b",
@@ -22,61 +35,64 @@ const THEME = {
 };
 
 const slides = [
+  // --- PMC (Project Management Consultancy) ---
   {
-    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop",
-    title: "Precision Management",
-    subtitle: "Orchestrating complex architectural visions with absolute technical rigor.Ensuring seamless project delivery through expert vendor and site synergy.",
+    image: hero7,
+    title: "Technical Excellence",
+    subtitle: "Navigating the complexities of large-scale construction with data-driven precision. We transform blueprints into reality through rigorous oversight.",
     badge: "PMC"
   },
   {
-    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2069&auto=format&fit=crop",
-    title: "Executive Elegance",
-    subtitle: "Redefining the modern workspace with sophisticated, high-performance design.Crafting environments that amplify brand identity and corporate productivity.",
+    image: hero8,
+    title: "Operational Synergy",
+    subtitle: "Fostering seamless collaboration between architects, engineers, and vendors. We act as the central nervous system for your most ambitious projects.",
+    badge: "PMC"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop",
+    title: "Strategic Oversight",
+    subtitle: "Mitigating risks and optimizing resources across every phase of development. Our methodology ensures timelines and budgets are strictly honored.",
+    badge: "PMC"
+  },
+  
+  // --- COMMERCIAL ---
+  {
+    image: hero1,
+    title: "Luminous Workspaces",
+    subtitle: "Designing open-concept corporate environments that foster innovation and wellness. Elevating the standard of the modern professional headquarters.",
     badge: "COMMERCIAL"
   },
   {
-    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
-    title: "Bespoke Living",
-    subtitle: "Tailoring intimate residential sanctuaries to your unique personal narrativeWhere curated luxury meets the functional warmth of a modern home.",
+    image: hero2,
+    title: "Corporate Identity",
+    subtitle: "Translating brand values into physical space through bespoke interior architecture. High-performance design meets professional aesthetic authority.",
+    badge: "COMMERCIAL"
+  },
+  {
+    image: hero3,
+    title: "Future-Ready Offices",
+    subtitle: "Integrating smart technology and sustainable materials into commercial hubs. Crafting the infrastructure for the next generation of industry leaders.",
+    badge: "COMMERCIAL"
+  },
+  // --- RESIDENTIAL ---
+  {
+    image: hero4,
+    title: "Modern Sanctuaries",
+    subtitle: "Balancing minimalist aesthetics with the warmth of a private retreat. Every corner is meticulously curated to reflect your personal narrative.",
     badge: "RESIDENTIAL"
   },
   {
-    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop",
-    title: "Precision Management",
-    subtitle: "Orchestrating complex architectural visions with absolute technical rigor.Ensuring seamless project delivery through expert vendor and site synergy.",
-    badge: "PMC"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2069&auto=format&fit=crop",
-    title: "Executive Elegance",
-    subtitle: "Redefining the modern workspace with sophisticated, high-performance design.Crafting environments that amplify brand identity and corporate productivity.",
-    badge: "COMMERCIAL"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
-    title: "Bespoke Living",
-    subtitle: "Tailoring intimate residential sanctuaries to your unique personal narrativeWhere curated luxury meets the functional warmth of a modern home.",
+    image: hero5,
+    title: "Artisanal Interiors",
+    subtitle: "Where hand-selected textures and custom finishes meet timeless architecture. Defining luxury through the lens of comfort and exclusivity.",
     badge: "RESIDENTIAL"
   },
   {
-    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop",
-    title: "Precision Management",
-    subtitle: "Orchestrating complex architectural visions with absolute technical rigor.Ensuring seamless project delivery through expert vendor and site synergy.",
-    badge: "PMC"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2069&auto=format&fit=crop",
-    title: "Executive Elegance",
-    subtitle: "Redefining the modern workspace with sophisticated, high-performance design.Crafting environments that amplify brand identity and corporate productivity.",
-    badge: "COMMERCIAL"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
-    title: "Bespoke Living",
-    subtitle: "Tailoring intimate residential sanctuaries to your unique personal narrativeWhere curated luxury meets the functional warmth of a modern home.",
+    image: hero6,
+    title: "Urban Elegance",
+    subtitle: "Sophisticated residential living designed for the discerning individual. A masterclass in spatial harmony and refined domestic living.",
     badge: "RESIDENTIAL"
   }
-
 ];
 
 export default function HeroLuxuryFinal() {
@@ -126,13 +142,13 @@ export default function HeroLuxuryFinal() {
               animate={{ scale: 1 }}
               transition={{ duration: 1.5, ease: "easeOut" }}
             />
-            <div className="absolute inset-0 bg-black/40 md:bg-black/25" />
+            <div className="absolute inset-0 bg-black/40 xl:bg-black/25" />
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* 2. THE SWEEPING POLYGON (Gradient Filled for Premium Feel) */}
-      <div className="absolute inset-0 z-10 pointer-events-none hidden md:block">
+      {/* 2. THE SWEEPING POLYGON - Only visible on very large screens (Desktops) */}
+      <div className="absolute inset-0 z-10 pointer-events-none hidden xl:block">
         <svg className="w-full h-full scale-[1.01]" viewBox="0 0 1880 1080" preserveAspectRatio="none">
           <defs>
             <linearGradient id="forestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -140,8 +156,6 @@ export default function HeroLuxuryFinal() {
               <stop offset="55%" stopColor="#063A40" />
               <stop offset="100%" stopColor="#0A2E36" />
             </linearGradient>
-
-
           </defs>
           <path
             d="M0,0 L1150,0 C900,300 1050,700 550,1080 L0,1080 Z"
@@ -158,19 +172,19 @@ export default function HeroLuxuryFinal() {
         </svg>
       </div>
 
-      {/* Mobile-only Gradient Overlays */}
-      <div className="absolute inset-0 z-10 md:hidden bg-gradient-to-t from-[#00626b] via-[#1a4a38]/40 to-transparent" />
-      <div className="absolute inset-0 z-10 md:hidden bg-gradient-to-r from-black/40 to-transparent" />
+      {/* Mobile & Laptop Gradient Overlays (Replaces the polygon for a cleaner centered look) */}
+      <div className="absolute inset-0 z-10 xl:hidden bg-gradient-to-t from-[#00626b]/90 via-[#00626b]/40 to-transparent" />
+      <div className="absolute inset-0 z-10 xl:hidden bg-gradient-to-r from-black/60 to-transparent" />
 
-      {/* 3. FLOATING ICONS */}
-      <div className="absolute inset-0 z-20 pointer-events-none hidden lg:block">
+      {/* 3. FLOATING ICONS - Only on very large screens */}
+      <div className="absolute inset-0 z-20 pointer-events-none hidden xl:block">
         <FloatingIcon Icon={Pencil} top="15%" left="58%" delay={0} />
         <FloatingIcon Icon={HardHat} top="45%" left="88%" delay={1} />
         <FloatingIcon Icon={Sofa} top="75%" left="82%" delay={2} />
       </div>
 
       {/* 4. MAIN TEXT LAYOUT */}
-      <div className="relative z-30 h-full lg:pt-16 flex items-center px-6 md:px-16 lg:px-18">
+      <div className="relative z-30 h-full flex items-center px-6 md:px-16 md:pt-16 xl:px-18">
         <div className="max-w-7xl w-full">
           <AnimatePresence mode="wait">
             <motion.div
@@ -184,12 +198,12 @@ export default function HeroLuxuryFinal() {
               <motion.span
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="inline-block px-4 py-1.5 bg-[#f09f2d] text-white text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-sm"
+                className="inline-block px-4 py-1.5 bg-[#f09f2d] text-white text-[14px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-sm"
               >
                 {slides[index].badge}
               </motion.span>
 
-              <h1 className="text-white text-4xl sm:text-6xl md:text-7xl lg:text-7xl font-bold tracking-tight leading-[1.1] drop-shadow-sm">
+              <h1 className="text-white text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.1] drop-shadow-sm">
                 {slides[index].title.split(' ')[0]} <br />
                 <span className="font-serif italic font-normal text-white/90">
                   {slides[index].title.split(' ').slice(1).join(' ')}
@@ -201,17 +215,17 @@ export default function HeroLuxuryFinal() {
               </p>
 
               <div className="flex flex-wrap gap-4 pt-3">
-                <button className="px-8 py-4 bg-[#f09f2d] text-white font-bold uppercase tracking-widest text-xs hover:bg-[#d98b1a] transition-all transform hover:-translate-y-1 shadow-lg">
+                <Link to="/completed" className="px-8 py-4 bg-[#f09f2d] text-white font-bold uppercase tracking-widest text-xs hover:bg-[#d98b1a] transition-all transform hover:-translate-y-1 shadow-lg">
                   Explore Projects
-                </button>
-                <button className="px-8 py-4 border border-white/30 text-white font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-all backdrop-blur-sm">
+                </Link>
+                <Link to="/contact" className="px-8 py-4 border border-white/30 text-white font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-all backdrop-blur-sm">
                   Contact Us
-                </button>
+                </Link>
               </div>
 
               {/* PROGRESS BAR */}
               <div className="pt-10 flex items-center gap-6">
-                <div className="text-white/60 font-mono text-[10px] md:text-xs tracking-widest">
+                <div className="text-white/60 font-mono text-[14px] md:text-lg tracking-widest">
                   <span className="text-white">0{index + 1}</span> / 0{slides.length}
                 </div>
                 <div className="w-40 md:w-64 h-[2px] bg-white/10 relative overflow-hidden">
@@ -227,7 +241,7 @@ export default function HeroLuxuryFinal() {
       </div>
 
       {/* 5. NAVIGATION ARROWS */}
-      <div className="absolute bottom-12 right-8 md:bottom-12 md:right-12 z-50 flex gap-4">
+      <div className="absolute bottom-14 right-8 md:bottom-12 md:right-12 z-50 flex gap-4">
         <NavButton onClick={prevSlide} Icon={ChevronLeft} />
         <NavButton onClick={nextSlide} Icon={ChevronRight} />
       </div>
@@ -239,7 +253,7 @@ function NavButton({ onClick, Icon }) {
   return (
     <button
       onClick={onClick}
-      className="p-4 rounded-full bg-white/5 backdrop-blur-lg border border-white/10 text-white hover:bg-[#f09f2d] hover:border-[#f09f2d] transition-all group shadow-xl"
+      className="p-4 rounded-full bg-[#1a2f4ac5] backdrop-blur-lg border border-white/10 text-white hover:bg-[#f09f2d] hover:border-[#f09f2d] transition-all group shadow-xl"
     >
       <Icon size={24} className="group-active:scale-90 transition-transform" />
     </button>

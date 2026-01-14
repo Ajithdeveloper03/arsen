@@ -3,19 +3,60 @@
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 import LusionCard from "./LusionCard";
+import { 
+  Award, 
+  Factory, 
+  Users, 
+  Clock, 
+  HeadphonesIcon, 
+  MessageSquare 
+} from "lucide-react"; // Ensure these are imported
 
-export default function LusionCardSection({ features }) {
+export default function LusionCardSection() {
   const containerRef = useRef(null);
+
+  // DATA INTEGRATION: 20 Years, Factory, and Team
+  const features = [
+    { 
+      icon: Award, 
+      title: "20 Years Excellence", 
+      description: "Two decades of deep execution expertise ensuring seamless project delivery." 
+    },
+    { 
+      icon: Factory, 
+      title: "8000 Sq.Ft. Factory", 
+      description: "State-of-the-art setup equipped with high-end imported machinery for precision." 
+    },
+    { 
+      icon: Users, 
+      title: "Expert Team", 
+      description: "Creative designers, experienced engineers, and skilled workers under one roof." 
+    },
+    { 
+      icon: Clock, 
+      title: "On-Time Delivery", 
+      description: "We guarantee timely completion through systematic planning and execution." 
+    },
+    { 
+      icon: HeadphonesIcon, 
+      title: "Service Support", 
+      description: "Dedicated after-sales support to ensure your interiors remain in perfect condition." 
+    },
+    { 
+      icon: MessageSquare, 
+      title: "Free Consultation", 
+      description: "Expert guidance to help you visualize and plan your dream space at no cost." 
+    },
+  ];
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    // Start animating when the top of the container is 80% down the viewport
-    offset: ["start 0.9", "end start"],
+    // ADJUSTED OFFSET: starts at 80% viewport, ends when section is still mostly visible
+    offset: ["start 0.8", "end 0.6"],
   });
 
-  // Smoother Spring physics: less "heavy", more "fluid"
   const progress = useSpring(scrollYProgress, {
-    stiffness: 40,
+    stiffness: 50, // Slightly snappier
     damping: 20,
     restDelta: 0.001
   });
@@ -28,7 +69,6 @@ export default function LusionCardSection({ features }) {
       ref={containerRef}
       className="relative w-full bg-[#f8faff] py-24 overflow-hidden"
     >
-      {/* Background Decorative Path */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <svg 
           className="w-full h-full" 
@@ -51,25 +91,25 @@ export default function LusionCardSection({ features }) {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        {/* Header Section */}
         <div className="text-center mb-24">
           <motion.span 
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-[#FFA62B] font-bold tracking-[0.3em] uppercase mb-4 block text-sm"
           >
-            Our Values
+            Since 2009
           </motion.span>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-5xl md:text-6xl font-black text-[#16697A] tracking-tight"
           >
             Why Choose Us
           </motion.h2>
         </div>
 
-        {/* Responsive Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
           {features.map((feature, i) => (
             <LusionCard 

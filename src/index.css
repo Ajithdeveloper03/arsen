@@ -16,16 +16,20 @@
 }
 
 @layer utilities {
+
   /* 1. Improved Logo Zoom - Made responsive using Viewport Units */
   @keyframes logo-zoom {
     0% {
       transform: scale(0.8);
       opacity: 0;
     }
+
     50% {
-      transform: scale(0.5); /* Slightly larger for better mobile visibility */
+      transform: scale(0.5);
+      /* Slightly larger for better mobile visibility */
       opacity: 1;
     }
+
     100% {
       /* Uses vw/vh instead of fixed percentages for adaptive movement */
       transform: scale(0.3) translate(-25vw, -35vh);
@@ -39,6 +43,7 @@
       transform: translateY(-10vh);
       opacity: 0;
     }
+
     100% {
       transform: translateY(0);
       opacity: 1;
@@ -49,8 +54,10 @@
   @keyframes slideIn {
     from {
       opacity: 0;
+      /* color: #7aada8; */
       transform: translateY(20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -59,8 +66,13 @@
 
   /* 4. Particle Scaling for performance on mobile */
   @keyframes particleFloat {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(-5%) scale(1.05); }
+    0% {
+      transform: translateY(0) scale(1);
+    }
+
+    100% {
+      transform: translateY(-5%) scale(1.05);
+    }
   }
 
   /* --- UTILITY CLASSES --- */
@@ -89,9 +101,20 @@
   }
 
   @keyframes logo-zoom-mobile {
-    0% { transform: scale(0.7); opacity: 0; }
-    50% { transform: scale(0.4); opacity: 1; }
-    100% { transform: scale(0.2) translate(-10vw, -30vh); opacity: 0; }
+    0% {
+      transform: scale(0.7);
+      opacity: 0;
+    }
+
+    50% {
+      transform: scale(0.4);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(0.2) translate(-10vw, -30vh);
+      opacity: 0;
+    }
   }
 
   /* Slow down particles for mobile battery/performance */
@@ -117,11 +140,9 @@
 
 /* Futuristic hologram glow - Updated to be fluid */
 .hero-holo-glow {
-  background: radial-gradient(
-    circle at 50% 70%,
-    rgba(255, 255, 255, 0.1),
-    transparent 80%
-  );
+  background: radial-gradient(circle at 50% 70%,
+      rgba(255, 255, 255, 0.1),
+      transparent 80%);
   mix-blend-mode: overlay;
   pointer-events: none;
 }
@@ -131,14 +152,27 @@
   animation: logoFloat 3s ease-in-out infinite;
   will-change: transform;
   /* color: #004952; */
+
 }
 
 @keyframes logoFloat {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-3px) scale(1.02); }
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-3px) scale(1.02);
+  }
 }
 
 @keyframes progressFill {
-  0% { width: 0%; }
-  100% { width: 100%; }
+  0% {
+    width: 0%;
+  }
+
+  100% {
+    width: 100%;
+  }
 }

@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/arsen_interior_demo/',
+  base: '/',
   plugins: [react()],
   optimizeDeps: {
     exclude: ['lucide-react'],

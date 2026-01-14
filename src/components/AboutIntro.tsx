@@ -3,13 +3,29 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import CountUp from "react-countup";
 import { useRef } from "react";
-import { Building2, Users, Clock, MapPin } from "lucide-react";
+import { Link } from "react-router-dom"; // 1. Import Link
+import { Building2, Users, Clock, MapPin, Zap } from "lucide-react";
 
 export default function AboutIntro() {
   const stats = [
-    { number: 1100, label: "Projects", icon: Building2, suffix: "+" },
-    { number: 230, label: "Cities", icon: MapPin, suffix: "+" },
-    { number: 25, label: "Faster TAT", icon: Clock, suffix: "%" },
+    { 
+      number: 1100, 
+      label: "Projects Completed", 
+      icon: Building2, 
+      suffix: "+" 
+    },
+    { 
+      number: 850, 
+      label: "Happy Clients", 
+      icon: Users, 
+      suffix: "+" 
+    },
+    { 
+      number: 30, 
+      label: "Efficiency Boost", 
+      icon: Zap, 
+      suffix: "%" 
+    },
   ];
 
   const aboutRef = useRef(null);
@@ -19,7 +35,6 @@ export default function AboutIntro() {
     offset: ["start end", "end start"],
   });
 
-  // Parallax only feels good on larger screens; on mobile, we reduce the intensity
   const yParallax = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
@@ -117,7 +132,8 @@ export default function AboutIntro() {
                   Started In
                 </p>
               </div>
-              <p className="text-2xl md:text-3xl font-black text-[#16697A]">2019</p>
+              {/* Updated to 2004 for 20-year legacy */}
+              <p className="text-2xl md:text-3xl font-black text-[#16697A]">2009</p>
             </div>
 
             <div>
@@ -127,16 +143,19 @@ export default function AboutIntro() {
                   Happy Clients
                 </p>
               </div>
-              <p className="text-2xl md:text-3xl font-black text-[#16697A]">100+</p>
+              <p className="text-2xl md:text-3xl font-black text-[#16697A]">1500+</p>
             </div>
           </div>
 
-          <button className="mt-10 w-full md:w-auto justify-center bg-[#16697A] hover:bg-[#125663] text-white font-bold px-10 py-4 rounded-full transition-colors duration-300 hover:shadow-lg hover:shadow-teal-700/30 flex items-center gap-2 group">
-            Know More
-            <span className="inline-block transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </button>
+          {/* 2. Wrapped button with Link to /about */}
+          <Link to="/about">
+            <button className="mt-10 w-full md:w-auto justify-center bg-[#16697A] hover:bg-[#125663] text-white font-bold px-10 py-4 rounded-full transition-colors duration-300 hover:shadow-lg hover:shadow-teal-700/30 flex items-center gap-2 group">
+              Know More
+              <span className="inline-block transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </button>
+          </Link>
         </div>
       </div>
     </section>

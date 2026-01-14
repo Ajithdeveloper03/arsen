@@ -3,6 +3,7 @@
 import {
   Award,
   Building2,
+  MessageSquare, Factory,
   Users,
   HeadphonesIcon,
   Clock,
@@ -14,13 +15,37 @@ import CommercialExpertiseSection from "./CommercialExpertiseSection";
 import LogoTickerSection from "./LogoTickerSection";
 
 export default function AboutSection() {
-  const features = [
-    { icon: Award, title: "25 Years Expert", description: "Deep execution expertise ensuring seamless delivery." },
-    { icon: Building2, title: "800+ Projects", description: "Designed and executed premium interior projects." },
-    { icon: Users, title: "500+ Clients", description: "A proven record of quality delivery and satisfaction." },
-    { icon: HeadphonesIcon, title: "24/7 Support", description: "We are available round the clock to assist you." },
-    { icon: Clock, title: "On-Time", description: "We guarantee on-time delivery with systematic execution." },
-    { icon: Building2, title: "Lifetime Support", description: "After-sales support to ensure interiors remain perfect." },
+const features = [
+    { 
+      icon: Award, 
+      title: "20 Years Excellence", 
+      description: "Two decades of deep execution expertise ensuring seamless project delivery." 
+    },
+    { 
+      icon: Factory, // You may need to import this from your icon library
+      title: "8000 Sq.Ft. Factory", 
+      description: "State-of-the-art setup equipped with high-end imported machinery for precision." 
+    },
+    { 
+      icon: Users, 
+      title: "Expert Team", 
+      description: "Creative designers, experienced engineers, and skilled workers under one roof." 
+    },
+    { 
+      icon: Clock, 
+      title: "On-Time Delivery", 
+      description: "We guarantee timely completion through systematic planning and execution." 
+    },
+    { 
+      icon: HeadphonesIcon, 
+      title: "Service Support", 
+      description: "Dedicated after-sales support to ensure your interiors remain in perfect condition." 
+    },
+    { 
+      icon: MessageSquare, // Or similar icon for consultation
+      title: "Free Consultation", 
+      description: "Expert guidance to help you visualize and plan your dream space at no cost." 
+    },
   ];
 
   return (

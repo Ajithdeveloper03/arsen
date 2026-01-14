@@ -1,21 +1,40 @@
 "use client";
 
 import React from 'react';
+import gallery1 from '../assets/gallery-commercial1.jpg';
+import gallery2 from '../assets/gallery-commercial11.jpeg';
+import gallery3 from '../assets/gallery-commercial3.jpg';
+import gallery4 from '../assets/gallery-commercial5.jpg';
+import gallery5 from '../assets/gallery-commercial7.jpg';
+import gallery6 from '../assets/gallery-commercial9.jpeg';
+import gallery7 from '../assets/greens3.jpg';
+import gallery8 from '../assets/oecl2.jpg';
+import gallery9 from '../assets/gallery-commercial8.jpg';
+import gallery10 from '../assets/gallery-commercial6.jpg';
+import gallery11 from '../assets/saf-gmaes-vilalge.jpg';
+import gallery12 from '../assets/gallery-commercial4.jpg';
+import gallery13 from '../assets/gallery-commercial2.jpg';
+import gallery14 from '../assets/gallery-commercial10.jpeg';
+
 
 const projectsRow1 = [
-  'https://cdn.pixabay.com/photo/2013/11/28/09/58/ceiling-219835_1280.jpg',
-  'https://cdn.pixabay.com/photo/2015/08/26/06/00/architecture-908142_1280.jpg',
-  'https://cdn.pixabay.com/photo/2021/04/18/14/35/business-6188579_1280.jpg',
-  'https://cdn.pixabay.com/photo/2023/11/09/04/06/architectural-design-8376206_1280.jpg',
-  'https://cdn.pixabay.com/photo/2024/10/19/06/34/futuristic-9132027_1280.jpg'
+  gallery1,
+  gallery10,
+  gallery11,
+  gallery12,
+  gallery13,
+  gallery7,
+  gallery8
 ];
 
 const projectsRow2 = [
-  'https://cdn.pixabay.com/photo/2015/04/20/06/46/office-730681_1280.jpg',
-  'https://cdn.pixabay.com/photo/2016/09/19/17/20/home-1680800_1280.jpg',
-  'https://cdn.pixabay.com/photo/2020/03/23/07/59/office-4959782_1280.jpg',
-  'https://cdn.pixabay.com/photo/2015/04/10/17/03/pots-716579_1280.jpg',
-  'https://cdn.pixabay.com/photo/2024/07/25/23/56/interior-design-8922413_1280.jpg'
+  gallery14,
+  gallery2,
+  gallery3,
+  gallery4,
+  gallery5,
+  gallery6,
+  gallery9
 ];
 
 export default function CompactProjectsSection() {
@@ -30,14 +49,14 @@ export default function CompactProjectsSection() {
         `}>
         <img 
           src={image} 
-          className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" 
+          className="w-full h-full object-cover  group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" 
           alt="Arsen Project" 
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+        {/* <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
         <div className="absolute bottom-3 left-3 md:bottom-4 md:left-4 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
            <p className="text-[10px] md:text-[12px] text-[#0F5B54] font-black uppercase tracking-widest">Arsen</p>
            <h4 className="text-[#010B0A] text-[9px] md:text-[10px] font-bold uppercase italic">Work {index + 1}</h4>
-        </div>
+        </div> */}
       </div>
     );
   };

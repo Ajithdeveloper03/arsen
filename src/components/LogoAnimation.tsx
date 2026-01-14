@@ -77,8 +77,8 @@ export default function LogoAnimation({ onAnimationComplete }: LogoAnimationProp
               height: "70%"
             }}
           >
-            <img 
-              src={logo} 
+            <img
+              src={logo}
               className="object-contain"
               style={{
                 width: "clamp(48px, 9vw, 105px)"
