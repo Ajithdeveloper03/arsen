@@ -42,7 +42,7 @@ const ArsenContact = () => {
   };
 
   const infoItems = [
-    { icon: Phone, label: "Call Us", val: "+91 8144555533, 8144555522" },
+    { icon: Phone, label: "Call Us", val: "+91 8098085553, 8144555522" },
     { icon: Mail, label: "Email Us", val: "sales@arseninterior.in" },
     { icon: MapPin, label: "Arsen Interior PVT LTD", val: "#4, Noombal Road, Velappanchavadi Chennai – 600 077." },
     { icon: MapPin, label: "Arsen Furnitures and Fixtures", val: "No.211/1B, Metro city phase 1, Rajankuppam, Ayanambakkam, Chennai - 600095" },

@@ -76,8 +76,8 @@ export default function InteriorFooter() {
               ))}
               <li className="flex items-center gap-4 group border-t border-white/10 pt-4">
                 <Phone className="w-5 h-5 text-[#FFA62B] shrink-0" />
-                <a href="tel:+8144555533" className="text-white text-sm font-bold group-hover:text-[#FFA62B] transition-colors">
-                  +91 8144555533 ,8144555522
+                <a href="tel:+8098085553" className="text-white text-sm font-bold group-hover:text-[#FFA62B] transition-colors">
+                  +91 8098085553 ,8144555522
                 </a>
               </li>
             </ul>
@@ -91,9 +91,9 @@ export default function InteriorFooter() {
             <ul className="space-y-4">
               {[
                 { name: "PMC Services", path: "/pmc" },
-                { name: "Commercial Design", path: "/commercial" },
-                { name: "Residential Design", path: "/residential" },
-                { name: "Interior Execution", path: "/completed" },
+                { name: "Commercial", path: "/commercial" },
+                { name: "Residential", path: "/residential" },
+                { name: "Completed Projects", path: "/completed" },
                 { name: "Ongoing Projects", path: "/ongoing" }
               ].map((service, i) => (
                 <li key={i}>

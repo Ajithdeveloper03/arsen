@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import CountUp from "react-countup";
 import {
   ArrowRight, Layout, Wind, Zap, Activity,
@@ -9,12 +9,21 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-// Assets (Using your provided variables)
+// Assets
+import banner1 from '../assets/pmc-banner1.jpg';
+import banner2 from '../assets/pmc-banner2.jpg';
+import banner3 from '../assets/pmc-banner3.jpg';
+import banner4 from '../assets/pmc-banner4.jpg';
 import tafe1 from '../assets/pmc-tafe.jpg';
 import tafe2 from '../assets/pmc-tafe2.jpg';
 import tafe3 from '../assets/3d2.jpg';
-import tafe4 from '../assets/3d3.jpg';
-import tafe5 from '../assets/pmc-tafe1.jpg'
+import tafe5 from '../assets/pmc-tafe1.jpg';
+import arrow from '../assets/arrow.webp';
+import ecosystem2 from '../assets/FAS and PA System.jpg';
+import ecosystem3 from '../assets/Hvac.jpg';
+import ecosystem4 from '../assets/Power and Mep.jpg';
+import manage from '../assets/manage-relax.jpg';
+
 const lusionTransition = { duration: 1.2, ease: [0.22, 1, 0.36, 1] };
 
 const openContactPopup = () => {
@@ -25,17 +34,35 @@ const PMC = () => {
   const { scrollYProgress } = useScroll();
   const imageScale = useTransform(scrollYProgress, [0, 0.5], [1.1, 1]);
 
+  // 1. Slider Logic
+  const bannerImages = [banner1, banner2, banner3, banner4];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % bannerImages.length);
+    }, 5000); // Changes every 5 seconds
+    return () => clearInterval(timer);
+  }, [bannerImages.length]);
+
   return (
     <div className="bg-[#021412] text-white selection:bg-[#FDBA74] overflow-x-hidden">
 
-      {/* 1. CINEMATIC HERO */}
+      {/* 1. CINEMATIC HERO WITH AUTOMATIC SLIDER */}
       <section className="relative h-[100svh] flex items-center justify-center overflow-hidden">
         <motion.div style={{ scale: imageScale }} className="absolute inset-0 z-0">
-          <img
-            src={tafe5}
-            className="w-full h-full object-cover opacity-60 grayscale"
-            alt="Architecture Background"
-          />
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={currentIndex}
+              src={bannerImages[currentIndex]}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5 }}
+              className="w-full h-full object-cover grayscale"
+              alt="Architecture Background"
+            />
+          </AnimatePresence>
           <div className="absolute inset-0 bg-gradient-to-b from-[#021412]/60 via-transparent to-[#021412]" />
         </motion.div>
 
@@ -49,6 +76,16 @@ const PMC = () => {
               <span className="text-transparent" style={{ WebkitTextStroke: '1px #fff' }}>Is Art</span>
             </h1>
           </motion.div>
+        </div>
+
+        {/* Slider Indicators */}
+        <div className="absolute bottom-10 left-10 flex gap-2 z-20">
+          {bannerImages.map((_, i) => (
+            <div 
+              key={i} 
+              className={`h-1 transition-all duration-500 ${i === currentIndex ? "w-8 bg-[#FDBA74]" : "w-2 bg-white/20"}`} 
+            />
+          ))}
         </div>
 
         <motion.div
@@ -88,7 +125,7 @@ const PMC = () => {
             initial={{ opacity: 0, y: 20 }}
             className="relative h-[250px] md:h-auto rounded-[2rem] md:rounded-[3rem] overflow-hidden group"
           >
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070" className="w-full h-full object-cover grayscale md:group-hover:grayscale-0 transition-all duration-700" alt="Consultation" />
+            <img src={arrow} className="w-full h-full object-cover grayscale md:group-hover:grayscale-0 transition-all duration-700" alt="Consultation" />
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
               <Link to="/commercial" className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white text-black flex items-center justify-center active:scale-90 md:hover:scale-110 transition-transform">
                 <ArrowRight size={20} />
@@ -133,7 +170,7 @@ const PMC = () => {
         </div>
       </section>
 
-      {/* 4. REDESIGNED: PROJECT MANAGEMENT EXCELLENCE (NO TABS) */}
+      {/* 4. THE PMC ECOSYSTEM */}
       <section className="py-24 bg-white text-[#021412] overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
@@ -143,30 +180,26 @@ const PMC = () => {
             <p className="text-gray-400 font-bold text-xs tracking-[0.3em] uppercase mt-4">Full-Stack Technical Control</p>
           </div>
 
-          {/* 4-Display Minimal Grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:h-[900px]">
-
-            {/* Display 01: Luxury Interiors (Large Vertical) */}
             <motion.div
               whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }}
               className="md:col-span-7 relative rounded-[2.5rem] overflow-hidden group h-[400px] md:h-full"
             >
-              <img src={tafe2} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Interiors" />
+              <img src={ecosystem2} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Interiors" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               <div className="absolute bottom-10 left-10 text-white">
                 <Layout className="text-[#FDBA74] mb-4" size={32} />
-                <h3 className="text-4xl font-black uppercase tracking-tighter">Luxury Interiors</h3>
+                <h3 className="text-4xl font-black uppercase tracking-tighter">FAS & PA Systems</h3>
                 <p className="text-white/60 text-sm font-medium tracking-wide">High-end corporate fit-outs & acoustic engineering.</p>
               </div>
             </motion.div>
 
             <div className="md:col-span-5 grid grid-rows-2 gap-6 h-full">
-              {/* Display 02: HVAC (Horizontal) */}
               <motion.div
                 whileInView={{ opacity: 1, x: 0 }} initial={{ opacity: 0, x: 30 }}
                 className="relative rounded-[2.5rem] overflow-hidden group"
               >
-                <img src={tafe3} className="w-full h-full object-cover  group-hover:grayscale-0 transition-all duration-700" alt="HVAC" />
+                <img src={ecosystem3} className="w-full h-full object-cover transition-all duration-700" alt="HVAC" />
                 <div className="absolute inset-0 bg-black/50 group-hover:bg-black/20 transition-all" />
                 <div className="absolute inset-0 p-10 flex flex-col justify-end text-white">
                   <Wind className="text-[#FDBA74] mb-3" size={24} />
@@ -175,12 +208,11 @@ const PMC = () => {
                 </div>
               </motion.div>
 
-              {/* Display 03: Electrical (Horizontal) */}
               <motion.div
                 whileInView={{ opacity: 1, x: 0 }} initial={{ opacity: 0, x: 30 }} transition={{ delay: 0.1 }}
                 className="relative rounded-[2.5rem] overflow-hidden group"
               >
-                <img src={tafe4} className="w-full h-full object-cover  group-hover:grayscale-0 transition-all duration-700" alt="Electrical" />
+                <img src={ecosystem4} className="w-full h-full object-cover transition-all duration-700" alt="Electrical" />
                 <div className="absolute inset-0 bg-black/50 group-hover:bg-black/20 transition-all" />
                 <div className="absolute inset-0 p-10 flex flex-col justify-end text-white">
                   <Zap className="text-[#FDBA74] mb-3" size={24} />
@@ -189,29 +221,6 @@ const PMC = () => {
                 </div>
               </motion.div>
             </div>
-
-            {/* Display 04: Full Integration (Bottom Wide) */}
-            {/* <motion.div
-              whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }}
-              className="md:col-span-12 relative h-[250px] rounded-[2.5rem] overflow-hidden group bg-[#021412] flex items-center p-12"
-            >
-              <div className="flex-1">
-                <Activity className="text-[#FDBA74] mb-4" size={40} />
-                <h3 className="text-white text-3xl md:text-5xl font-black uppercase tracking-tighter">Integrated Solutions</h3>
-                <p className="text-white/40 text-lg md:text-base mt-2">Harmonizing HVAC, Electrical, and Interiors into one seamless ecosystem.</p>
-              </div>
-              <div className="hidden md:block w-px h-full bg-white/10 mx-10" />
-              <div className="hidden lg:grid grid-cols-2 gap-8">
-                <div className="text-white">
-                  <span className="text-[#FDBA74] font-black text-2xl">0%</span>
-                  <p className="text-[10px] uppercase tracking-widest text-white/40">Snag Errors</p>
-                </div>
-                <div className="text-white">
-                  <span className="text-[#FDBA74] font-black text-2xl">100%</span>
-                  <p className="text-[10px] uppercase tracking-widest text-white/40">Transparency</p>
-                </div>
-              </div>
-            </motion.div> */}
           </div>
         </div>
       </section>
@@ -244,7 +253,7 @@ const PMC = () => {
       {/* 6. IMMERSIVE CTA */}
       <section className="relative py-24 md:py-32 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-20">
-          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600" className="w-full h-full object-cover" alt="Office" />
+          <img src={manage} className="w-full h-full object-cover" alt="Office" />
         </div>
         <div className="relative z-10 text-center px-4">
           <motion.h2

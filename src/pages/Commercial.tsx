@@ -13,10 +13,10 @@ import threed1 from '../assets/3d1.jpg';
 import threed2 from '../assets/3d2.jpg';
 // Asset Imports
 import furniture from '../assets/comercial-furniture.jpg';
-import vm1 from '../assets/saf-gmaes-vilalge.png';
-import vm2 from '../assets/tafe1.png';
+import vm1 from '../assets/saf-gmaes-vilalge.webp';
+import vm2 from '../assets/vm2.jpg';
 import vm3 from '../assets/vm2.png';
-import vm4 from '../assets/vm1.png';
+import vm4 from '../assets/vm1.jpg';
 import oecl1 from "../assets/oecl1.jpg";
 import oecl2 from "../assets/oecl2.jpg";
 import greens1 from "../assets/greens3.jpg";

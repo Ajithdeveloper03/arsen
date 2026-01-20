@@ -15,7 +15,7 @@ export default function AboutIntro() {
       suffix: "+" 
     },
     { 
-      number: 850, 
+      number: 1500, 
       label: "Happy Clients", 
       icon: Users, 
       suffix: "+" 

@@ -245,7 +245,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
 
               <div className="mb-6 sm:mb-10 text-center md:text-left">
                 <span className="text-[10px] tracking-[0.3em] text-[#FFA62B] font-black uppercase mb-3 block">
-                  Inquiry Office
+                  Enquiry Office
                 </span>
 
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
