@@ -1,184 +1,225 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, MapPin, Briefcase, Tag, AlertCircle, Save, Loader2, X } from 'lucide-react';
 import api from '../../services/api';
 import Modal from '../components/Modal';
 
 const CareersManager = () => {
-    const [jobs, setJobs] = useState([]);
+    const [careers, setCareers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
-    const [editingJob, setEditingJob] = useState<any>(null);
+    const [editingCareer, setEditingCareer] = useState<any>(null);
     const [submitting, setSubmitting] = useState(false);
+    const [specInput, setSpecInput] = useState('');
 
     const [formData, setFormData] = useState({
         title: '',
         department: '',
         location: '',
         salary: '',
-        is_active: true,
-        specifications: [] as string[]
+        image_url: '',
+        specifications: [] as string[],
+        is_active: true
     });
 
-    const [newSpec, setNewSpec] = useState('');
-
     useEffect(() => {
-        fetchJobs();
+        fetchCareers();
     }, []);
 
-    const fetchJobs = async () => {
+    const fetchCareers = async () => {
+        setLoading(true);
         try {
             const res = await api.get('/careers');
-            setJobs(res.data);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDelete = async (id: number) => {
-        if (!window.confirm('Delete this listing?')) return;
-        try {
-            await api.delete(`/careers/${id}`);
-            setJobs(jobs.filter((j: any) => j.id !== id));
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const handleEdit = (job: any) => {
-        setEditingJob(job);
-        setFormData({
-            title: job.title,
-            department: job.department,
-            location: job.location,
-            salary: job.salary || '',
-            is_active: job.is_active,
-            specifications: job.specifications || []
-        });
-        setModalOpen(true);
-    };
-
-    const addSpec = () => {
-        if (!newSpec) return;
-        setFormData({ ...formData, specifications: [...formData.specifications, newSpec] });
-        setNewSpec('');
-    };
-
-    const removeSpec = (index: number) => {
-        const specs = [...formData.specifications];
-        specs.splice(index, 1);
-        setFormData({ ...formData, specifications: specs });
+            setCareers(res.data);
+        } catch (err) { console.error(err); }
+        finally { setLoading(false); }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitting(true);
-
         try {
-            if (editingJob) {
-                await api.put(`/careers/${editingJob.id}`, formData);
+            const payload = { ...formData, specifications: JSON.stringify(formData.specifications) };
+            if (editingCareer) {
+                await api.put(`/careers/${editingCareer.id}`, payload);
             } else {
-                await api.post('/careers', formData);
+                await api.post('/careers', payload);
             }
-            fetchJobs();
+            fetchCareers();
             setModalOpen(false);
-            setEditingJob(null);
-        } catch (err) {
-            console.error(err);
-            alert('Failed to save');
-        } finally {
-            setSubmitting(false);
+        } catch (err) { console.error(err); }
+        finally { setSubmitting(false); }
+    };
+
+    const handleDelete = async (id: number) => {
+        if (!window.confirm('Delete this job listing?')) return;
+        try {
+            await api.delete(`/careers/${id}`);
+            fetchCareers();
+        } catch (err) { console.error(err); }
+    };
+
+    const addSpec = () => {
+        if (specInput.trim()) {
+            setFormData({ ...formData, specifications: [...formData.specifications, specInput.trim()] });
+            setSpecInput('');
         }
+    };
+    const removeSpec = (idx: number) => {
+        setFormData({ ...formData, specifications: formData.specifications.filter((_, i) => i !== idx) });
+    };
+
+    const openModal = (career?: any) => {
+        if (career) {
+            setEditingCareer(career);
+            let parsedSpecs = [];
+            try { parsedSpecs = typeof career.specifications === 'string' ? JSON.parse(career.specifications) : career.specifications; } catch (e) { }
+
+            setFormData({
+                title: career.title,
+                department: career.department,
+                location: career.location,
+                salary: career.salary,
+                image_url: career.image_url || '',
+                specifications: Array.isArray(parsedSpecs) ? parsedSpecs : [],
+                is_active: !!career.is_active
+            });
+        } else {
+            setEditingCareer(null);
+            setFormData({ title: '', department: '', location: '', salary: '', image_url: '', specifications: [], is_active: true });
+        }
+        setModalOpen(true);
     };
 
     return (
-        <div className="space-y-8">
-            <div className="flex justify-between items-center">
+        <div className="space-y-6 max-w-7xl mx-auto">
+            <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div>
-                    <h1 className="text-4xl font-black italic uppercase tracking-tighter">Careers Manager</h1>
-                    <p className="text-gray-500">Post and manage job opportunities at Arsen.</p>
+                    <h1 className="text-2xl font-bold text-slate-900">Career Opportunities</h1>
+                    <p className="text-slate-500 text-sm mt-1">Manage job openings and specifications.</p>
                 </div>
-                <button onClick={() => { setModalOpen(true); setEditingJob(null); }} className="bg-[#0F1F2A] text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-[#DFA45B] hover:text-black transition-all">
+                <button
+                    onClick={() => openModal()}
+                    className="bg-[#022C22] hover:bg-[#033a2d] text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-colors flex items-center gap-2 shadow-sm"
+                >
                     <Plus size={18} /> Post Job
                 </button>
             </div>
 
-            <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
-                <table className="w-full text-left">
-                    <thead className="bg-gray-50 border-b border-gray-100">
-                        <tr>
-                            <th className="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400">Position</th>
-                            <th className="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400">Dept / Location</th>
-                            <th className="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400">Status</th>
-                            <th className="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-50">
-                        {jobs.map((job: any) => (
-                            <tr key={job.id} className="hover:bg-gray-50/50 transition-colors">
-                                <td className="px-8 py-6 font-bold">{job.title}</td>
-                                <td className="px-8 py-6 text-sm text-gray-500">{job.department} • {job.location}</td>
-                                <td className="px-8 py-6">
-                                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${job.is_active ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
-                                        {job.is_active ? 'Active' : 'Archived'}
-                                    </span>
-                                </td>
-                                <td className="px-8 py-6 text-right">
-                                    <div className="flex justify-end gap-2">
-                                        <button onClick={() => handleEdit(job)} className="p-2 text-gray-400 hover:text-blue-500 transition-all"><Edit2 size={18} /></button>
-                                        <button onClick={() => handleDelete(job.id)} className="p-2 text-gray-400 hover:text-red-500 transition-all"><Trash2 size={18} /></button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {loading ? <div className="text-slate-500 p-4">Loading jobs...</div> : careers.map((job) => (
+                    <div key={job.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-lg flex flex-col hover:border-[#022C22]/30 transition-all group">
+                        {/* Image Preview if available */}
+                        {job.image_url && (
+                            <div className="h-40 w-full relative">
+                                <img src={job.image_url} alt={job.title} className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                            </div>
+                        )}
+
+                        <div className="p-5 flex flex-col flex-1">
+                            <div className="flex justify-between items-start mb-2">
+                                <span className="text-[#022C22] text-xs font-bold uppercase tracking-wider bg-emerald-50 px-2 py-0.5 rounded">{job.department}</span>
+                                {job.is_active ?
+                                    <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase border border-green-200">Open</span> :
+                                    <span className="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded font-bold uppercase border border-slate-200">Closed</span>
+                                }
+                            </div>
+
+                            <h3 className="text-lg font-bold text-slate-900 mb-1">{job.title}</h3>
+                            <div className="flex items-center gap-4 text-slate-500 text-sm mb-4">
+                                <span className="flex items-center gap-1"><MapPin size={14} /> {job.location}</span>
+                                <span className="flex items-center gap-1"><Briefcase size={14} /> {job.salary}</span>
+                            </div>
+
+                            <div className="flex flex-wrap gap-1.5 mb-6">
+                                {(() => {
+                                    try {
+                                        const specs = typeof job.specifications === 'string' ? JSON.parse(job.specifications) : job.specifications;
+                                        return Array.isArray(specs) ? specs.slice(0, 3).map((s: string, i: number) => (
+                                            <span key={i} className="text-[10px] bg-slate-50 text-slate-600 px-2 py-1 rounded border border-slate-200">{s}</span>
+                                        )) : null;
+                                    } catch (e) { return null; }
+                                })()}
+                            </div>
+
+                            <div className="mt-auto flex gap-3 pt-4 border-t border-slate-100">
+                                <button onClick={() => openModal(job)} className="flex-1 py-2 bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 border border-slate-200">
+                                    <Edit2 size={14} /> Edit
+                                </button>
+                                <button onClick={() => handleDelete(job.id)} className="flex-1 py-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 border border-red-100">
+                                    <Trash2 size={14} /> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
 
-            <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingJob ? 'Edit Job' : 'Post New Job'}>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2">
-                        <label className="text-xs uppercase font-bold text-gray-400 tracking-widest">Job Title</label>
-                        <input required className="w-full bg-gray-50 border border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-[#DFA45B] transition-all" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} placeholder="e.g. Interior Designer" />
+            {/* Modal */}
+            <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingCareer ? 'Edit Job Posting' : 'New Job Posting'}>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="col-span-2">
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Job Title</label>
+                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Department</label>
+                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} required />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Location</label>
+                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} required />
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <label className="text-xs uppercase font-bold text-gray-400 tracking-widest">Department</label>
-                            <input required className="w-full bg-gray-50 border border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-[#DFA45B] transition-all" value={formData.department} onChange={(e) => setFormData({ ...formData, department: e.target.value })} placeholder="e.g. Design" />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Salary Range</label>
+                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.salary} onChange={e => setFormData({ ...formData, salary: e.target.value })} placeholder="e.g. Competitive" />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-xs uppercase font-bold text-gray-400 tracking-widest">Location</label>
-                            <input required className="w-full bg-gray-50 border border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-[#DFA45B] transition-all" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} placeholder="e.g. Dubai" />
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Status</label>
+                            <select className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.is_active ? '1' : '0'} onChange={e => setFormData({ ...formData, is_active: e.target.value === '1' })}>
+                                <option value="1">Active (Open)</option>
+                                <option value="0">Inactive (Closed)</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-xs uppercase font-bold text-gray-400 tracking-widest">Specifications (Add one by one)</label>
+                    <div>
+                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Cover Image URL</label>
+                        <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm font-mono outline-none focus:border-[#022C22]" value={formData.image_url} onChange={e => setFormData({ ...formData, image_url: e.target.value })} placeholder="https://..." />
+                    </div>
+
+                    {/* Specifications Builder */}
+                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Qualifications / Specifications</label>
                         <div className="flex gap-2 mb-2">
-                            <input value={newSpec} onChange={(e) => setNewSpec(e.target.value)} className="flex-1 bg-gray-50 border border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-[#DFA45B] transition-all" placeholder="e.g. 5+ years experience" />
-                            <button type="button" onClick={addSpec} className="px-6 bg-[#0F1F2A] text-white rounded-2xl font-bold">+</button>
+                            <input
+                                className="flex-1 bg-white border border-slate-300 rounded px-2 py-1.5 text-sm outline-none focus:border-[#022C22]"
+                                placeholder="Add a requirement..."
+                                value={specInput}
+                                onChange={e => setSpecInput(e.target.value)}
+                                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())}
+                            />
+                            <button type="button" onClick={addSpec} className="px-3 bg-[#022C22] text-white rounded font-bold text-sm hover:bg-[#033a2d]">+</button>
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {formData.specifications.map((spec, i) => (
-                                <div key={i} className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-xl text-sm font-medium">
-                                    {spec} <button type="button" onClick={() => removeSpec(i)} className="text-red-500 font-bold">×</button>
-                                </div>
+                                <span key={i} className="bg-white border border-slate-200 text-slate-700 px-2 py-1 rounded text-xs flex items-center gap-1 shadow-sm">
+                                    {spec} <button type="button" onClick={() => removeSpec(i)} className="text-slate-400 hover:text-red-500"><X size={12} /></button>
+                                </span>
                             ))}
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between p-6 bg-gray-50 rounded-[2rem]">
-                        <p className="font-bold uppercase tracking-tight">Active Listing</p>
-                        <div onClick={() => setFormData({ ...formData, is_active: !formData.is_active })} className={`w-14 h-8 rounded-full p-1 transition-all cursor-pointer ${formData.is_active ? 'bg-green-500' : 'bg-gray-300'}`}>
-                            <div className={`w-6 h-6 bg-white rounded-full transition-all shadow-sm ${formData.is_active ? 'translate-x-6' : ''}`} />
-                        </div>
+                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" onClick={() => setModalOpen(false)} className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-100 rounded-lg transition-colors">Cancel</button>
+                        <button disabled={submitting} className="px-6 py-2 bg-[#022C22] text-white font-bold rounded-lg hover:bg-[#033a2d] transition-colors flex items-center gap-2 shadow-md">
+                            {submitting ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />} Save Job
+                        </button>
                     </div>
-
-                    <button disabled={submitting} className="w-full bg-[#0F1F2A] text-white py-6 rounded-full font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-[#DFA45B] hover:text-black transition-all">
-                        {submitting ? <Loader2 className="animate-spin" size={20} /> : (editingJob ? 'Update Listing' : 'Post Listing')}
-                    </button>
                 </form>
             </Modal>
         </div>

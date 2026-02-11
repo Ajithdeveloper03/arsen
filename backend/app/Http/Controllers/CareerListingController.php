@@ -34,7 +34,7 @@ class CareerListingController extends Controller
         return response()->json($job);
     }
 
-    public function update(Request $request, CareerListing $careerListing)
+    public function update(Request $request, CareerListing $career)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -47,25 +47,25 @@ class CareerListingController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($careerListing->image_url) {
-                $oldPath = str_replace('/storage/', '', $careerListing->image_url);
+            if ($career->image_url) {
+                $oldPath = str_replace('/storage/', '', $career->image_url);
                 Storage::disk('public')->delete($oldPath);
             }
             $path = $request->file('image')->store('careers', 'public');
             $validated['image_url'] = Storage::url($path);
         }
 
-        $careerListing->update($validated);
-        return response()->json($careerListing);
+        $career->update($validated);
+        return response()->json($career);
     }
 
-    public function destroy(CareerListing $careerListing)
+    public function destroy(CareerListing $career)
     {
-        if ($careerListing->image_url) {
-            $oldPath = str_replace('/storage/', '', $careerListing->image_url);
+        if ($career->image_url) {
+            $oldPath = str_replace('/storage/', '', $career->image_url);
             Storage::disk('public')->delete($oldPath);
         }
-        $careerListing->delete();
+        $career->delete();
         return response()->json(['message' => 'Deleted successfully']);
     }
 }

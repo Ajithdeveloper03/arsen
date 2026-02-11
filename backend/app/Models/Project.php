@@ -9,16 +9,7 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'location',
-        'image_url',
-        'description',
-        'type',
-        'status',
-        'is_featured',
-        'order_index'
-    ];
+    protected $guarded = [];
 
     //
 }

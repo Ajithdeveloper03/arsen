@@ -12,9 +12,11 @@ use App\Http\Controllers\CareerListingController;
 use App\Http\Controllers\ContactDetailController;
 
 // Public Routes
-Route::post('/contact', [ContactController::class, 'send']);
-Route::post('/popup', [PopupController::class, 'send']);
-Route::post('/submit-form', [UniversalFormController::class, 'submit']);
+Route::middleware('throttle:5,1')->group(function () {
+    Route::post('/contact', [ContactController::class, 'send']);
+    Route::post('/popup', [PopupController::class, 'send']);
+    Route::post('/submit-form', [UniversalFormController::class, 'submit']);
+});
 
 Route::get('/public/banners', [BannerController::class, 'index']);
 Route::get('/public/projects', [ProjectController::class, 'index']);
@@ -22,7 +24,7 @@ Route::get('/public/careers', [CareerListingController::class, 'index']);
 Route::get('/public/contact-details', [ContactDetailController::class, 'index']);
 
 // Auth Routes
-Route::post('/auth/login', [AuthController::class, 'login']);
+Route::middleware('throttle:5,1')->post('/auth/login', [AuthController::class, 'login']);
 
 // Protected Admin Routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -39,5 +41,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Manual Update for some cases if needed (e.g. for uploads needing POST)
     Route::post('banners/{banner}', [BannerController::class, 'update']);
     Route::post('projects/{project}', [ProjectController::class, 'update']);
-    Route::post('careers/{careerListing}', [CareerListingController::class, 'update']);
+    Route::post('careers/{career}', [CareerListingController::class, 'update']);
 });

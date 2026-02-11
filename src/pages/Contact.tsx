@@ -13,8 +13,21 @@ import {
   Instagram,
   Linkedin,
   Facebook,
-  Globe
+  Globe,
+  Link as LinkIcon
 } from "lucide-react";
+
+const IconMap: any = {
+  Phone: Phone,
+  Mail: Mail,
+  MapPin: MapPin,
+  Globe: Globe,
+  Facebook: Facebook,
+  Instagram: Instagram,
+  Twitter: Twitter,
+  Linkedin: Linkedin,
+  Link: LinkIcon
+};
 
 const ArsenContact = () => {
   const [apiDetails, setApiDetails] = useState<any[]>([]);
@@ -83,25 +96,32 @@ const ArsenContact = () => {
     }
   };
 
-  const getDetailIcon = (type: string) => {
-    switch (type) {
+  const getDetailIcon = (d: any) => {
+    if (d.icon && IconMap[d.icon]) return IconMap[d.icon];
+    switch (d.type) {
       case 'phone': return Phone;
       case 'email': return Mail;
       case 'address': return MapPin;
-      default: return Globe;
+      case 'social': return Globe;
+      default: return LinkIcon;
     }
   };
 
-  const infoItems = apiDetails.length > 0 ? apiDetails.map(d => ({
-    icon: getDetailIcon(d.type),
-    label: d.label,
-    val: d.value
-  })) : [
-    { icon: Phone, label: "Call Us", val: "+91 8098085553, 8144555522" },
-    { icon: Mail, label: "Email Us", val: "sales@arseninterior.in" },
-    { icon: MapPin, label: "Arsen Interior PVT LTD", val: "#4, Noombal Road, Velappanchavadi Chennai – 600 077." },
-    { icon: MapPin, label: "Arsen Furnitures and Fixtures", val: "No.211/1B, Metro city phase 1, Rajankuppam, Ayanambakkam, Chennai - 600095" },
-  ];
+  // Filter out social links for the main grid, show only direct contact info
+  const directContacts = apiDetails.length > 0
+    ? apiDetails.filter(d => d.type !== 'social' && d.type !== 'link').map(d => ({
+      icon: getDetailIcon(d),
+      label: d.label,
+      val: d.value
+    }))
+    : [
+      { icon: Phone, label: "Call Us", val: "+91 8098085553, 8144555522" },
+      { icon: Mail, label: "Email Us", val: "sales@arseninterior.in" },
+      { icon: MapPin, label: "Arsen Interior PVT LTD", val: "#4, Noombal Road, Velappanchavadi Chennai – 600 077." },
+      { icon: MapPin, label: "Arsen Furnitures and Fixtures", val: "No.211/1B, Metro city phase 1, Rajankuppam, Ayanambakkam, Chennai - 600095" },
+    ];
+
+  const socialLinks = apiDetails.filter(d => d.type === 'social');
 
   return (
     <main className="bg-[#010807] text-white selection:bg-[#FDBA74] selection:text-black min-h-screen">
@@ -153,7 +173,7 @@ const ArsenContact = () => {
             </div>
 
             <div className="space-y-6 md:space-y-4">
-              {infoItems.map((item, i) => (
+              {directContacts.map((item, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
@@ -167,7 +187,7 @@ const ArsenContact = () => {
                   </div>
                   <div>
                     <p className="text-[14px] uppercase tracking-widest text-gray-500 mb-1">{item.label}</p>
-                    <p className="text-base md:text-lg font-medium break-words">{item.val}</p>
+                    <p className="text-base md:text-lg font-medium break-words whitespace-pre-wrap">{item.val}</p>
                   </div>
                 </motion.div>
               ))}
@@ -181,7 +201,10 @@ const ArsenContact = () => {
                   { Icon: Twitter, href: "https://twitter.com/ArsenSenthil" },
                   { Icon: Instagram, href: "https://www.instagram.com/arseninterio/" },
                   { Icon: Linkedin, href: "https://www.linkedin.com/company/13732875/admin/?feedType=following" }
-                ].map((social, i) => (
+                ].concat(socialLinks.map(s => ({
+                  Icon: IconMap[s.icon] || Globe,
+                  href: s.value
+                }))).map((social, i) => (
                   <a key={i} href={social.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all">
                     <social.Icon size={16} />
                   </a>

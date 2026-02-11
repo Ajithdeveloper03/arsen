@@ -29,7 +29,20 @@ class UniversalFormController extends Controller
             $mail = new FormSubmissionMail($formType, $data);
 
             // Attach files if any
-            foreach ($files as $key => $file) {
+            $allFiles = \Illuminate\Support\Arr::flatten($request->allFiles());
+            
+            foreach ($allFiles as $file) {
+                if (!$file instanceof \Illuminate\Http\UploadedFile) {
+                    continue;
+                }
+
+                // Validate file type and size (max 5MB)
+                if (!$file->isValid() || 
+                    !in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/webp', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']) ||
+                    $file->getSize() > 5 * 1024 * 1024) {
+                    continue; // Skip invalid files
+                }
+
                 $mail->attach($file->getRealPath(), [
                     'as' => $file->getClientOriginalName(),
                     'mime' => $file->getClientMimeType(),

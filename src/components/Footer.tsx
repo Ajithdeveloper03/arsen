@@ -1,12 +1,37 @@
 "use client";
 
-import React from "react";
-import { Facebook, Instagram, Twitter, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Facebook, Instagram, Twitter, Linkedin, Mail, MapPin, Phone, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "../assets/arsen-logo.png";
 
+const IconMap: any = {
+  Phone: Phone,
+  Mail: Mail,
+  MapPin: MapPin,
+  Globe: Globe,
+  Facebook: Facebook,
+  Instagram: Instagram,
+  Twitter: Twitter,
+  Linkedin: Linkedin
+};
+
 export default function InteriorFooter() {
   const currentYear = new Date().getFullYear();
+  const [contacts, setContacts] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/public/contact-details")
+      .then(res => res.json())
+      .then(data => setContacts(data))
+      .catch(err => console.error("Footer fetch error:", err));
+  }, []);
+
+  // Filter specific types
+  const officeAddresses = contacts.filter(c => c.type === "address").sort((a, b) => a.order_index - b.order_index);
+  const socialLinks = contacts.filter(c => c.type === "social" || c.type === "link");
+  const phones = contacts.filter(c => c.type === "phone");
+  const emails = contacts.filter(c => c.type === "email");
 
   return (
     <footer className="relative bg-[#010B0A] text-white pt-16 md:pt-20 pb-8 md:pb-8 overflow-hidden">
@@ -44,11 +69,9 @@ export default function InteriorFooter() {
               />
             </Link>
             <div className="space-y-2">
-               
-               <p className="text-slate-200 leading-relaxed text-base">
-                Arsen Interio Pvt Ltd specializes in full scope of commercial & residential Turnkey fit-outs including furnishing for-in commercial  Offices, Retail Showrooms, Malls and in residential Modular Kitchens, Wardrobe,TV Units and interiors. 
+              <p className="text-slate-200 leading-relaxed text-base">
+                Arsen Interio Pvt Ltd specializes in full scope of commercial & residential Turnkey fit-outs including furnishing for commercial Offices, Retail Showrooms, Malls and residential Modular Kitchens, Wardrobe, TV Units and interiors.
               </p>
-              
             </div>
           </div>
 
@@ -74,12 +97,14 @@ export default function InteriorFooter() {
                   </Link>
                 </li>
               ))}
-              <li className="flex items-center gap-4 group border-t border-white/10 pt-4">
-                <Phone className="w-5 h-5 text-[#FFA62B] shrink-0" />
-                <a href="tel:+8098085553" className="text-white text-sm font-bold group-hover:text-[#FFA62B] transition-colors">
-                  +91 8098085553 ,8144555522
-                </a>
-              </li>
+              {phones.map((phone, i) => (
+                <li key={`ph-${i}`} className="flex items-center gap-4 group border-t border-white/10 pt-4">
+                  <Phone className="w-5 h-5 text-[#FFA62B] shrink-0" />
+                  <a href={`tel:${phone.value.split(',')[0].trim()}`} className="text-white text-sm font-bold group-hover:text-[#FFA62B] transition-colors">
+                    {phone.value}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -104,71 +129,58 @@ export default function InteriorFooter() {
                     {service.name}
                   </Link>
                 </li>
-                
               ))}
-              <li className="flex items-center gap-4 group  border-t border-white/10 pt-4">
-                <Mail className="w-5 h-5 text-[#FFA62B] shrink-0" />
-                <a href="mailto:sales@arseninterior.in" className="text-slate-200 text-base group-hover:text-white transition-colors">
-                  sales@arseninterior.in
-                </a>
-              </li>
+              {emails.map((email, i) => (
+                <li key={`em-${i}`} className="flex items-center gap-4 group border-t border-white/10 pt-4">
+                  <Mail className="w-5 h-5 text-[#FFA62B] shrink-0" />
+                  <a href={`mailto:${email.value}`} className="text-slate-200 text-base group-hover:text-white transition-colors">
+                    {email.value}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* CONTACT INFO (Both Addresses Included) */}
+          {/* CONTACT INFO (Dynamic) */}
           <div className="space-y-8">
             <h3 className="text-sm font-black text-[#FFA62B] tracking-[0.2em] uppercase">
               Get In Touch
             </h3>
             <ul className="space-y-3">
-              {/* Address 1: Office */}
-              <li className="flex items-start gap-4 group">
-                <MapPin className="w-6 h-6 text-[#FFA62B] shrink-0 mt-1" />
-                <span className="text-slate-200 text-sm md:text-base leading-relaxed group-hover:text-white transition-colors">
-                  <strong className="text-[#FFA62B] block text-xs tracking-widest uppercase mb-1">Arsen interio Pvt Ltd</strong>
-                  #4, Noombal Road, Velappanchavadi<br />
-                  Chennai – 600 077.
-                </span>
-              </li>
+              {officeAddresses.length > 0 ? officeAddresses.map((addr, i) => (
+                <li key={i} className="flex items-start gap-4 group">
+                  <MapPin className="w-6 h-6 text-[#FFA62B] shrink-0 mt-1" />
+                  <span className="text-slate-200 text-sm md:text-base leading-relaxed group-hover:text-white transition-colors">
+                    <strong className="text-[#FFA62B] block text-xs tracking-widest uppercase mb-1">{addr.label}</strong>
+                    <span className="whitespace-pre-line">{addr.value}</span>
+                  </span>
+                </li>
+              )) : (
+                <li className="text-slate-400 italic">Locations loading...</li>
+              )}
 
-              {/* Address 2: Factory */}
-              <li className="flex items-start gap-4 group">
-                <MapPin className="w-6 h-6 text-[#FFA62B] shrink-0 mt-1" />
-                <span className="text-slate-200 text-sm md:text-base leading-relaxed group-hover:text-white transition-colors">
-                  <strong className="text-[#FFA62B] block text-xs tracking-widest uppercase mb-1">Arsen Furnitures & Fixtures </strong>
-                  No.211/1B, Metro city phase 1,<br /> 
-                  Rajankuppam, Ayanambakkam,<br />
-                  Chennai - 600095
-                </span>
-              </li>
-
-              {/* <li className="flex items-center gap-4 group border-t border-white/10 pt-4">
-                <Phone className="w-5 h-5 text-[#FFA62B] shrink-0" />
-                <a href="tel:+918095015533" className="text-white text-base font-bold group-hover:text-[#FFA62B] transition-colors">
-                  +91 8144555522
-                </a>
-              </li> */}
               <div className="flex items-center justify-start gap-2 pt-2">
-              {[
-                { Icon: Facebook, href: "https://www.facebook.com/profile.php?id=100025176500300" },
-                { Icon: Twitter, href: "https://twitter.com/ArsenSenthil" },
-                { Icon: Instagram, href: "https://www.instagram.com/arseninterio/" },
-                { Icon: Linkedin, href: "https://www.linkedin.com/company/13732875/" }
-              ].map((social, i) => (
-                <a
-                  key={i}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full border border-white/20 hover:border-[#FFA62B] hover:bg-[#FFA62B]/10 transition-all duration-300"
-                >
-                  <social.Icon className="w-3 h-3 text-slate-300 hover:text-[#FFA62B]" />
-                </a>
-              ))}
-            </div>
+                {[
+                  { Icon: Facebook, href: "https://www.facebook.com/profile.php?id=100025176500300" },
+                  { Icon: Twitter, href: "https://twitter.com/ArsenSenthil" },
+                  { Icon: Instagram, href: "https://www.instagram.com/arseninterio/" },
+                  { Icon: Linkedin, href: "https://www.linkedin.com/company/13732875/" }
+                ].concat(socialLinks.map(s => {
+                  const IconComp = IconMap[s.icon] || Globe;
+                  return { Icon: IconComp, href: s.value };
+                })).map((social, i) => (
+                  <a
+                    key={i}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-full border border-white/20 hover:border-[#FFA62B] hover:bg-[#FFA62B]/10 transition-all duration-300"
+                  >
+                    <social.Icon className="w-3 h-3 text-slate-300 hover:text-[#FFA62B]" />
+                  </a>
+                ))}
+              </div>
             </ul>
-            
-            
           </div>
         </div>
 
@@ -177,7 +189,7 @@ export default function InteriorFooter() {
           <p className="text-slate-400 text-xs tracking-[0.2em] uppercase text-center md:text-left">
             © {currentYear} Arsen Interio Pvt Ltd — All Rights Reserved.
           </p>
-          <p className="text-[#0F5B54] font-bold text-[10px] tracking-[0.1em] uppercase">
+          <p className="text-white font-bold text-[10px] tracking-[0.1em] uppercase">
             Architectural Excellence & Interior Solutions
           </p>
         </div>

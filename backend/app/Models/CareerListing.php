@@ -9,15 +9,7 @@ class CareerListing extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'department',
-        'location',
-        'salary',
-        'image_url',
-        'specifications',
-        'is_active'
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'specifications' => 'array',

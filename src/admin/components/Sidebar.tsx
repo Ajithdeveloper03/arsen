@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
     LayoutDashboard,
     Image as ImageIcon,
@@ -7,11 +7,15 @@ import {
     Layers,
     PhoneCall,
     LogOut,
-    Home
+    Home,
+    ChevronRight,
+    Search
 } from 'lucide-react';
+import logo from '../../assets/arsen-logo.png';
 
 const Sidebar = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogout = () => {
         localStorage.removeItem('admin_token');
@@ -20,53 +24,59 @@ const Sidebar = () => {
 
     const navItems = [
         { name: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
-        { name: 'Banners', icon: ImageIcon, path: '/admin/banners' },
         { name: 'Projects', icon: Layers, path: '/admin/projects' },
+        { name: 'Banners', icon: ImageIcon, path: '/admin/banners' },
         { name: 'Careers', icon: Briefcase, path: '/admin/careers' },
-        { name: 'Contact Details', icon: PhoneCall, path: '/admin/contact-details' },
+        { name: 'Contacts', icon: PhoneCall, path: '/admin/contact-details' },
     ];
 
     return (
-        <div className="w-64 bg-[#0F1F2A] text-white min-h-screen flex flex-col border-r border-white/5">
-            <div className="p-6 border-b border-white/5 flex items-center gap-3">
-                <div className="w-8 h-8 bg-[#DFA45B] rounded-lg flex items-center justify-center font-bold text-black">
-                    A
+        <div className="w-64 bg-[#022C22] text-white min-h-screen flex flex-col border-r border-[#1a4a40] font-sans">
+            {/* Logo Section */}
+            <div className="p-6 pt-8 flex flex-col items-center gap-4">
+                <div className="w-32 h-auto">
+                    <img src={logo} alt="Arsen Interior" className="w-full h-full object-contain filter drop-shadow-sm" />
                 </div>
-                <span className="text-xl font-black italic tracking-tighter">ARSEN ADMIN</span>
             </div>
 
-            <nav className="flex-1 p-4 space-y-2 mt-4">
-                {navItems.map((item) => (
-                    <NavLink
-                        key={item.path}
-                        to={item.path}
-                        className={({ isActive }) =>
-                            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
-                                ? 'bg-[#DFA45B] text-black font-bold'
-                                : 'hover:bg-white/5 text-gray-400 hover:text-white'
-                            }`
-                        }
-                    >
-                        <item.icon size={20} />
-                        <span>{item.name}</span>
-                    </NavLink>
-                ))}
+            {/* Navigation */}
+            <nav className="flex-1 px-4 py-6 space-y-1">
+                {navItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <NavLink
+                            key={item.path}
+                            to={item.path}
+                            className={({ isActive }) =>
+                                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium text-sm ${isActive
+                                    ? 'bg-[#DFA45B] text-[#022C22] shadow-sm'
+                                    : 'text-slate-300 hover:bg-[#0F172A] hover:text-white'
+                                }`
+                            }
+                        >
+                            <item.icon size={18} />
+                            <span className="font-semibold">{item.name}</span>
+                        </NavLink>
+                    );
+                })}
             </nav>
 
-            <div className="p-4 space-y-2">
-                <NavLink
-                    to="/"
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 hover:text-white transition-all"
+            {/* Footer Actions */}
+            <div className="p-4 bg-[#012019] space-y-2">
+                <a
+                    href="/"
+                    target="_blank"
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-[#0F172A] transition-all text-sm font-medium"
                 >
-                    <Home size={20} />
-                    <span>View Website</span>
-                </NavLink>
+                    <Home size={18} />
+                    <span>View Site</span>
+                </a>
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 text-red-500 transition-all font-medium"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-all text-sm font-medium"
                 >
-                    <LogOut size={20} />
-                    <span>Logout</span>
+                    <LogOut size={18} />
+                    <span>Sign Out</span>
                 </button>
             </div>
         </div>

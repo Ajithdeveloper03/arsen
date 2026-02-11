@@ -17,6 +17,7 @@ class ContactDetailController extends Controller
         $validated = $request->validate([
             'type' => 'required|string',
             'label' => 'required|string',
+            'icon' => 'nullable|string',
             'value' => 'required|string',
             'order_index' => 'integer'
         ]);
@@ -30,6 +31,7 @@ class ContactDetailController extends Controller
         $validated = $request->validate([
             'type' => 'required|string',
             'label' => 'required|string',
+            'icon' => 'nullable|string',
             'value' => 'required|string',
             'order_index' => 'integer'
         ]);

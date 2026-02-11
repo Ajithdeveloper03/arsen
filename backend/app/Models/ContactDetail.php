@@ -9,12 +9,7 @@ class ContactDetail extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'type',
-        'label',
-        'value',
-        'order_index'
-    ];
+    protected $guarded = [];
 
     //
 }

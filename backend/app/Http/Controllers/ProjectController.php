@@ -32,6 +32,9 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'type' => 'required|string', // residential, commercial, pmc
             'status' => 'required|string', // ongoing, completed
+            'progress' => 'nullable|integer|min:0|max:100',
+            'subtitle' => 'nullable|string',
+            'badge' => 'nullable|string',
             'is_featured' => 'boolean',
             'order_index' => 'integer'
         ]);
@@ -54,6 +57,9 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'type' => 'required|string',
             'status' => 'required|string',
+            'progress' => 'nullable|integer|min:0|max:100',
+            'subtitle' => 'nullable|string',
+            'badge' => 'nullable|string',
             'is_featured' => 'boolean',
             'order_index' => 'integer'
         ]);
