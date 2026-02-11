@@ -23,7 +23,7 @@ const features = [
     },
     { 
       icon: Factory, // You may need to import this from your icon library
-      title: "8000 Sq.Ft. Factory", 
+      title: "25000+ Sq.Ft. Factory", 
       description: "State-of-the-art setup equipped with high-end imported machinery for precision." 
     },
     { 

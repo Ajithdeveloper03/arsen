@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { MapPin, ArrowUpRight, X, Briefcase, Users, Star, Globe, Filter, Upload, Send, CheckCircle2 } from "lucide-react";
 
@@ -35,20 +35,97 @@ const vacancies = [
 ];
 
 const Careers = () => {
-  const [activeJob, setActiveJob] = useState(null);
+  const [apiJobs, setApiJobs] = useState<any[]>([]);
+  const [activeJob, setActiveJob] = useState<any>(null);
   const [showForm, setShowForm] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { scrollYProgress } = useScroll();
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -150]);
 
-  const handleFormSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    portfolio: "",
+    cv: null,
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/public/careers");
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setApiJobs(data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const currentJobs = apiJobs.length > 0 ? apiJobs.map(j => ({
+    id: j.id.toString(),
+    title: j.title,
+    dept: j.department,
+    loc: j.location,
+    salary: j.salary || "Competitive",
+    img: j.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200",
+    specs: j.specifications || []
+  })) : vacancies;
+
+  const handleInputChange = (e: any) => {
+    const { name, value, files } = e.target;
+    if (name === "cv") {
+      setFormData(prev => ({ ...prev, cv: files ? files[0] : null }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => {
-      setFormSubmitted(false);
-      setShowForm(false);
-      setActiveJob(null);
-    }, 3000);
+    setIsSubmitting(true);
+
+    try {
+      const data = new FormData();
+      data.append("form_type", "Career Application: " + (activeJob?.title || "General"));
+      data.append("name", formData.name);
+      data.append("email", formData.email);
+      data.append("portfolio_link", formData.portfolio);
+      if (formData.cv) {
+        data.append("cv_file", formData.cv);
+      }
+
+      const res = await fetch("http://127.0.0.1:8000/api/submit-form", {
+        method: "POST",
+        body: data,
+        headers: {
+          "Accept": "application/json",
+        },
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        setFormSubmitted(true);
+        setFormData({ name: "", email: "", portfolio: "", cv: null });
+        setTimeout(() => {
+          setFormSubmitted(false);
+          setShowForm(false);
+          setActiveJob(null);
+        }, 3000);
+      } else {
+        alert(result.message || "Failed to submit application");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -89,9 +166,9 @@ const Careers = () => {
       <section className="py-16 md:py-24 px-6 md:px-12 lg:px-24 border-b border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
           {[
-            { icon: <Globe size={38}/>, title: "Global Presence", desc: "Projects spanning Dubai, Mumbai, and London." },
-            { icon: <Star size={38}/>, title: "Excellence First", desc: "A meticulous approach to every joint and finish." },
-            { icon: <Users size={38}/>, title: "Diverse Culture", desc: "A home for architects, artists, and engineers." }
+            { icon: <Globe size={38} />, title: "Global Presence", desc: "Projects spanning Dubai, Mumbai, and London." },
+            { icon: <Star size={38} />, title: "Excellence First", desc: "A meticulous approach to every joint and finish." },
+            { icon: <Users size={38} />, title: "Diverse Culture", desc: "A home for architects, artists, and engineers." }
           ].map((item, idx) => (
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} key={idx} className="space-y-4">
               <div className="text-[#2A6F72]">{item.icon}</div>
@@ -108,7 +185,7 @@ const Careers = () => {
           Current <span className="font-serif italic text-[#2A6F72]">Opportunities</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {vacancies.map((job) => (
+          {currentJobs.map((job) => (
             <motion.div
               layoutId={job.id}
               key={job.id}
@@ -138,7 +215,7 @@ const Careers = () => {
               <h2 className="text-4xl md:text-6xl font-bold mb-6">Ready to apply?</h2>
               <p className="text-white/70 text-lg">Send your portfolio and CV directly to our talent acquisition team.</p>
             </div>
-            <button 
+            <button
               onClick={() => { setShowForm(true); setActiveJob({ title: "General Application", id: "GEN" }); }}
               className="px-12 py-6 bg-[#DFA45B] hover:bg-white hover:text-[#0F1F2A] transition-all rounded-full font-bold uppercase tracking-widest text-xs shadow-2xl"
             >
@@ -164,7 +241,7 @@ const Careers = () => {
               </button>
 
               {/* Form Side */}
-              <div className="w-full md:w-1/2 p-8 md:p-12 overflow-y-auto custom-scrollbar bg-gray-50">
+              <div className="w-full md:w-2/3 p-8 md:p-12 overflow-y-auto custom-scrollbar bg-gray-50">
                 {formSubmitted ? (
                   <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
                     <CheckCircle2 size={64} className="text-[#2A6F72]" />
@@ -173,35 +250,49 @@ const Careers = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="mb-8">
-                      <span className="text-[#DFA45B] font-black uppercase tracking-widest text-[10px]">Applying for:</span>
-                      <h2 className="text-2xl font-bold text-[#0F1F2A]">{activeJob?.title}</h2>
+                    <div className="mb-8 border-b border-gray-100 pb-6">
+                      <span className="text-[#DFA45B] font-black uppercase tracking-widest text-[10px]">Active Role</span>
+                      <h2 className="text-3xl font-black text-[#0F1F2A] italic uppercase tracking-tighter">{activeJob?.title}</h2>
+                      <p className="text-gray-400 mt-2">{activeJob?.dept} • {activeJob?.loc}</p>
                     </div>
+
+                    {activeJob?.specs?.length > 0 && (
+                      <div className="mb-8">
+                        <h4 className="text-xs font-black uppercase tracking-widest mb-4">Role Specifications:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {activeJob.specs.map((s: string, i: number) => (
+                            <span key={i} className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium text-gray-500">{s}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <form onSubmit={handleFormSubmit} className="space-y-5">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <label className="text-[10px] uppercase font-bold text-gray-400">Full Name</label>
-                          <input required type="text" className="w-full bg-white border border-orange-400 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none"  />
+                          <input required name="name" value={formData.name} onChange={handleInputChange} type="text" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] uppercase font-bold text-gray-400">Email Address</label>
-                          <input required type="email" className="w-full bg-white border border-orange-400 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none"  />
+                          <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" />
                         </div>
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] uppercase font-bold text-gray-400">Portfolio Link (URL)</label>
-                        <input type="url" className="w-full bg-white border border-orange-400 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none" />
+                        <input name="portfolio" value={formData.portfolio} onChange={handleInputChange} type="url" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" placeholder="https://..." />
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] uppercase font-bold text-gray-400">Upload CV (PDF)</label>
-                        <label className="w-full flex flex-col items-center justify-center bg-white border-2 border-dashed border-orange-400 p-8 rounded-xl cursor-pointer hover:border-[#DFA45B] transition-all">
+                        <label className="w-full flex flex-col items-center justify-center bg-white border-2 border-dashed border-gray-100 p-8 rounded-xl cursor-pointer hover:border-[#DFA45B] transition-all">
                           <Upload size={24} className="text-gray-300 mb-2" />
-                          <span className="text-xs text-gray-500">Click to upload file</span>
-                          <input type="file" className="hidden" accept=".pdf" />
+                          <span className="text-sm font-bold text-gray-500">{formData.cv ? (formData.cv as any).name : "Drop CV here"}</span>
+                          <span className="text-[10px] uppercase text-gray-400 mt-1 italic">PDF only • Max 5MB</span>
+                          <input name="cv" onChange={handleInputChange} type="file" className="hidden" accept=".pdf" />
                         </label>
                       </div>
-                      <button className="w-full bg-[#0F1F2A] text-white py-5 rounded-xl font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-[#DFA45B] transition-all">
-                        Submit Application <Send size={16} />
+                      <button disabled={isSubmitting} className="w-full bg-[#0F1F2A] text-white py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-[#DFA45B] hover:text-black transition-all disabled:opacity-50 shadow-xl shadow-[#0F1F2A]/20">
+                        {isSubmitting ? "Submitting..." : "Send Application"} <ArrowUpRight size={18} />
                       </button>
                     </form>
                   </>
@@ -209,34 +300,18 @@ const Careers = () => {
               </div>
 
               {/* Info Side (Hidden on Mobile) */}
-              <div className="hidden md:block w-1/2 relative bg-[#0F1F2A] text-white p-12">
-                <img src={activeJob?.img} className="absolute inset-0 w-full h-full object-cover opacity-30" />
-                <div className="relative z-10 h-full flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-3xl font-serif italic text-[#DFA45B] mb-6">Why Arsen?</h3>
-                    <p className="text-white/70 leading-relaxed mb-8">Join an award-winning team where design meets precision. We provide a platform for your creativity to reach global scales.</p>
-                    <div className="space-y-4">
-                      {['Global Exposure', 'Innovative Tools', 'High-End Projects'].map(t => (
-                        <div key={t} className="flex items-center gap-3 text-sm font-bold uppercase tracking-tighter">
-                          <CheckCircle2 size={16} className="text-[#DFA45B]" /> {t}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="pt-8 border-t border-white/10 text-[10px] uppercase tracking-widest text-white/40">
-                    Arsen Furnitures & Fixtures © 2026
-                  </div>
+              <div className="hidden md:block md:w-1/3 relative bg-[#0F1F2A] overflow-hidden">
+                <img src={activeJob?.img} className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-[2s]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0F1F2A] via-transparent to-transparent" />
+                <div className="relative z-10 h-full p-12 flex flex-col justify-end">
+                  <h3 className="text-4xl font-black italic text-white uppercase tracking-tighter leading-tight mb-4">Elevate your <br /><span className="text-[#DFA45B]">Architecture.</span></h3>
+                  <p className="text-white/60 text-sm leading-relaxed">Arsen is more than a workplace. It's a design sanctuary where boundaries are pushed and excellence is the only standard.</p>
                 </div>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #dfa45b; border-radius: 10px; }
-      `}</style>
     </div>
   );
 };

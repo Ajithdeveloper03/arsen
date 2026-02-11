@@ -24,7 +24,7 @@ export default function LusionCardSection() {
     },
     { 
       icon: Factory, 
-      title: "8000 Sq.Ft. Factory", 
+      title: "25,000+ Sq.Ft. Factory", 
       description: "State-of-the-art setup equipped with high-end imported machinery for precision." 
     },
     { 

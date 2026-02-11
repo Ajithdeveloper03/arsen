@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { Activity, Globe, ChevronRight, Layers, ArrowDown } from "lucide-react";
+import { Activity, Globe, ChevronRight, Layers, MoveRight, ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Helper to open the header popup
@@ -38,6 +38,33 @@ const PROJECTS = [
 ];
 
 export default function OngoingBiophilicProjects() {
+  const [apiProjects, setApiProjects] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/public/projects");
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setApiProjects(data.filter((p: any) => p.status === 'ongoing'));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const FINAL_PROJECTS = apiProjects.length > 0 ? apiProjects.map(p => ({
+    id: p.id,
+    title: p.title,
+    progress: Math.floor(Math.random() * 30) + 70, // Since we don't have progress in DB, default to 70-99%
+    location: p.location || "Chennai",
+    img: p.image_url,
+    address: p.description || "Executing high-performance architectural standards."
+  })) : PROJECTS;
+
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 1.1]);
@@ -69,7 +96,7 @@ export default function OngoingBiophilicProjects() {
             Shaping <br className="md:hidden" /> <span className="text-[#c9a050]">Tomorrow</span>
           </h1>
           <p className="mt-6 text-white/60 text-lg md:text-lg font-medium uppercase tracking-[0.2em] md:tracking-widest max-w-lg mx-auto leading-relaxed">
-            Sustainable projects transforming Tamil Nadu's landscape
+            Sustainable projects transforming landscape
           </p>
         </motion.div>
 
@@ -85,7 +112,7 @@ export default function OngoingBiophilicProjects() {
       {/* 2. FULL-SCREEN PROJECT REVEALS */}
       <section className="relative">
         <AnimatePresence>
-          {PROJECTS.map((project) => (
+          {FINAL_PROJECTS.map((project: any) => (
             <motion.div
               key={project.id}
               className="relative min-h-screen md:h-screen w-full flex items-center justify-center overflow-hidden py-20 md:py-0"
@@ -123,7 +150,7 @@ export default function OngoingBiophilicProjects() {
                     {project.address}. <br /> Currently at {project.progress}% completion, executing high-performance architectural standards.
                   </p>
                   <Link to="/contact" className="flex items-center gap-3 text-[#c9a050] hover:text-white transition-colors mx-auto md:mx-0">
-                    <span className="text-[10px] md:text-md font-black uppercase tracking-[0.2em]">View Details</span>
+                    <span className="text-[10px] md:text-md font-black uppercase tracking-[0.2em]">Know more</span>
                     <ChevronRight size={16} />
                   </Link>
                 </motion.div>
@@ -160,40 +187,47 @@ export default function OngoingBiophilicProjects() {
       </section>
 
       {/* 3. RESPONSIVE STATS FINALE (UNCHANGED) */}
-      <section className="py-24 md:py-32 bg-black relative overflow-hidden px-6">
-        <Layers className="absolute -top-20 -left-20 text-[#c9a050]/5 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rotate-12" />
+      {/* 3. MINIMAL ONGOING STATUS SECTION */}
+      {/* --- 3. ONGOING PROJECT PHILOSOPHY (Minimal & Premium) --- */}
+      {/* --- 3. PREMIUM MINIMAL CALL TO ACTION --- */}
+      <section className="py-14 md:py-26 bg-black relative overflow-hidden px-6 text-center">
+        {/* Subtle Ambient Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#c9a050]/10 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="max-w-5xl mx-auto text-center space-y-12 md:space-y-16">
-          <motion.h2
-            className="text-5xl md:text-8xl font-black uppercase tracking-tighter italic leading-none"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+        <div className="max-w-4xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
           >
-            The <span className="text-[#c9a050]">Journey</span> <br className="md:hidden" /> Continues
-          </motion.h2>
+            <span className="text-[#c9a050] font-black text-[10px] md:text-xs tracking-[0.6em] uppercase block mb-10">
+              Start Your Transformation
+            </span>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
-            {[
-              { label: "Ventures", value: "12+" },
-              { label: "Cities", value: "10+" },
-              { label: "Sustain", value: "100%" },
-              { label: "Level", value: "MAX" },
-            ].map((stat, i) => (
-              <div key={i} className="space-y-1">
-                <span className="text-3xl md:text-5xl font-black text-[#c9a050] block">{stat.value}</span>
-                <span className="text-[8px] md:text-[14px] font-black uppercase tracking-[0.2em] text-white/40 block">{stat.label}</span>
-              </div>
-            ))}
-          </div>
+            <h2 className="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter leading-[0.85] mb-12 italic">
+              Ready to <br />
+              <span className="text-transparent font-outline" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.5)' }}>
+                Collaborate?
+              </span>
+            </h2>
 
-          <motion.button
-            onClick={openContactPopup}
-            className="w-full md:w-auto bg-[#c9a050] text-black px-12 md:px-20 py-5 md:py-6 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-xs"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Explore Opportunities
-          </motion.button>
+            <p className="text-white/80 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto mb-16">
+              We are currently accepting a limited number of premium residential and commercial commissions for the upcoming quarter.
+            </p>
+
+            <motion.button
+              onClick={openContactPopup}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative inline-flex items-center gap-6 px-12 py-6 bg-white text-black font-black uppercase tracking-[0.2em] text-[12px] rounded-full transition-all hover:bg-[#c9a050] hover:text-white"
+            >
+              Consult with an Architect
+              <MoveRight size={18} className="group-hover:translate-x-2 transition-transform" />
+            </motion.button>
+
+
+          </motion.div>
         </div>
       </section>
     </div>

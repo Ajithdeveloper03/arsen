@@ -115,7 +115,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed right-4 top-16 sm:top-20 md:top-24 z-[99] w-[calc(100vw-32px)] sm:w-80 rounded-3xl border border-white/10 bg-[#0b1b2e]/95 backdrop-blur-xl shadow-2xl px-4 py-4 max-h-[85vh] overflow-y-auto"
+            className="absolute right-4 top-16 sm:top-20 md:top-24 z-[99] w-[calc(100vw-32px)] sm:w-80 rounded-3xl border border-white/10 bg-[#0b1b2e]/95 backdrop-blur-xl shadow-2xl px-4 py-4 max-h-[85vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-3 text-white/60 text-[10px] uppercase tracking-widest px-4">
               <span>Navigation</span>
@@ -146,16 +146,14 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
                       >
                         <span>{item.label}</span>
                         <ChevronDown
-                          className={`w-4 h-4 transition-transform ${
-                            openSub === item.label ? "rotate-180" : ""
-                          }`}
+                          className={`w-4 h-4 transition-transform ${openSub === item.label ? "rotate-180" : ""
+                            }`}
                         />
                       </button>
 
                       <div
-                        className={`transition-all duration-300 ml-4 overflow-hidden ${
-                          openSub === item.label ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
-                        }`}
+                        className={`transition-all duration-300 ml-4 overflow-hidden ${openSub === item.label ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+                          }`}
                       >
                         {item.submenu.map((sub, i) => (
                           <Link
@@ -181,7 +179,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 50, opacity: 0 }}
-            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] w-[calc(100vw-32px)] sm:w-[340px] bg-[#0b1b2e] border border-[#FFA62B]/30 rounded-[28px] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.4)]"
+            className="absolute bottom-4 left-4 sm:bottom-6 sm:right-6 z-[110] w-[calc(100vw-32px)] sm:w-[340px] bg-[#0b1b2e] border border-[#FFA62B]/30 rounded-[28px] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.4)]"
           >
             <button onClick={() => setShowJobModal(false)} className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/20 hover:text-[#FFA62B]">
               <X size={16} />
@@ -190,7 +188,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
             <div className="flex flex-col h-full">
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-2 w-2 rounded-full bg-[#FFA62B] animate-pulse" />
-                <span className="text-[10px] font-black tracking-[0.2em] text-[#FFA62B] uppercase">
+                <span className="text-[10px] font-black tracking-[0.2em] text-[#FFA62B] uppercase">r
                   Latest Job Vacancy
                 </span>
               </div>
@@ -230,7 +228,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
               className="fixed inset-0 bg-[#050b13]/10 backdrop-blur-sm"
             />
 
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}

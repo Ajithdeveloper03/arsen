@@ -41,7 +41,7 @@ const PMC = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % bannerImages.length);
-    }, 5000); // Changes every 5 seconds
+    }, 2000); // Changes every 5 seconds
     return () => clearInterval(timer);
   }, [bannerImages.length]);
 
@@ -58,7 +58,7 @@ const PMC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 1.5 }}
+
               className="w-full h-full object-cover grayscale"
               alt="Architecture Background"
             />
@@ -81,9 +81,9 @@ const PMC = () => {
         {/* Slider Indicators */}
         <div className="absolute bottom-10 left-10 flex gap-2 z-20">
           {bannerImages.map((_, i) => (
-            <div 
-              key={i} 
-              className={`h-1 transition-all duration-500 ${i === currentIndex ? "w-8 bg-[#FDBA74]" : "w-2 bg-white/20"}`} 
+            <div
+              key={i}
+              className={`h-1 transition-all duration-500 ${i === currentIndex ? "w-8 bg-[#FDBA74]" : "w-2 bg-white/20"}`}
             />
           ))}
         </div>
@@ -105,7 +105,7 @@ const PMC = () => {
           >
             <h2 className="text-2xl md:text-4xl font-bold leading-tight">We manage the chaos, <br /> you enjoy the <span className="italic">creation.</span></h2>
             <div className="flex items-center gap-4 mt-8">
-              <div className="text-5xl md:text-6xl font-black italic"><CountUp end={1100} enableScrollSpy />+</div>
+              <div className="text-5xl md:text-6xl font-black italic"><CountUp end={1800} enableScrollSpy />+</div>
               <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-60">Projects <br /> Handed Over</p>
             </div>
           </motion.div>
@@ -116,8 +116,12 @@ const PMC = () => {
             className="bg-[#FDBA74] p-8 rounded-[2rem] md:rounded-[3rem] text-[#021412]"
           >
             <Zap size={32} strokeWidth={3} className="mb-6" />
-            <h3 className="text-xl md:text-2xl font-black uppercase tracking-tighter mb-2">25% Faster</h3>
-            <p className="text-md md:text-sm font-medium opacity-80 leading-relaxed">Reduction in turnaround time through systematic WBS planning.</p>
+            <h3 className="text-xl md:text-2xl font-black uppercase tracking-tighter mb-2">
+              99% Design Accuracy
+            </h3>
+            <p className="text-md md:text-sm font-medium opacity-80 leading-relaxed">
+              Eliminating costly onsite errors through hyper-detailed 3D modeling and technical drafting.
+            </p>
           </motion.div>
 
           <motion.div
@@ -185,7 +189,7 @@ const PMC = () => {
               whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }}
               className="md:col-span-7 relative rounded-[2.5rem] overflow-hidden group h-[400px] md:h-full"
             >
-              <img src={ecosystem2} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Interiors" />
+              <img src={ecosystem2} className="w-full h-full object-contain bg-orange-200 transition-transform duration-1000 group-hover:scale-110" alt="Interiors" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               <div className="absolute bottom-10 left-10 text-white">
                 <Layout className="text-[#FDBA74] mb-4" size={32} />

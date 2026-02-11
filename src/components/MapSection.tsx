@@ -11,27 +11,8 @@ export default function PremiumPresenceSection() {
   const mapImg = mapImgg;
 
   const locations = [
-    // --- EXISTING / NORTH ---
-    { name: "Chandigarh", top: "14%", left: "32%" },
-    { name: "Delhi", top: "23%", left: "33%" },
-    { name: "Jaipur", top: "33%", left: "25%" },
-    { name: "Amritsar", top: "11%", left: "28%" },
-    { name: "Srinagar", top: "5%", left: "30%" },
-    { name: "Haryana", top: "19%", left: "31%" },
-    
-    // --- CENTRAL & WEST ---
-    { name: "Ahmedabad", top: "46%", left: "16%" },
-    { name: "Mumbai", top: "58%", left: "20%" },
-    { name: "Pune", top: "62%", left: "23%" },
-    // { name: "Maharashtra", top: "55%", left: "28%" },
-    { name: "Bhopal", top: "45%", left: "40%" },
-    { name: "Kolkata", top: "45%", left: "70%" },
-
-    // --- SOUTH: ANDHRA / TELANGANA / KARNATAKA ---
-    { name: "Hyderabad", top: "63%", left: "45%" },
-    { name: "Bangalore", top: "71%", left: "43%" },
-    
-    // --- SOUTH: TAMIL NADU ---
+    // --- SPECIAL STATES (Multiple Cities Allowed) ---
+    // TAMIL NADU
     { name: "Chennai", top: "80%", left: "44%" },
     { name: "Salem", top: "86%", left: "39%" },
     { name: "Dharmapuri", top: "83%", left: "37%" },
@@ -39,11 +20,44 @@ export default function PremiumPresenceSection() {
     { name: "Tirupur", top: "90%", left: "36%" },
     { name: "Tanjore", top: "88%", left: "41%" },
 
-    // --- SOUTH: KERALA ---
+    // KERALA
     { name: "Cochin", top: "86%", left: "28%" },
     { name: "Ernakulam", top: "91%", left: "29%" },
     { name: "Kottayam", top: "93%", left: "33%" },
     { name: "Angamaly", top: "88%", left: "31%" },
+
+    // MAHARASHTRA
+    { name: "Mumbai", top: "58%", left: "20%" },
+    { name: "Pune", top: "62%", left: "23%" },
+
+    // --- OTHER STATES (One Major City Only) ---
+    // North
+    { name: "Srinagar", top: "5%", left: "30%" },     // J&K
+    { name: "Shimla", top: "12%", left: "33%" },       // Himachal Pradesh
+    { name: "Chandigarh", top: "14%", left: "32%" },   // Punjab & Haryana
+    { name: "Dehradun", top: "18%", left: "36%" },     // Uttarakhand
+    { name: "Delhi", top: "23%", left: "33%" },        // NCR
+    { name: "Jaipur", top: "33%", left: "25%" },       // Rajasthan
+    { name: "Lucknow", top: "30%", left: "42%" },      // Uttar Pradesh
+
+    // Central & West
+    { name: "Ahmedabad", top: "46%", left: "16%" },    // Gujarat
+    { name: "Bhopal", top: "45%", left: "40%" },       // Madhya Pradesh
+    { name: "Raipur", top: "50%", left: "48%" },       // Chhattisgarh
+
+    // East
+    { name: "Patna", top: "35%", left: "58%" },        // Bihar
+    { name: "Ranchi", top: "42%", left: "58%" },       // Jharkhand
+    { name: "Kolkata", top: "45%", left: "70%" },      // West Bengal
+    { name: "Bhubaneswar", top: "52%", left: "62%" },  // Odisha
+    
+    { name: "Guwahati", top: "32%", left: "82%" },     // Assam (North East Hub)
+
+    // South (Rest)
+    { name: "Hyderabad", top: "63%", left: "45%" },    // Telangana
+    { name: "Visakhapatnam", top: "65%", left: "52%" },// Andhra Pradesh
+    { name: "Bangalore", top: "71%", left: "43%" },    // Karnataka
+    { name: "Panaji", top: "72%", left: "24%" },       // Goa
   ];
 
   return (

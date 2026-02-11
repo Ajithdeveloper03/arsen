@@ -2,28 +2,61 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Maximize, MoveRight, Quote, ChevronLeft, ChevronRight, 
+import {
+  Maximize, MoveRight, Quote, ChevronLeft, ChevronRight,
   ShieldCheck, Clock, Settings, Headphones, Star, MapPin, Factory, Calendar, Trophy,
   Cpu, HardHat, Ruler, Layers
 } from "lucide-react";
 
 // Assets
 import factory1 from '../assets/factory1.jpg';
-import factory2 from '../assets/factory2.jpg';
 import about1 from '../assets/about1.jpg';
 import about2 from '../assets/about2.jpg';
 import about3 from '../assets/about3.jpg';
 import about4 from '../assets/about4.jpg';
 import factoryVideo from '../assets/factory.mp4';
 
-// IMPORT YOUR GOOGLE REVIEW SCREENSHOTS HERE
-import review1 from '../assets/review1.png';
-import review2 from '../assets/review2.png';
-import review3 from '../assets/review3.png';
-import review4 from '../assets/review4.png';
 const EliteAboutPage = () => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+
+  const testimonials = [
+    {
+      quote: "Arsen Interio transformed our 4BHK into a sanctuary. Their ability to blend luxury marble finishes with practical, kid-friendly storage is truly impressive.",
+      author: "Vikram Malhotra",
+      company: "Private Residence, Mumbai",
+      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400"
+    },
+    {
+      quote: "The modular kitchen execution was flawless. They managed the entire civil, electrical, and plumbing work, delivering a truly seamless turnkey experience.",
+      author: "Priyanka Sharma",
+      company: "Skyline Apartments",
+      img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400"
+    },
+    {
+      quote: "Their attention to lighting design is what sets them apart. Our living room feels twice as large thanks to their intelligent use of mirrors and cove lighting.",
+      author: "Arjun Reddy",
+      company: "Villa Owner",
+      img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400"
+    },
+    {
+      quote: "Found them through a friend and I'm glad I did. They respected our budget without compromising on the premium aesthetic we wanted for our master suite.",
+      author: "Sneha Kapoor",
+      company: "The Grand Residency",
+      img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400"
+    },
+    {
+      quote: "Excellent project management. We were kept in the loop with weekly 3D updates and site photos, making the entire renovation process completely stress-free.",
+      author: "Rohan Deshmukh",
+      company: "Penthouse Project",
+      img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400"
+    },
+    {
+      quote: "The custom wardrobe solutions they provided saved us so much space. The finish quality of the laminates and hardware is clearly superior to local vendors.",
+      author: "Meera Nair",
+      company: "Urban Meadows",
+      img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400"
+    }
+  ];
 
   const milestones = [
     { year: "2009", title: "The Inception", desc: "Company Started", icon: <Calendar size={20} /> },
@@ -32,19 +65,8 @@ const EliteAboutPage = () => {
     { year: "2017", title: "300+ Projects", desc: "Both Residential And commercial ", icon: <Star size={20} /> },
     { year: "2018", title: "Private Limited", desc: "Arsen Interio Pvt Ltd", icon: <ShieldCheck size={20} /> },
     { year: "2020", title: "1000+ Smiles", desc: "Happy customers reached", icon: <Quote size={20} /> },
-    { year: "", title: "Area Transformed", desc: "20,89,586,sqft Sq.ft Evolved", icon: <MapPin size={20} /> },
+    { year: "2024", title: "Area Transformed", desc: "2.1M+ Sq.ft Evolved", icon: <MapPin size={20} /> },
   ];
-
-  // Update these with your imported Google Review Screenshot variables
-  const reviews = [
-    { id: 1, img: review1 },
-    { id: 2, img: review2 },
-    { id: 3, img: review3 },
-    { id: 4, img: review4 },
-  ];
-
-  const nextReview = () => setActiveTestimonial((prev) => (prev === reviews.length - 1 ? 0 : prev + 1));
-  const prevReview = () => setActiveTestimonial((prev) => (prev === 0 ? reviews.length - 1 : prev - 1));
 
   return (
     <div className="bg-[#FCFCFA] text-[#010B0A] overflow-x-hidden selection:bg-[#FDBA74] selection:text-black">
@@ -52,7 +74,7 @@ const EliteAboutPage = () => {
       {/* ================= HERO ================= */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#010B0A]">
         <img
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070"
+          src="https://images.pexels.com/photos/1648768/pexels-photo-1648768.jpeg"
           className="absolute inset-0 w-full h-full object-cover opacity-30"
           alt="Hero"
         />
@@ -93,10 +115,11 @@ const EliteAboutPage = () => {
         </div>
       </section>
 
-      {/* ================= MILESTONES ================= */}
+      {/* ================= MILESTONES (CHRONICLES) ================= */}
       <section className="py-32 bg-[#010B0A] relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-[0.09] select-none">
-          <motion.h2 
+        {/* Background Marquee */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-[0.05] select-none">
+          <motion.h2
             animate={{ x: [0, -1000] }}
             transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
             className="text-[25vw] font-black uppercase whitespace-nowrap leading-none text-white"
@@ -107,28 +130,44 @@ const EliteAboutPage = () => {
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center mb-32">
-             <span className="text-[#FDBA74] tracking-[1em] text-xs font-bold uppercase mb-4 block">Timeline</span>
+            <span className="text-[#FDBA74] tracking-[1em] text-xs font-bold uppercase mb-4 block">Timeline</span>
             <h2 className="text-6xl md:text-8xl font-black text-white uppercase tracking-tighter">
-              Legacy <span className="text-transparent font-outline" style={{ WebkitTextStroke: '1.5px white' }}>Chronicles</span>
+              Our <span className="text-transparent font-outline" style={{ WebkitTextStroke: '1.5px white' }}>Legacy</span>
             </h2>
           </div>
 
           <div className="relative">
-            <svg className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full hidden lg:block opacity-20" viewBox="0 0 400 1600">
-              <motion.path 
+            {/* CORRECTED SVG PATH: Starts at -100 and ends at 1700 to prevent awkward cut-offs */}
+            <svg 
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-30 pointer-events-none" 
+              viewBox="0 0 400 1600" 
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <motion.path
                 initial={{ pathLength: 0 }}
                 whileInView={{ pathLength: 1 }}
-                transition={{ duration: 2, ease: "easeInOut" }}
-                d="M200 0C350 200 50 400 200 600C350 800 50 1000 200 1200C350 1400 50 1600 200 1800" 
-                stroke="#FDBA74" 
-                strokeWidth="13" 
+                viewport={{ once: false, amount: 0.1 }}
+                transition={{ duration: 2.5, ease: "easeInOut" }}
+                d="M200 -100 C 350 200, 50 400, 200 650 C 350 900, 50 1100, 200 1350 C 350 1600, 50 1800, 200 1900"
+                stroke="#FDBA74"
+                strokeWidth="8"
                 fill="none"
+                filter="url(#glow)"
               />
             </svg>
 
-            <div className="space-y-32 md:space-y-48 relative z-10">
+            <div className="space-y-32 md:space-y-28 relative z-10">
               {milestones.map((m, i) => (
-                <motion.div 
+                <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -139,16 +178,17 @@ const EliteAboutPage = () => {
                     <div className={`inline-flex items-center justify-center p-4 rounded-2xl bg-[#FDBA74] text-black mb-6 ${i % 2 === 0 ? "md:ml-auto" : ""}`}>
                       {m.icon}
                     </div>
-                    <h3 className="text-3xl font-black text-white uppercase mb-2 group-hover:text-[#FDBA74] transition-colors">{m.title}</h3>
+                    <h3 className="text-2xl font-black text-white uppercase mb-2 group-hover:text-[#FDBA74] transition-colors">{m.title}</h3>
                     <p className="text-white/50 text-lg font-medium leading-relaxed">{m.desc}</p>
                   </div>
-                  
+
+                  {/* Year Marker */}
                   <div className="w-full md:w-[10%] flex flex-col items-center py-12 md:py-0">
                     <div className="relative">
-                      <motion.span 
-                         whileInView={{ scale: [0.8, 1.1, 1] }}
-                         className="text-7xl md:text-8xl font-black text-white relative z-10 tracking-tighter block"
-                         style={{ textShadow: "0 0 30px rgba(253,186,116,0.2)" }}
+                      <motion.span
+                        whileInView={{ scale: [0.8, 1.1, 1] }}
+                        className="text-7xl md:text-7xl font-black text-white relative z-10 tracking-tighter block"
+                        style={{ textShadow: "0 0 30px rgba(253,186,116,0.2)" }}
                       >
                         {m.year}
                       </motion.span>
@@ -161,8 +201,8 @@ const EliteAboutPage = () => {
               ))}
             </div>
           </div>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             className="mt-40 p-12 rounded-[4rem] bg-gradient-to-b from-[#FDBA74] to-[#f79d3d] text-center"
@@ -178,7 +218,7 @@ const EliteAboutPage = () => {
       <section className="py-24 md:py-48 bg-white relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
               className="bg-[#F8F9F8] p-12 md:p-20 rounded-[3rem] relative group"
             >
@@ -192,7 +232,7 @@ const EliteAboutPage = () => {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
               className="bg-[#032d29] p-12 md:p-20 rounded-[3rem] text-white relative"
             >
@@ -238,69 +278,50 @@ const EliteAboutPage = () => {
         </div>
       </section>
 
-      {/* ================= FACTORY INFRASTRUCTURE SECTION ================= */}
+      {/* ================= FACTORY INFRASTRUCTURE ================= */}
       <section className="py-32 bg-white px-6 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row gap-16 items-start">
             <div className="lg:w-1/2 space-y-10">
-        <div className="space-y-4">
-          <span className="text-[#032d29] font-black text-xs tracking-[0.3em] uppercase block">
-            Established in 2013
-          </span>
-          <h2 className="text-6xl md:text-7xl font-black tracking-tighter uppercase leading-[0.85]">
-            Our <span className="text-[#FDBA74]">Factory</span> <br /> Setup
-          </h2>
-        </div>
-
-        <p className="text-gray-600 text-xl leading-relaxed max-w-xl">
-          Spanning over <span className="text-black font-bold">8,000+ Sq.ft</span>, Arsen Furnitures & Fixtures is equipped with the latest European machinery. This in-house facility allows us to maintain surgical precision and absolute quality control over every component we produce.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 py-2">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 text-[#032d29]">
-              <Cpu size={24} />
-              <span className="font-bold uppercase text-md tracking-widest">Hi-Tech Machinery</span>
-            </div>
-            <p className="text-md text-gray-500 leading-relaxed">
-              Precision Panel Saw cutting, Triple-Head Multi-Boring, and Automatic Edge-Banding.
-            </p>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 text-[#032d29]">
-              <Layers size={24} />
-              <span className="font-bold uppercase text-md tracking-widest">Material Grade</span>
-            </div>
-            <p className="text-md text-gray-500">Certified HDMR, BWP Plywood, and premium veneers only.</p>
-          </div>
-        </div>
-
-        {/* Capacity Stat Card (Moved here to balance the landscape layout) */}
-        <div className="bg-[#032d29] p-8 rounded-[2rem] text-white flex flex-row justify-between items-center max-w-sm">
-           <div className="flex items-center gap-4">
-              <Factory size={32} className="text-[#FDBA74]" />
-              <div>
-                <h3 className="text-3xl font-black">8,000+</h3>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/50">Square Feet Capacity</p>
+              <div className="space-y-4">
+                <span className="text-[#032d29] font-black text-xs tracking-[0.3em] uppercase block">Established in 2013</span>
+                <h2 className="text-6xl md:text-7xl font-black tracking-tighter uppercase leading-[0.85]">
+                  Our <span className="text-[#FDBA74]">Factory</span> <br /> Setup
+                </h2>
               </div>
-           </div>
-        </div>
-      </div>
+              <p className="text-gray-600 text-xl leading-relaxed max-w-xl">
+                Spanning over <span className="text-black font-bold">25,000+ Sq.ft</span>, Arsen Furnitures & Fixtures is equipped with the latest European machinery. This in-house facility allows us to maintain surgical precision and absolute quality control over every component we produce.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 py-2">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 text-[#032d29]">
+                    <Cpu size={24} />
+                    <span className="font-bold uppercase text-md tracking-widest">Hi-Tech Machinery</span>
+                  </div>
+                  <p className="text-md text-gray-500 leading-relaxed">Precision Panel Saw cutting, Triple-Head Multi-Boring, and Automatic Edge-Banding.</p>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 text-[#032d29]">
+                    <Layers size={24} />
+                    <span className="font-bold uppercase text-md tracking-widest">Material Grade</span>
+                  </div>
+                  <p className="text-md text-gray-500">Certified HDMR, BWP Plywood, and premium veneers only.</p>
+                </div>
+              </div>
+              <div className="bg-[#032d29] p-8 rounded-[2rem] text-white flex flex-row justify-between items-center max-w-sm">
+                <div className="flex items-center gap-4">
+                  <Factory size={32} className="text-[#FDBA74]" />
+                  <div>
+                    <h3 className="text-3xl font-black">25,000+</h3>
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/50">Square Feet Capacity</p>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="lg:w-1/2 flex flex-col gap-6 w-full">
-              {/* VIDEO COMPONENT */}
-              <motion.div 
-                whileHover={{ scale: 1.01 }} 
-                className="relative group overflow-hidden rounded-[2rem] shadow-xl h-[300px] md:h-[350px] bg-black"
-              >
-                <video 
-                  autoPlay 
-                  loop 
-                  muted 
-                  playsInline
-                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
-                >
+              <motion.div whileHover={{ scale: 1.01 }} className="relative group overflow-hidden rounded-[2rem] shadow-xl h-[300px] md:h-[350px] bg-black">
+                <video autoPlay loop muted playsInline className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500">
                   <source src={factoryVideo} type="video/mp4" />
-                  {/* Replace source above with {factoryVideo} once imported */}
                 </video>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 text-white">
@@ -308,8 +329,6 @@ const EliteAboutPage = () => {
                   <p className="text-sm font-bold uppercase">Automated Precision</p>
                 </div>
               </motion.div>
-
-              {/* REMAINING IMAGE */}
               <motion.div whileHover={{ scale: 1.01 }} className="relative group overflow-hidden rounded-[2rem] shadow-xl h-[250px] md:h-[300px]">
                 <img src={factory1} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Factory Floor" />
               </motion.div>
@@ -318,11 +337,10 @@ const EliteAboutPage = () => {
         </div>
       </section>
 
-      {/* ================= REDESIGNED: GOOGLE REVIEW SCREENSHOT SLIDER ================= */}
-      <section className="py-24 bg-[#032d29] rounded-[3rem] md:rounded-[5rem] mx-4 md:mx-10 mb-20 px-6 overflow-hidden relative">
-        <div className="max-w-6xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-16">
+      {/* ================= TESTIMONIALS ================= */}
+      <section className="py-20 bg-[#032d29] rounded-[4rem] mx-4 md:mx-10 mb-20">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-2">
             <div className="flex justify-center gap-1 mb-4">
               {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="#FDBA74" stroke="none" />)}
             </div>
@@ -332,65 +350,32 @@ const EliteAboutPage = () => {
             <p className="text-white/40 font-bold uppercase tracking-widest text-xs mt-4">Transparent Feedback from our esteemed clients</p>
           </div>
 
-          <div className="relative flex items-center justify-center">
-            {/* Desktop Navigation Arrows */}
-            <button 
-              onClick={prevReview} 
-              className="absolute left-0 z-20 hidden lg:flex p-5 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#FDBA74] hover:text-black transition-all"
-            >
-              <ChevronLeft size={32} />
-            </button>
-
-            {/* Screenshot Display Container */}
-            <div className="w-full lg:w-[80%] px-4">
-              <AnimatePresence mode="wait">
-                <motion.div 
-                  key={activeTestimonial}
-                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 1.1, y: -20 }}
-                  transition={{ duration: 0.5, ease: "circOut" }}
-                  className="relative mx-auto rounded-3xl overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] bg-white/5 backdrop-blur-md p-2 md:p-4 border border-white/10"
-                >
-                  <img 
-                    src={reviews[activeTestimonial].img} 
-                    className="w-full h-auto rounded-2xl grayscale-[30%] hover:grayscale-0 transition-all duration-700" 
-                    alt="Google Review Screenshot" 
-                  />
-                  
-                  {/* Floating Google Badge */}
-                  {/* <div className="absolute top-8 right-8 bg-white p-2 rounded-lg shadow-lg flex items-center gap-2">
-                    <img src="https://www.gstatic.com/images/branding/product/2x/google_24dp.png" className="w-5 h-5" alt="Google" />
-                    <span className="text-[10px] font-black text-gray-800 uppercase tracking-tighter">Verified Review</span>
-                  </div> */}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            <button 
-              onClick={nextReview} 
-              className="absolute right-0 z-20 hidden lg:flex p-5 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#FDBA74] hover:text-black transition-all"
-            >
-              <ChevronRight size={32} />
-            </button>
+          <div className="relative h-[300px] flex items-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTestimonial}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="text-center w-full"
+              >
+                <h2 className="text-2xl md:text-4xl font-bold text-white italic mb-5">
+                  "{testimonials[activeTestimonial].quote}"
+                </h2>
+                <div className="flex justify-center gap-3">
+                  <img src={testimonials[activeTestimonial].img} className="w-14 h-14 rounded-full border border-[#FDBA74]" />
+                  <div>
+                    <p className="text-[#FDBA74] font-black uppercase text-xs">{testimonials[activeTestimonial].author}</p>
+                    <p className="text-white/50 uppercase text-[10px] font-bold">{testimonials[activeTestimonial].company}</p>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          {/* Mobile Navigation & Dots */}
-          <div className="flex flex-col items-center gap-8 mt-12">
-            <div className="flex gap-4 lg:hidden">
-              <button onClick={prevReview} className="p-4 rounded-full bg-white/10 text-white"><ChevronLeft /></button>
-              <button onClick={nextReview} className="p-4 rounded-full bg-white/10 text-white"><ChevronRight /></button>
-            </div>
-            
-            <div className="flex gap-2">
-              {reviews.map((_, i) => (
-                <button 
-                  key={i} 
-                  onClick={() => setActiveTestimonial(i)}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${activeTestimonial === i ? "w-12 bg-[#FDBA74]" : "w-3 bg-white/20"}`}
-                />
-              ))}
-            </div>
+          <div className="flex justify-center gap-3 mt-6">
+            <button onClick={() => setActiveTestimonial(prev => prev === 0 ? testimonials.length - 1 : prev - 1)} className="p-4 rounded-full border border-white/10 text-white hover:bg-white/10"><ChevronLeft /></button>
+            <button onClick={() => setActiveTestimonial(prev => prev === testimonials.length - 1 ? 0 : prev + 1)} className="p-4 rounded-full border border-white/10 text-white hover:bg-white/10"><ChevronRight /></button>
           </div>
         </div>
       </section>

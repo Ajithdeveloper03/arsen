@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
@@ -54,7 +54,7 @@ const slides = [
     subtitle: "Mitigating risks and optimizing resources across every phase of development. Our methodology ensures timelines and budgets are strictly honored.",
     badge: "PMC"
   },
-  
+
   // --- COMMERCIAL ---
   {
     image: hero1,
@@ -96,19 +96,44 @@ const slides = [
 ];
 
 export default function HeroLuxuryFinal() {
+  const [banners, setBanners] = useState<any[]>([]);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const progress = useMotionValue(0);
 
+  useEffect(() => {
+    fetchBanners();
+  }, []);
+
+  const fetchBanners = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/public/banners");
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setBanners(data);
+      }
+    } catch (err) {
+      console.error("Banner fetch error:", err);
+    }
+  };
+
+  const currentSlides = banners.length > 0 ? banners.map(b => ({
+    image: b.image_url,
+    title: b.title || "Elite Interiors",
+    subtitle: b.subtitle || "Experience architectural perfection and bespoke design solutions tailored for your lifestyle.",
+    badge: b.badge || "PREMIUM",
+    link: b.link
+  })) : slides;
+
   const nextSlide = useCallback(() => {
     progress.set(0);
-    setIndex((prev) => (prev + 1) % slides.length);
-  }, [progress]);
+    setIndex((prev) => (prev + 1) % currentSlides.length);
+  }, [progress, currentSlides.length]);
 
   const prevSlide = useCallback(() => {
     progress.set(0);
-    setIndex((prev) => (prev - 1 + slides.length) % slides.length);
-  }, [progress]);
+    setIndex((prev) => (prev - 1 + currentSlides.length) % currentSlides.length);
+  }, [progress, currentSlides.length]);
 
   useAnimationFrame((_, delta) => {
     if (paused) return;

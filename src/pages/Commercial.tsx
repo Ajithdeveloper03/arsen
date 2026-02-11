@@ -1,11 +1,16 @@
 "use client";
+ import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
 
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
 import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowUpRight, ShieldCheck, CheckCircle2,
-  Layers, Palette, PenTool, HardHat, ClipboardCheck, Rocket, Eye,
-  Layout, Monitor, Box, Coffee, Users2, Zap
+  Layers, Palette, PenTool, HardHat, ClipboardCheck, Rocket, Eye, Box,  ChevronLeft, ChevronRight 
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -69,8 +74,8 @@ const ArsenCommercial = () => {
     { title: "Corporate Offices", img: corporate, desc: "High-performance ergonomic workspace environments." },
     { title: "Retail & Malls", img: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1200", desc: "Conversion-optimized outlets and showrooms." },
     { title: "Restaurants & Cafes", img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200", desc: "Atmospheric culinary spaces and industrial kitchens." },
-    { title: "Healthcare & Hospitals", img: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200", desc: "Specialized clinical interiors and functional labs." },
-    { title: "Spa & Salons", img: "https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=1200", desc: "Premium wellness sanctuaries and luxury fit-outs." },
+    { title: "Healthcare & Hospitals", img: "https://images.pexels.com/photos/7250788/pexels-photo-7250788.jpeg", desc: "Specialized clinical interiors and functional labs." },
+    { title: "Spa & Salons", img: greens1, desc: "Premium wellness sanctuaries and luxury fit-outs." },
   ];
 
   const clientProjects = [
@@ -187,7 +192,9 @@ const ArsenCommercial = () => {
       </div>
 
       {/* 3. WORKSTATION & INTERIOR DESIGN SECTION - Expanded Content */}
-     <section className="py-20 md:py-40 bg-[#0A0D0C] overflow-hidden">
+   
+    <section className="py-20 md:py-40 bg-[#0A0D0C] overflow-hidden">
+      {/* Header Section */}
       <div className="max-w-7xl mx-auto px-6 mb-16">
         <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-tight text-white mb-6">
           Modern <br /> <span className="text-[#008b98]">Workstations.</span>
@@ -197,42 +204,56 @@ const ArsenCommercial = () => {
         </p>
       </div>
 
-      {/* Scrolling Marquee Container */}
-      <div className="flex overflow-hidden group">
-        <motion.div 
-          className="flex gap-8 whitespace-nowrap"
-          animate={{ x: [0, -1500] }} // Adjust distance based on content width
-          transition={{
-            repeat: Infinity,
-            duration: 30,
-            ease: "linear",
+      {/* Main Slider Container */}
+      <div className="relative px-4 md:px-16 group">
+        
+        {/* Navigation - Left Side */}
+        <button className="prev-btn absolute left-2 md:left-8 top-1/2 -translate-y-1/2 z-20 p-3 md:p-4 rounded-full bg-black/50 border-2 border-white/90 text-white hover:bg-[#008b98] hover:scale-110 transition-all duration-300 backdrop-blur-sm opacity-0 group-hover:opacity-100">
+          <ChevronLeft size={32} />
+        </button>
+
+        <Swiper
+          modules={[Navigation]}
+          spaceBetween={20}
+          slidesPerView={1.2}
+          loop={true}
+          navigation={{
+            prevEl: '.prev-btn',
+            nextEl: '.next-btn',
           }}
+          breakpoints={{
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+          }}
+          className="rounded-3xl"
         >
-          {/* Duplicate features to ensure seamless loop */}
-          {[...features, ...features].map((item, index) => (
-            <div 
-              key={index} 
-              className="w-[300px] md:w-[450px] inline-block shrink-0"
-            >
-              <div className="relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden mb-6">
+          {features.map((item, index) => (
+            <SwiperSlide key={index}>
+              <div className="relative h-[400px] md:h-[600px] rounded-3xl overflow-hidden group/card">
                 <img 
                   src={item.img} 
                   alt={item.title} 
-                  className="w-full h-full object-cover hover:grayscale-0 transition-all duration-500" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex flex-col justify-end p-8">
                   <h3 className="text-white text-3xl font-bold uppercase mb-2">{item.title}</h3>
-                  <p className="text-white/70 text-sm whitespace-normal leading-relaxed">
+                  <p className="text-white/70 text-sm leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
               </div>
-            </div>
+            </SwiperSlide>
           ))}
-        </motion.div>
+        </Swiper>
+
+        {/* Navigation - Right Side */}
+        <button className="next-btn absolute right-2 md:right-8 top-1/2 -translate-y-1/2 z-20 p-3 md:p-4 rounded-full bg-black/50 border-2 border-white/90 text-white hover:bg-[#008b98] hover:scale-110 transition-all duration-300 backdrop-blur-sm opacity-0 group-hover:opacity-100">
+          <ChevronRight size={32} />
+        </button>
+        
       </div>
     </section>
-
+  
       {/* 4. VM - VIRTUAL MERCHANDISING */}
       <section className="py-16 md:py-20 bg-white text-black rounded-[2rem] md:rounded-[4rem] mx-2 md:mx-10 overflow-hidden">
   <div className="max-w-7xl mx-auto px-6">
@@ -241,10 +262,10 @@ const ArsenCommercial = () => {
       {/* TEXT CONTENT */}
       <div className="lg:col-span-5 space-y-6 md:space-y-8">
         <span className="text-[#008b98] font-black text-sm tracking-[0.3em] uppercase block">
-          Visual Merchandise
+          V&M Adhesives
         </span>
         <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9]">
-          VM & <br /> <span className="text-[#008b98]">Adhesives.</span>
+          Virtual<br /> <span className="text-[#008b98]">Merchandise</span>
         </h2>
         
         <div className="space-y-6 pt-4">
@@ -286,7 +307,7 @@ const ArsenCommercial = () => {
               whileHover={{ y: -5 }}
               className="rounded-2xl md:rounded-3xl overflow-hidden shadow-lg aspect-[4/5]"
             >
-              <img src={vm4} className="h-full w-full object-cover" alt="VM 4" />
+              <img src={vm4} className="h-full w-full object-contain" alt="VM 4" />
             </motion.div>
           </div>
 
@@ -360,10 +381,10 @@ const ArsenCommercial = () => {
               <div key={i} className="relative overflow-hidden rounded-2xl md:rounded-[2.5rem] shadow-2xl group">
                 <img 
                   src={img} 
-                  className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${i === 1 ? "mt-6 md:mt-12 h-48 md:h-[400px]" : "h-64 md:h-[500px]"}`} 
+                  className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${i === 1 ? "h-64 md:h-[500px]" : "h-64 md:h-[500px]"}`} 
                   alt={project.brand} 
                 />
-                <div className="absolute inset-0 bg-[#008b98]/10 group-hover:bg-transparent transition-colors duration-500" />
+                <div className="absolute inset-0 bg-[#008b98]/10 object-cover group-hover:bg-transparent transition-colors duration-500" />
               </div>
             ))}
           </div>
@@ -376,14 +397,14 @@ const ArsenCommercial = () => {
       {/* 6. WORKFLOW */}
       <section className="py-20 md:py-40 bg-[#0A0D0C] border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 text-center">
-            <h2 className="text-4xl md:text-7xl font-bold uppercase text-white tracking-tighter mb-20">Execution <span className="text-[#008b98]">Protocol.</span></h2>
+            <h2 className="text-4xl md:text-7xl font-bold uppercase text-white tracking-tighter mb-20">6 - Step <span className="text-[#008b98]">Project Roadmap</span></h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 text-left">
-            <WorkflowStep num="01" title="Concept Audit" icon={<Layers />} detail="Analyzing brand identity, traffic flow, and existing site feasibility studies." />
-            <WorkflowStep num="02" title="Tech Design" icon={<PenTool />} detail="Drafting GFC drawings including HVAC, fire safety, and smart lighting grids." />
-            <WorkflowStep num="03" title="Sourcing" icon={<Palette />} detail="Procuring ISO-certified materials and factory-finished modular furniture." />
-            <WorkflowStep num="04" title="Civil Works" icon={<HardHat />} detail="Managed on-site execution under strict EHS (Environment, Health, Safety) norms." />
-            <WorkflowStep num="05" title="QC Testing" icon={<ClipboardCheck />} detail="Final 146-point verification of finishes, electrical loads, and acoustic levels." />
-            <WorkflowStep num="06" title="The Launch" icon={<Rocket />} detail="Deep cleaning and final handover of a business-ready commercial asset." />
+            <WorkflowStep num="Phase 01" title="Evaluation & Planning" icon={<Layers />} detail="We analyze your brand needs and spatial flow to provide a detailed project proposal and plan." />
+            <WorkflowStep num="Phase 02" title="Technical Blueprints" icon={<PenTool />} detail="Engineers & Designers create detailed Plans for layouts, lighting, and infrastructure to ensure seamless functionality." />
+            <WorkflowStep num="Phase 03" title="Material & Sourcing " icon={<Palette />} detail="We procure certified, high-quality materials built for durability and aesthetics." />
+            <WorkflowStep num="Phase 04" title="Construction & Crafting" icon={<HardHat />} detail="Our teams manage the build on-site, maintaining strict safety and environmental standards." />
+            <WorkflowStep num="Phase 05" title=" Quality Assurance " icon={<ClipboardCheck />} detail="We perform a rigorous 146+ point inspection to verify every detail meets our standards." />
+            <WorkflowStep num="Phase 06" title="The Grand  Handover " icon={<Rocket />} detail="Following a deep clean, we deliver a turnkey space ready for your team to walk in and start working." />
           </div>
         </div>
       </section>
@@ -410,7 +431,7 @@ const ArsenCommercial = () => {
             
             <div className="bg-gray-200 rounded-[2rem] md:rounded-[3rem] p-6 md:p-8 flex flex-col justify-center text-center border border-black/5">
               <CheckCircle2 size={40} className="mx-auto text-[#008b98]" />
-              <p className="text-[9px] md:text-[20px] uppercase font-bold tracking-widest mt-4 text-black/40">ISO 9001 Certified</p>
+              <p className="text-[12px] md:text-[24px] uppercase font-bold tracking-widest mt-4 text-black/40">No <br />Hidden <br /> Costs</p>
             </div>
           </div>
         </div>

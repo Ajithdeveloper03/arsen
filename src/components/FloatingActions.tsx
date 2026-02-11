@@ -41,7 +41,7 @@ const FloatingActions = () => {
   ];
 
   return (
-    <div className="fixed right-6 bottom-10 z-[9999] flex flex-col items-end gap-4">
+    <div className="fixed right-6 bottom-44 z-[9999] flex flex-col items-end gap-4">
       
       {/* 1. Expandable Social Stack */}
       <div className="flex flex-col items-end gap-3">

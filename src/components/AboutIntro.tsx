@@ -4,28 +4,28 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import CountUp from "react-countup";
 import { useRef } from "react";
 import { Link } from "react-router-dom"; // 1. Import Link
-import { Building2, Users, Clock, MapPin, Zap } from "lucide-react";
+import { Building2, Users, TrendingUp, Clock, MapPin, Zap } from "lucide-react";
 
 export default function AboutIntro() {
   const stats = [
-    { 
-      number: 1100, 
-      label: "Projects Completed", 
-      icon: Building2, 
-      suffix: "+" 
+    {
+      number: 1800,
+      label: "Projects Completed",
+      icon: Building2,
+      suffix: "+"
     },
-    { 
-      number: 1500, 
-      label: "Happy Clients", 
-      icon: Users, 
-      suffix: "+" 
+    {
+      number: 100,
+      label: "Happy Clients",
+      icon: Users,
+      suffix: "+"
     },
-    { 
-      number: 30, 
-      label: "Efficiency Boost", 
-      icon: Zap, 
-      suffix: "%" 
-    },
+    {
+      number: 15,
+      label: "Property Value Increase",
+      icon: TrendingUp,
+      suffix: "%"
+    }
   ];
 
   const aboutRef = useRef(null);
@@ -43,7 +43,7 @@ export default function AboutIntro() {
       className="relative w-full py-16 md:py-24 bg-gradient-to-b from-white via-[#e5f1ff] to-white overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr_1.2fr] gap-12 lg:gap-8 items-start relative z-10">
-        
+
         {/* LEFT — STATS */}
         <div className="space-y-6 w-full max-w-[280px] mx-auto lg:mx-0 lg:sticky lg:top-20 order-2 lg:order-1">
           {stats.map((stat, index) => (
@@ -84,7 +84,7 @@ export default function AboutIntro() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10" />
 
           <img
-            src="https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=1920"
+            src="https://images.pexels.com/photos/11701127/pexels-photo-11701127.jpeg"
             alt="Work Process"
             className="object-cover w-full h-[400px] md:h-[600px]"
           />
@@ -140,10 +140,10 @@ export default function AboutIntro() {
               <div className="flex items-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-[#16697A]" />
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                  Happy Clients
+                  Space Maximization
                 </p>
               </div>
-              <p className="text-2xl md:text-3xl font-black text-[#16697A]">1500+</p>
+              <p className="text-2xl md:text-3xl font-black text-[#16697A]">40%</p>
             </div>
           </div>
 

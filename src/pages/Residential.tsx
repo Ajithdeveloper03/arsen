@@ -2,9 +2,9 @@
 
 import React, { useRef, useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { 
-  Plus, ArrowRight, Minus, 
-  MapPin, Send, MousePointer2 
+import {
+  Plus, ArrowRight, Minus,
+  MapPin, Send, MousePointer2
 } from "lucide-react";
 
 // Asset Imports
@@ -77,8 +77,10 @@ const EliteDesignMasterpiece = () => {
           <h1 className="text-[14vw] md:text-[11vw] font-black leading-none tracking-tighter uppercase italic">
             Arsen <span className="text-transparent font-outline" style={{ WebkitTextStroke: '2px #FDBA74' }}>Elite</span>
           </h1>
-          <div className="flex justify-center gap-6 items-center mt-4 text-md uppercase tracking-[0.3em]">
-            <div className="h-[1px] w-12 bg-white/20" /> Crafting Legacies <div className="h-[1px] w-12 bg-white/20" />
+          <div className="flex justify-center mt-4">
+            <span className="border-b-4 border-red-600 pb-1 text-md uppercase tracking-[0.3em]">
+              As you expected
+            </span>
           </div>
         </div>
         <motion.div animate={{ y: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="absolute bottom-10 opacity-40">
@@ -105,7 +107,7 @@ const EliteDesignMasterpiece = () => {
           {/* Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             {PROJECTS.filter(p => !p.featured).map((project) => (
-              <motion.div 
+              <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -117,7 +119,7 @@ const EliteDesignMasterpiece = () => {
                 </div>
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-2">
-                    <MapPin size={10} className="text-[#FDBA74]"/>
+                    <MapPin size={10} className="text-[#FDBA74]" />
                     <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">{project.loc}</span>
                   </div>
                   <h3 className="text-lg font-black uppercase leading-tight group-hover:text-[#FDBA74] transition-colors">{project.title}</h3>
@@ -128,7 +130,7 @@ const EliteDesignMasterpiece = () => {
 
           {/* Featured Large Project (Jagger) */}
           {PROJECTS.filter(p => p.featured).map((project) => (
-            <motion.div 
+            <motion.div
               key={project.id}
               initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -142,11 +144,11 @@ const EliteDesignMasterpiece = () => {
                   <h3 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4">{project.title}</h3>
                   <p className="text-white/60 text-lg leading-relaxed">{project.desc}</p>
                 </div>
-                <div className="flex items-center gap-4">
+                {/* <div className="flex items-center gap-4">
                    <div className="bg-white text-black p-5 rounded-full hover:bg-[#FDBA74] transition-colors cursor-pointer">
                      <ArrowRight size={24} />
                    </div>
-                </div>
+                </div> */}
               </div>
             </motion.div>
           ))}
@@ -159,10 +161,12 @@ const EliteDesignMasterpiece = () => {
           The <span className="text-[#FDBA74]">Genesis</span> Path.
         </h2>
         <div className="max-w-5xl mx-auto space-y-8">
-          <ProcessItem num="01" title="Visual Concept" desc="We build a 3D digital twin of your home before a single brick is moved." />
-          <ProcessItem num="02" title="Material Curation" desc="Sourcing exotic stones and premium timbers from our global network." />
-          <ProcessItem num="03" title="Technical Precision" desc="Engineers execute with exacting standards." />
-          <ProcessItem num="04" title="The Unveiling" desc="Final walkthrough with our 146-point quality check." />
+          <ProcessItem num="01" title="DISCOVERY & DISCUSSION" desc="We understand your lifestyle, preferences, and spatial needs to define a clear project vision and execution roadmap and proposal Estimation." />
+          <ProcessItem num="02" title="DETAILED DESIGN & DRAWINGS" desc="Our Designers and Engineers prepare precise technical schematics for lighting, electricals, and cabinetry, ensuring seamless performance behind the walls." />
+          <ProcessItem num="03" title="DISCERNED MATERIAL SELECTION" desc="We source certified, high-quality materials from trusted Branded partners to deliver durability and a refined aesthetic." />
+          <ProcessItem num="04" title="DEDICATED DEVELOPMENT" desc="Our expert on-site teams execute the build while adhering to strict safety, quality, and environmental standards." />
+          <ProcessItem num="05" title="DILIGENT QUALITY DIAGNOSTICS" desc="A comprehensive 60+ point inspection is carried out to ensure every detail meets our uncompromising quality benchmarks." />
+          <ProcessItem num="06" title="DELIGHTFUL DELIVERY & HANDOVER" desc="After a professional deep clean, we hand over a fully finished, move-in-ready home crafted to perfection as you Expected." />
         </div>
       </section>
 
@@ -190,9 +194,9 @@ const HorizontalCategories = () => {
         <motion.div style={{ x }} className="flex gap-8 md:gap-16 px-8 md:px-20 items-center">
           <div className="shrink-0 pr-12 md:pr-24">
             <h2 className="text-[16vw] md:text-[9vw] font-black italic uppercase leading-[0.85] tracking-tighter">
-              Our<br/><span className="text-[#FDBA74] ">Focus</span>
+              Our<br /><span className="text-[#FDBA74] ">Focus</span>
             </h2>
-            <p className="text-[18px] uppercase tracking-[0.4em] text-white/30 mt-6">Core Competencies & Services</p>
+            <p className="text-[18px] font-bold uppercase tracking-[0.4em] text-white/30 mt-6">Core Competencies & Services</p>
           </div>
           <CategoryCard title="Modular Kitchens" img={kitchen} />
           <CategoryCard title="Living & Garden Areas" img="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800" />
@@ -229,12 +233,12 @@ const ProcessItem = ({ num, title, desc }) => (
 const FAQSection = () => (
   <div>
     <span className="text-[#FDBA74] font-black uppercase tracking-[0.4em] text-[14px] block mb-6">FAQ's</span>
-    <h2 className="text-4xl md:text-6xl font-black uppercase italic mb-10">Common<br/>Queries.</h2>
+    <h2 className="text-4xl md:text-6xl font-black uppercase italic mb-10">Common<br />Queries.</h2>
     <div className="space-y-4">
-      <AccordionItem q="How long does a full villa design take?" a="Typically 4–6 months depending on the scale and complexity of customization." />
-      <AccordionItem q="Do you provide warranty?" a="Yes — we offer a comprehensive 10-year structural warranty on all premium residential works." />
-      <AccordionItem q="Can we integrate smart-home systems?" a="Absolutely. We specialize in fully invisible integration of lighting, climate, and security controls." />
-      <AccordionItem q="Which cities do you serve?" a="Currently, we are executing elite projects in Chennai, Bangalore, and Hyderabad." />
+      <AccordionItem q="How long does a full villa design take?" a="Typically 30–90 days, depending on the scale and complexity of the project, your vision, and specific requirements." />
+      <AccordionItem q="Do you provide warranty?" a="Yes We offer a comprehensive 10-year warranty on all residential works(Terms and conditions apply)" />
+      <AccordionItem q="How can I be sure my home interior project will be completed with high quality and on time?" a="With experienced designers & Engineers a structured process, and clear communication, we ensure your home interior project is completed smoothly, on time, and to your expectations." />
+      <AccordionItem q="Which cities do you serve?" a="Currently, we execute elite interior projects *across India, serving clients in **all major cities and regions*." />
     </div>
   </div>
 );
@@ -245,11 +249,11 @@ const AccordionItem = ({ q, a }) => {
     <div className="border-b border-black/10 py-5">
       <button onClick={() => setOpen(!open)} className="w-full flex justify-between items-center text-left">
         <span className="text-lg font-bold uppercase italic pr-4">{q}</span>
-        {open ? <Minus size={18}/> : <Plus size={18}/>}
+        {open ? <Minus size={18} /> : <Plus size={18} />}
       </button>
       <AnimatePresence>
         {open && (
-          <motion.p initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="text-gray-500 mt-3 text-sm leading-relaxed">
+          <motion.p initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="text-gray-500 mt-3 text-lg leading-relaxed">
             {a}
           </motion.p>
         )}
@@ -258,24 +262,82 @@ const AccordionItem = ({ q, a }) => {
   );
 };
 
-const ConsultationForm = () => (
-  <div className="bg-[#08090A] p-10 md:p-16 rounded-[3rem] text-white">
-    <h3 className="text-3xl md:text-4xl font-black italic uppercase mb-8">Initiate<br/>Consultation.</h3>
-    <form className="space-y-6">
-      <input type="text" placeholder="YOUR NAME" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
-      <input type="email" placeholder="YOUR EMAIL" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
-      <select className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors cursor-pointer">
-        <option className="text-black">Project Type</option>
-        <option className="text-black">Villa</option>
-        <option className="text-black">Apartment</option>
-        <option className="text-black">Commercial</option>
-      </select>
-      <textarea placeholder="PROJECT DETAILS" className="w-full bg-transparent border-b border-white/20 py-4 outline-none h-28 focus:border-[#FDBA74] transition-colors" />
-      <button type="submit" className="group flex items-center gap-3 text-[#FDBA74] font-black uppercase tracking-widest text-xs pt-4">
-        Send Enquiry <Send size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-      </button>
-    </form>
-  </div>
-);
+const ConsultationForm = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    projectType: "Project Type",
+    details: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/submit-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          form_type: "Residential Consultation",
+          ...formData
+        }),
+      });
+
+      if (res.ok) {
+        setSent(true);
+        setFormData({ name: "", email: "", projectType: "Project Type", details: "" });
+        setTimeout(() => setSent(false), 5000);
+      } else {
+        const data = await res.json();
+        alert(data.message || "Failed to send consultation request");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="bg-[#08090A] p-10 md:p-16 rounded-[3rem] text-white">
+      {sent ? (
+        <div className="text-center py-12">
+          <h3 className="text-3xl font-bold text-[#FDBA74] mb-4">Message Sent!</h3>
+          <p className="text-gray-400">Our elite design team will reach out to you shortly.</p>
+        </div>
+      ) : (
+        <>
+          <h3 className="text-3xl md:text-4xl font-black italic uppercase mb-8">Initiate<br />Consultation.</h3>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <input name="name" value={formData.name} onChange={handleInputChange} required type="text" placeholder="YOUR NAME" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
+            <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="YOUR EMAIL" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
+            <select name="projectType" value={formData.projectType} onChange={handleInputChange} className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors cursor-pointer">
+              <option className="text-black">Project Type</option>
+              <option className="text-black">Villa</option>
+              <option className="text-black">Apartment</option>
+              <option className="text-black">Commercial</option>
+            </select>
+            <textarea name="details" value={formData.details} onChange={handleInputChange} required placeholder="PROJECT DETAILS" className="w-full bg-transparent border-b border-white/20 py-4 outline-none h-28 focus:border-[#FDBA74] transition-colors" />
+            <button disabled={isSubmitting} type="submit" className="group flex items-center gap-3 text-[#FDBA74] font-black uppercase tracking-widest text-xs pt-4 disabled:opacity-50">
+              {isSubmitting ? "Sending..." : "Send Enquiry"} <Send size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </button>
+          </form>
+        </>
+      )}
+    </div>
+  );
+};
 
 export default EliteDesignMasterpiece;

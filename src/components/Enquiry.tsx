@@ -338,6 +338,60 @@ export default function LusionInteractiveFooter() {
     };
   }, [audioEnabled]);
 
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { placeholder, value } = e.target;
+    const nameMap: { [key: string]: string } = {
+      "Full Name": "name",
+      "Contact No.": "phone",
+      "Email Address": "email",
+      "Tell us about your project...": "message"
+    };
+    const name = nameMap[placeholder] || placeholder;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/submit-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          form_type: "Footer Enquiry Form",
+          ...formData
+        }),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+        setFormData({ name: "", phone: "", email: "", message: "" });
+        setTimeout(() => setSubmitted(false), 5000);
+      } else {
+        const data = await res.json();
+        alert(data.message || "Failed to send enquiry");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section className="relative w-full min-h-screen bg-white flex flex-col items-center justify-center p-6 lg:p-12 overflow-hidden">
       <div ref={mountRef} className="absolute inset-0 z-0" />
@@ -355,7 +409,7 @@ export default function LusionInteractiveFooter() {
             Let's Shape <br />
             <span
               className="text-[#16697A]"
-              // style={{ WebkitTextStroke: "2px #16697A" }}
+            // style={{ WebkitTextStroke: "2px #16697A" }}
             >
               Your Space.
             </span>
@@ -365,32 +419,39 @@ export default function LusionInteractiveFooter() {
             nationwide expertise to your doorstep.
           </p>
         </div>
-        
+
         <div className="bg-white border border-[#4682B4]/10 p-8 md:p-12 rounded-[3rem] shadow-xl shadow-[#DAA520]/60 relative">
-          <form className="space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="relative">
-                <User className="absolute left-4 top-4 text-[#16697A]" size={20} strokeWidth={2.2} />
-                <input className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Full Name" />
+          {submitted ? (
+            <div className="text-center py-12">
+              <h3 className="text-3xl font-bold text-[#16697A] mb-4">Thank You!</h3>
+              <p className="text-gray-600 text-lg">Your enquiry has been sent successfully. We'll get back to you soon.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="relative">
+                  <User className="absolute left-4 top-4 text-[#16697A]" size={20} strokeWidth={2.2} />
+                  <input required value={formData.name} onChange={handleInputChange} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Full Name" />
+                </div>
+                <div className="relative">
+                  <Phone className="absolute left-4 top-4 text-[#16697A]" size={18} />
+                  <input required value={formData.phone} onChange={handleInputChange} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Contact No." />
+                </div>
               </div>
               <div className="relative">
-                <Phone className="absolute left-4 top-4 text-[#16697A]" size={18} />
-                <input className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Contact No." />
+                <Mail className="absolute left-4 top-4 text-[#16697A]" size={18} />
+                <input required type="email" value={formData.email} onChange={handleInputChange} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Email Address" />
               </div>
-            </div>
-            <div className="relative">
-              <Mail className="absolute left-4 top-4 text-[#16697A]" size={18} />
-              <input className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Email Address" />
-            </div>
-            <div className="relative">
-              <MessageSquare className="absolute left-4 top-4 text-[#16697A]" size={18} />
-              <textarea className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none resize-none focus:border-[#228B22]" rows={4} placeholder="Tell us about your project..." />
-            </div>
-            <button className="w-full bg-[#16697A] hover:bg-[#DAA520] text-white font-black uppercase tracking-widest py-5 rounded-2xl flex items-center justify-center gap-3 transition-colors">
-              Send Enquiry
-              <Send size={18} />
-            </button>
-          </form>
+              <div className="relative">
+                <MessageSquare className="absolute left-4 top-4 text-[#16697A]" size={18} />
+                <textarea required value={formData.message} onChange={handleInputChange} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none resize-none focus:border-[#228B22]" rows={4} placeholder="Tell us about your project..." />
+              </div>
+              <button disabled={isSubmitting} className="w-full bg-[#16697A] hover:bg-[#DAA520] text-white font-black uppercase tracking-widest py-5 rounded-2xl flex items-center justify-center gap-3 transition-colors disabled:opacity-50">
+                {isSubmitting ? "Sending..." : "Send Enquiry"}
+                <Send size={18} />
+              </button>
+            </form>
+          )}
         </div>
       </div>
 
