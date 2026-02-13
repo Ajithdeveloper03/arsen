@@ -15,6 +15,7 @@ import {
   Pencil
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import api, { BASE_URL } from '../services/api';
 import hero7 from '../assets/hero-slider-pmc.jpg';
 import hero8 from '../assets/hero-slider-pmc2.jpg';
 // commercial
@@ -107,8 +108,8 @@ export default function HeroLuxuryFinal() {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/public/banners");
-      const data = await res.json();
+      const res = await api.get("/public/banners");
+      const data = res.data;
       if (data && data.length > 0) {
         setBanners(data);
       }
@@ -118,7 +119,7 @@ export default function HeroLuxuryFinal() {
   };
 
   const currentSlides = banners.length > 0 ? banners.map(b => ({
-    image: b.image_url,
+    image: b.image_url?.startsWith('http') ? b.image_url : `${BASE_URL}${b.image_url}`,
     title: b.title || "Elite Interiors",
     subtitle: b.subtitle || "Experience architectural perfection and bespoke design solutions tailored for your lifestyle.",
     badge: b.badge || "PREMIUM",
@@ -161,7 +162,7 @@ export default function HeroLuxuryFinal() {
             transition={{ duration: 0.5 }}
           >
             <motion.img
-              src={slides[index].image}
+              src={currentSlides[index].image}
               className="w-full h-full object-cover"
               initial={{ scale: 1.15 }}
               animate={{ scale: 1 }}
@@ -225,18 +226,18 @@ export default function HeroLuxuryFinal() {
                 animate={{ opacity: 1, y: 0 }}
                 className="inline-block px-4 py-1.5 bg-[#f09f2d] text-white text-[14px] md:text-xs font-bold tracking-[0.2em] uppercase rounded-sm"
               >
-                {slides[index].badge}
+                {currentSlides[index].badge}
               </motion.span>
 
               <h1 className="text-white text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.1] drop-shadow-sm">
-                {slides[index].title.split(' ')[0]} <br />
+                {currentSlides[index].title.split(' ')[0]} <br />
                 <span className="font-serif italic font-normal text-white/90">
-                  {slides[index].title.split(' ').slice(1).join(' ')}
+                  {currentSlides[index].title.split(' ').slice(1).join(' ')}
                 </span>
               </h1>
 
               <p className="text-white/90 text-base md:text-lg lg:text-xl font-light leading-relaxed max-w-xl whitespace-pre-line drop-shadow-sm">
-                {slides[index].subtitle}
+                {currentSlides[index].subtitle}
               </p>
 
               <div className="flex flex-wrap gap-4 pt-3">
@@ -251,7 +252,7 @@ export default function HeroLuxuryFinal() {
               {/* PROGRESS BAR */}
               <div className="pt-10 flex items-center gap-6">
                 <div className="text-white/60 font-mono text-[14px] md:text-lg tracking-widest">
-                  <span className="text-white">0{index + 1}</span> / 0{slides.length}
+                  <span className="text-white">0{index + 1}</span> / 0{currentSlides.length}
                 </div>
                 <div className="w-40 md:w-64 h-[2px] bg-white/10 relative overflow-hidden">
                   <motion.div
@@ -264,6 +265,7 @@ export default function HeroLuxuryFinal() {
           </AnimatePresence>
         </div>
       </div>
+
 
       {/* 5. NAVIGATION ARROWS */}
       <div className="absolute bottom-14 right-8 md:bottom-12 md:right-12 z-50 flex gap-4">

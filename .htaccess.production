@@ -1,0 +1,29 @@
+<IfModule mod_rewrite.c>
+  # Security Headers
+  Header set X-Frame-Options "DENY"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  <IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  </IfModule>
+
+  # Prevent Directory Listing
+  Options -Indexes
+
+  RewriteEngine On
+  RewriteBase /
+  DirectoryIndex index.html index.php
+
+  # Handle API requests (Laravel)
+  # Redirects any request starting with /api to the index.php file
+  RewriteCond %{REQUEST_URI} ^/api [NC]
+  RewriteRule ^api/(.*)$ index.php [L]
+
+  # Handle React Routing
+  # If the request is not for a real file or directory, serve index.html
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>

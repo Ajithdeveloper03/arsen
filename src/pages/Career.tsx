@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { BASE_URL } from '../services/api';
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { MapPin, ArrowUpRight, X, Briefcase, Users, Star, Globe, Filter, Upload, Send, CheckCircle2 } from "lucide-react";
+import { MapPin, ArrowUpRight, X, Star, Globe, Upload, CheckCircle2, Users } from "lucide-react";
 
 const vacancies = [
   {
@@ -56,7 +57,7 @@ const Careers = () => {
 
   const fetchJobs = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/public/careers");
+      const res = await fetch(`${BASE_URL}/api/public/careers`);
       const data = await res.json();
       if (data && data.length > 0) {
         setApiJobs(data);
@@ -72,8 +73,11 @@ const Careers = () => {
     dept: j.department,
     loc: j.location,
     salary: j.salary || "Competitive",
+    description: j.description || "",
     img: j.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200",
-    specs: j.specifications || []
+    specs: typeof j.specifications === 'string' ? JSON.parse(j.specifications) : (j.specifications || []),
+    skills: typeof j.skills === 'string' ? JSON.parse(j.skills) : (j.skills || []),
+    responsibilities: typeof j.responsibilities === 'string' ? JSON.parse(j.responsibilities) : (j.responsibilities || [])
   })) : vacancies;
 
   const handleInputChange = (e: any) => {
@@ -99,7 +103,7 @@ const Careers = () => {
         data.append("cv_file", formData.cv);
       }
 
-      const res = await fetch("http://127.0.0.1:8000/api/submit-form", {
+      const res = await fetch(`${BASE_URL}/api/submit-form`, {
         method: "POST",
         body: data,
         headers: {
@@ -256,45 +260,80 @@ const Careers = () => {
                       <p className="text-gray-400 mt-2">{activeJob?.dept} • {activeJob?.loc}</p>
                     </div>
 
-                    {activeJob?.specs?.length > 0 && (
+                    {activeJob?.description && (
                       <div className="mb-8">
-                        <h4 className="text-xs font-black uppercase tracking-widest mb-4">Role Specifications:</h4>
+                        <h4 className="text-xs font-black uppercase tracking-widest mb-3 text-[#2A6F72]">Job Overview</h4>
+                        <p className="text-gray-600 leading-relaxed text-sm bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">{activeJob.description}</p>
+                      </div>
+                    )}
+
+                    {activeJob?.responsibilities?.length > 0 && (
+                      <div className="mb-8">
+                        <h4 className="text-xs font-black uppercase tracking-widest mb-4 text-[#2A6F72]">Key Responsibilities</h4>
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {activeJob.responsibilities.map((r: string, i: number) => (
+                            <li key={i} className="flex items-start gap-2 text-sm text-gray-500">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#DFA45B] mt-2 shrink-0" />
+                              {r}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {activeJob?.skills?.length > 0 && (
+                      <div className="mb-8">
+                        <h4 className="text-xs font-black uppercase tracking-widest mb-4 text-[#2A6F72]">Required Skills</h4>
                         <div className="flex flex-wrap gap-2">
-                          {activeJob.specs.map((s: string, i: number) => (
-                            <span key={i} className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium text-gray-500">{s}</span>
+                          {activeJob.skills.map((s: string, i: number) => (
+                            <span key={i} className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium text-gray-500 shadow-sm">{s}</span>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    <form onSubmit={handleFormSubmit} className="space-y-5">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <label className="text-[10px] uppercase font-bold text-gray-400">Full Name</label>
-                          <input required name="name" value={formData.name} onChange={handleInputChange} type="text" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] uppercase font-bold text-gray-400">Email Address</label>
-                          <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" />
+                    {activeJob?.specs?.length > 0 && (
+                      <div className="mb-10">
+                        <h4 className="text-xs font-black uppercase tracking-widest mb-4 text-[#2A6F72]">Role Highlights</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {activeJob.specs.map((s: string, i: number) => (
+                            <span key={i} className="px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-xl text-xs font-bold text-[#2A6F72]">{s}</span>
+                          ))}
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] uppercase font-bold text-gray-400">Portfolio Link (URL)</label>
-                        <input name="portfolio" value={formData.portfolio} onChange={handleInputChange} type="url" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" placeholder="https://..." />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] uppercase font-bold text-gray-400">Upload CV (PDF)</label>
-                        <label className="w-full flex flex-col items-center justify-center bg-white border-2 border-dashed border-gray-100 p-8 rounded-xl cursor-pointer hover:border-[#DFA45B] transition-all">
-                          <Upload size={24} className="text-gray-300 mb-2" />
-                          <span className="text-sm font-bold text-gray-500">{formData.cv ? (formData.cv as any).name : "Drop CV here"}</span>
-                          <span className="text-[10px] uppercase text-gray-400 mt-1 italic">PDF only • Max 5MB</span>
-                          <input name="cv" onChange={handleInputChange} type="file" className="hidden" accept=".pdf" />
-                        </label>
-                      </div>
-                      <button disabled={isSubmitting} className="w-full bg-[#0F1F2A] text-white py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-[#DFA45B] hover:text-black transition-all disabled:opacity-50 shadow-xl shadow-[#0F1F2A]/20">
-                        {isSubmitting ? "Submitting..." : "Send Application"} <ArrowUpRight size={18} />
-                      </button>
-                    </form>
+                    )}
+
+                    <div className="pt-8 border-t border-gray-100">
+                      <h3 className="text-xl font-bold mb-6">Apply Now</h3>
+                      <form onSubmit={handleFormSubmit} className="space-y-5">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-[10px] uppercase font-bold text-gray-400">Full Name</label>
+                            <input required name="name" value={formData.name} onChange={handleInputChange} type="text" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] uppercase font-bold text-gray-400">Email Address</label>
+                            <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase font-bold text-gray-400">Portfolio Link (URL)</label>
+                          <input name="portfolio" value={formData.portfolio} onChange={handleInputChange} type="url" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" placeholder="https://..." />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase font-bold text-gray-400">Upload CV (PDF)</label>
+                          <label className="w-full flex flex-col items-center justify-center bg-white border-2 border-dashed border-gray-100 p-8 rounded-xl cursor-pointer hover:border-[#DFA45B] transition-all">
+                            <Upload size={24} className="text-gray-300 mb-2" />
+                            <span className="text-sm font-bold text-gray-500">{formData.cv ? (formData.cv as any).name : "Drop CV here"}</span>
+                            <span className="text-[10px] uppercase text-gray-400 mt-1 italic">PDF only • Max 5MB</span>
+                            <input name="cv" onChange={handleInputChange} type="file" className="hidden" accept=".pdf" />
+                          </label>
+                        </div>
+                        <button disabled={isSubmitting} className="w-full bg-[#0F1F2A] text-white py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-[#DFA45B] hover:text-black transition-all disabled:opacity-50 shadow-xl shadow-[#0F1F2A]/20">
+                          {isSubmitting ? "Submitting..." : "Send Application"} <ArrowUpRight size={18} />
+                        </button>
+                      </form>
+                    </div>
                   </>
                 )}
               </div>

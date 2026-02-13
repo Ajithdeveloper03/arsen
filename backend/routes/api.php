@@ -24,7 +24,7 @@ Route::get('/public/careers', [CareerListingController::class, 'index']);
 Route::get('/public/contact-details', [ContactDetailController::class, 'index']);
 
 // Auth Routes
-Route::middleware('throttle:5,1')->post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/login', [AuthController::class, 'login']);
 
 // Protected Admin Routes
 Route::middleware('auth:sanctum')->group(function () {

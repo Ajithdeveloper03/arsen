@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { BASE_URL } from '../services/api';
 import { motion } from "framer-motion";
 import {
   Phone,
@@ -43,7 +44,7 @@ const ArsenContact = () => {
 
   const fetchDetails = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/public/contact-details");
+      const res = await fetch(`${BASE_URL}/api/public/contact-details`);
       const data = await res.json();
       if (data && data.length > 0) {
         setApiDetails(data);
@@ -63,7 +64,7 @@ const ArsenContact = () => {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/contact", {
+      const res = await fetch(`${BASE_URL}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

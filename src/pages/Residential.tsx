@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import { BASE_URL } from '../services/api';
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import {
   Plus, ArrowRight, Minus,
@@ -282,7 +283,7 @@ const ConsultationForm = () => {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/submit-form", {
+      const res = await fetch(`${BASE_URL}/api/submit-form`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -20,15 +20,19 @@ class CareerListingController extends Controller
             'department' => 'required|string',
             'location' => 'required|string',
             'salary' => 'nullable|string',
+            'description' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
             'specifications' => 'nullable|array',
+            'skills' => 'nullable|array',
+            'responsibilities' => 'nullable|array',
             'is_active' => 'boolean'
         ]);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('careers', 'public');
-            $validated['image_url'] = Storage::url($path);
+            $validated['image_url'] = Storage::disk('public')->url($path);
         }
+        unset($validated['image']);
 
         $job = CareerListing::create($validated);
         return response()->json($job);
@@ -41,8 +45,11 @@ class CareerListingController extends Controller
             'department' => 'required|string',
             'location' => 'required|string',
             'salary' => 'nullable|string',
+            'description' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
             'specifications' => 'nullable|array',
+            'skills' => 'nullable|array',
+            'responsibilities' => 'nullable|array',
             'is_active' => 'boolean'
         ]);
 
@@ -52,8 +59,9 @@ class CareerListingController extends Controller
                 Storage::disk('public')->delete($oldPath);
             }
             $path = $request->file('image')->store('careers', 'public');
-            $validated['image_url'] = Storage::url($path);
+            $validated['image_url'] = Storage::disk('public')->url($path);
         }
+        unset($validated['image']);
 
         $career->update($validated);
         return response()->json($career);

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { Activity, Globe, ChevronRight, Layers, MoveRight, ArrowDown } from "lucide-react";
+import { Activity, Globe, ChevronRight, MoveRight, ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import api, { BASE_URL } from "../services/api";
 
 // Helper to open the header popup
 const openContactPopup = () => {
@@ -46,8 +47,8 @@ export default function OngoingBiophilicProjects() {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/public/projects");
-      const data = await res.json();
+      const res = await api.get("/public/projects");
+      const data = res.data;
       if (data && data.length > 0) {
         setApiProjects(data.filter((p: any) => p.status === 'ongoing'));
       }
@@ -59,9 +60,9 @@ export default function OngoingBiophilicProjects() {
   const FINAL_PROJECTS = apiProjects.length > 0 ? apiProjects.map(p => ({
     id: p.id,
     title: p.title,
-    progress: Math.floor(Math.random() * 30) + 70, // Since we don't have progress in DB, default to 70-99%
+    progress: p.progress || 100,
     location: p.location || "Chennai",
-    img: p.image_url,
+    img: p.image_url?.startsWith('http') ? p.image_url : `${BASE_URL}${p.image_url}`,
     address: p.description || "Executing high-performance architectural standards."
   })) : PROJECTS;
 

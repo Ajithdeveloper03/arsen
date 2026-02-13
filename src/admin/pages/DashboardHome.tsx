@@ -1,42 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { Layers, Image as ImageIcon, Briefcase, Plus, ArrowRight, Activity, Database, CheckCircle2 } from 'lucide-react';
-import api from '../../services/api';
+import { useState, useEffect } from 'react';
+import { Layers, Image as ImageIcon, Briefcase, Plus, Activity, Database } from 'lucide-react';
+import api, { BASE_URL } from '../../services/api';
 import { Link } from 'react-router-dom';
 
 const DashboardHome = () => {
     const [stats, setStats] = useState<any>(null);
-    const [recentProjects, setRecentProjects] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [activities, setActivities] = useState<any[]>([]);
 
     useEffect(() => {
-        fetchStats();
-        fetchRecentProjects();
+        fetchData();
     }, []);
 
-    const fetchStats = async () => {
+    const fetchData = async () => {
+        setLoading(true);
         try {
             const res = await api.get('/dashboard/stats');
             setStats(res.data);
-        } catch (err) { console.error(err); }
+            setActivities(res.data.activities || []);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const fetchRecentProjects = async () => {
-        try {
-            const res = await api.get('/projects');
-            setRecentProjects(res.data.slice(0, 5));
-        } catch (err) { console.error(err); }
-    };
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#022C22]"></div>
+            </div>
+        );
+    }
 
     return (
-        <div className="space-y-8 max-w-7xl mx-auto">
+        <div className="space-y-8 max-w-7xl mx-auto pb-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Dashboard Overview</h1>
-                    <p className="text-slate-500 text-sm">Welcome back, Admin.</p>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <div className="relative z-10">
+                    <h1 className="text-2xl font-black text-slate-900">Dashboard Overview</h1>
+                    <p className="text-slate-500 text-sm font-medium">Manage your portfolio and banners effortlessly.</p>
                 </div>
-                <Link to="/admin/projects" className="bg-[#022C22] hover:bg-[#033a2d] text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-colors flex items-center gap-2 shadow-md hover:shadow-lg">
-                    <Plus size={18} /> Add Project
-                </Link>
+                <div className="flex gap-3 relative z-10">
+                    <Link to="/admin/projects" className="bg-[#022C22] hover:bg-[#033a2d] text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 shadow-md hover:shadow-lg active:scale-95">
+                        <Plus size={18} /> Add Project
+                    </Link>
+                </div>
+                {/* Decorative background element */}
+                <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-64 h-64 bg-slate-50 rounded-full" />
             </div>
 
             {/* Stats Cards */}
@@ -67,71 +78,82 @@ const DashboardHome = () => {
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Recent Projects Table */}
-                <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                    <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <h2 className="font-bold text-slate-900 text-lg">Recent Projects</h2>
-                        <Link to="/admin/projects" className="text-slate-500 hover:text-[#022C22] text-sm font-medium flex items-center gap-1 transition-colors">
-                            View All <ArrowRight size={14} />
-                        </Link>
+            <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
+                {/* Activity Feed Section */}
+                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-8 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                        <div>
+                            <h2 className="font-black text-slate-900 text-xl uppercase tracking-tight flex items-center gap-2">
+                                <Activity size={24} className="text-[#022C22]" /> Recent Activities
+                            </h2>
+                            <p className="text-slate-500 text-sm mt-1">Real-time updates across your entire portfolio.</p>
+                        </div>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="bg-slate-50 text-slate-500 text-xs uppercase font-bold tracking-wider border-b border-slate-100">
-                                <tr>
-                                    <th className="px-6 py-4">Title</th>
-                                    <th className="px-6 py-4">Type</th>
-                                    <th className="px-6 py-4">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {recentProjects.map((project: any) => (
-                                    <tr key={project.id} className="hover:bg-slate-50 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden shrink-0 border border-slate-200">
-                                                    <img src={project.image_url} alt="" className="w-full h-full object-cover" />
+
+                    <div className="p-8">
+                        {activities.length > 0 ? (
+                            <div className="space-y-4">
+                                {activities.map((activity, idx) => (
+                                    <div key={activity.id} className="relative flex gap-6 group">
+                                        {/* Timeline line */}
+                                        {idx !== activities.length - 1 && (
+                                            <div className="absolute left-6 top-10 bottom-0 w-[2px] bg-slate-100 group-hover:bg-emerald-100 transition-colors" />
+                                        )}
+
+                                        {/* Activity Icon/Image */}
+                                        <div className="relative z-10 w-12 h-12 rounded-2xl bg-white border border-slate-200 overflow-hidden shrink-0 shadow-sm group-hover:border-emerald-200 transition-all group-hover:scale-105">
+                                            {activity.image_url ? (
+                                                <img
+                                                    src={activity.image_url.startsWith('http') ? activity.image_url : `${BASE_URL}${activity.image_url}`}
+                                                    alt=""
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
+                                                    {activity.type === 'Project' && <Layers size={20} />}
+                                                    {activity.type === 'Banner' && <ImageIcon size={20} />}
+                                                    {activity.type === 'Career' && <Briefcase size={20} />}
                                                 </div>
+                                            )}
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="flex-1 pb-8">
+                                            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
                                                 <div>
-                                                    <p className="font-bold text-slate-900 text-sm line-clamp-1">{project.title}</p>
-                                                    <p className="text-slate-500 text-xs">{project.location}</p>
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${activity.type === 'Project' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                                                            activity.type === 'Banner' ? 'bg-blue-50 text-blue-700 border-blue-100' :
+                                                                'bg-orange-50 text-orange-700 border-orange-100'
+                                                            }`}>
+                                                            {activity.type}
+                                                        </span>
+                                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                                            {new Date(activity.time).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
+                                                    </div>
+                                                    <h3 className="text-slate-900 font-bold group-hover:text-[#022C22] transition-colors">{activity.title}</h3>
+                                                    <p className="text-slate-500 text-sm mt-1">{activity.description}</p>
                                                 </div>
+
+                                                <Link
+                                                    to={`/admin/${activity.type.toLowerCase()}s`}
+                                                    className="mt-2 md:mt-0 px-4 py-1.5 bg-slate-50 hover:bg-[#022C22] hover:text-white text-slate-600 rounded-lg text-xs font-bold transition-all border border-slate-200"
+                                                >
+                                                    Edit {activity.type}
+                                                </Link>
                                             </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-slate-600 text-sm font-medium">{project.type}</td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase border ${project.status === 'ongoing'
-                                                    ? 'bg-orange-50 text-orange-600 border-orange-200'
-                                                    : 'bg-emerald-50 text-emerald-600 border-emerald-200'
-                                                }`}>
-                                                {project.status}
-                                            </span>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </div>
                                 ))}
-                                {recentProjects.length === 0 && <tr><td colSpan={3} className="p-8 text-center text-slate-500">No recent activity.</td></tr>}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                {/* System Status */}
-                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm h-fit">
-                    <h3 className="font-bold text-slate-900 mb-6 flex items-center gap-2 text-lg">
-                        <Activity size={20} className="text-[#022C22]" /> System Status
-                    </h3>
-                    <div className="space-y-4">
-                        <StatusItem label="API Connection" status="Operational" icon={CheckCircle2} color="text-green-600" bg="bg-green-50" />
-                        <StatusItem label="Database Seed" status="Synced" icon={Database} color="text-green-600" bg="bg-green-50" />
-                        <StatusItem label="Frontend Banners" status="Live (9)" icon={ImageIcon} color="text-blue-600" bg="bg-blue-50" />
-                    </div>
-
-                    <div className="mt-8 pt-6 border-t border-slate-100">
-                        <p className="text-slate-500 text-sm mb-4">Need help? Contact developer support.</p>
-                        <button className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm font-bold transition-colors border border-slate-200">
-                            Documentation
-                        </button>
+                            </div>
+                        ) : (
+                            <div className="py-20 text-center">
+                                <Database size={48} className="mx-auto text-slate-200 mb-4" />
+                                <p className="text-slate-500 font-bold">No activity history recorded yet.</p>
+                                <p className="text-slate-400 text-sm mt-1">Start by adding projects or banners to see them here.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -140,24 +162,18 @@ const DashboardHome = () => {
 };
 
 const SimpleStat = ({ title, value, icon: Icon, bg, color, link }: any) => (
-    <Link to={link} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-[#022C22]/30 transition-all group flex items-center justify-between">
-        <div>
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">{title}</p>
-            <h3 className="text-3xl font-black text-slate-900">{value}</h3>
+    <Link to={link} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-[#022C22]/30 transition-all group flex items-center justify-between overflow-hidden relative">
+        <div className="relative z-10">
+            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-1">{title}</p>
+            <h3 className="text-4xl font-black text-slate-900 tracking-tighter">{value}</h3>
         </div>
-        <div className={`p-4 rounded-xl ${bg} ${color} group-hover:scale-110 transition-transform`}>
+        <div className={`p-4 rounded-xl ${bg} ${color} group-hover:scale-110 transition-transform relative z-10 shadow-sm`}>
             <Icon size={24} />
         </div>
+        {/* Subtle hover effect background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-50/50 opacity-0 group-hover:opacity-100 transition-opacity" />
     </Link>
 );
 
-const StatusItem = ({ label, status, icon: Icon, color, bg }: any) => (
-    <div className="flex justify-between items-center py-2.5 border-b border-slate-50 last:border-0 hover:bg-slate-50 px-2 rounded-lg transition-colors -mx-2">
-        <span className="text-slate-600 text-sm font-medium">{label}</span>
-        <div className="flex items-center gap-2">
-            <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded ${bg} ${color}`}>{status}</span>
-        </div>
-    </div>
-);
-
 export default DashboardHome;
+

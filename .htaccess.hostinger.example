@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Handle API requests (Laravel)
+  # This assumes Laravel index.php is in public_html and points to laravel_api folder
+  RewriteCond %{REQUEST_URI} ^/api [NC]
+  RewriteRule ^api/(.*)$ index.php [L]
+
+  # Handle React Routing
+  # If a file or directory exists, serve it (for assets like .js, .css, images)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  # Otherwise, send everything to React's index.html
+  RewriteRule . /index.html [L]
+</IfModule>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { BASE_URL } from '../services/api';
 import { Facebook, Instagram, Twitter, Linkedin, Mail, MapPin, Phone, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "../assets/arsen-logo.png";
@@ -21,7 +22,7 @@ export default function InteriorFooter() {
   const [contacts, setContacts] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/public/contact-details")
+    fetch(`${BASE_URL}/api/public/contact-details`)
       .then(res => res.json())
       .then(data => setContacts(data))
       .catch(err => console.error("Footer fetch error:", err));

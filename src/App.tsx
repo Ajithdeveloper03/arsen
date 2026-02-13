@@ -26,14 +26,15 @@ import Commercial from "./pages/Commercial";
 import Ongoing from "./pages/Ongoing";
 import Completed from "./pages/Completed";
 
-// Admin
-import AdminLayout from "./admin/AdminLayout";
-import DashboardHome from "./admin/pages/DashboardHome";
-import LoginPage from "./admin/LoginPage";
-import ProjectsManager from "./admin/pages/ProjectsManager";
-import CareersManager from "./admin/pages/CareersManager";
-import BannersManager from "./admin/pages/BannersManager";
-import ContactDetailsManager from "./admin/pages/ContactDetailsManager";
+// Admin (Lazy Load)
+import { lazy, Suspense } from 'react';
+const AdminLayout = lazy(() => import("./admin/AdminLayout"));
+const DashboardHome = lazy(() => import("./admin/pages/DashboardHome"));
+const LoginPage = lazy(() => import("./admin/LoginPage"));
+const ProjectsManager = lazy(() => import("./admin/pages/ProjectsManager"));
+const CareersManager = lazy(() => import("./admin/pages/CareersManager"));
+const BannersManager = lazy(() => import("./admin/pages/BannersManager"));
+const ContactDetailsManager = lazy(() => import("./admin/pages/ContactDetailsManager"));
 
 function AppContent({ isLogoAnimating, setIsLogoAnimating }: { isLogoAnimating: boolean, setIsLogoAnimating: (val: boolean) => void }) {
   const location = useLocation();
@@ -82,8 +83,17 @@ function AppContent({ isLogoAnimating, setIsLogoAnimating }: { isLogoAnimating: 
           <Route path="/completed" element={<Completed />} />
 
           {/* Admin Routes */}
-          <Route path="/admin/login" element={<LoginPage />} />
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/admin/login" element={
+            <Suspense fallback={<div className="min-h-screen bg-[#0F1F2A] flex items-center justify-center text-white">Loading Admin Portal...</div>}>
+              <LoginPage />
+            </Suspense>
+          } />
+
+          <Route path="/admin" element={
+            <Suspense fallback={<div className="min-h-screen bg-[#F1F5F9] flex items-center justify-center text-[#022C22]">Loading Dashboard...</div>}>
+              <AdminLayout />
+            </Suspense>
+          }>
             <Route path="dashboard" element={<DashboardHome />} />
             <Route path="banners" element={<BannersManager />} />
             <Route path="projects" element={<ProjectsManager />} />

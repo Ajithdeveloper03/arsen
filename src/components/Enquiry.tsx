@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Send, User, Mail, MessageSquare, Phone } from "lucide-react";
+import { BASE_URL } from '../services/api';
 
 export default function LusionInteractiveFooter() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -364,7 +365,7 @@ export default function LusionInteractiveFooter() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/submit-form", {
+      const res = await fetch(`${BASE_URL}/api/submit-form`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

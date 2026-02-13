@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { BASE_URL } from '../services/api';
+
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Plus, LayoutGrid, ArrowUpRight } from "lucide-react";
 
-import completed1 from '../assets/completed/completed1.jpg';  
+import completed1 from '../assets/completed/completed1.jpg';
 import completed3 from '../assets/completed/completed3.jpg';
-import completed2 from '../assets/completed/completed2.jpg'; 
+import completed2 from '../assets/completed/completed2.jpg';
 import completed4 from '../assets/completed/completed4.jpg';
 import completed5 from '../assets/completed/completed5.jpg';
 import completed6 from '../assets/completed/completed6.jpg';
@@ -92,7 +94,7 @@ export default function ArsenArchive() {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/public/projects");
+      const res = await fetch(`${BASE_URL}/api/public/projects`);
       const data = await res.json();
       if (data && data.length > 0) {
         setApiProjects(data.filter((p: any) => p.status === 'completed'));

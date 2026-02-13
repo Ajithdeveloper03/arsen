@@ -27,8 +27,9 @@ class BannerController extends Controller
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('banners', 'public');
-            $validated['image_url'] = Storage::url($path);
+            $validated['image_url'] = Storage::disk('public')->url($path);
         }
+        unset($validated['image']);
 
         $banner = Banner::create($validated);
         return response()->json($banner);
@@ -53,8 +54,9 @@ class BannerController extends Controller
                 Storage::disk('public')->delete($oldPath);
             }
             $path = $request->file('image')->store('banners', 'public');
-            $validated['image_url'] = Storage::url($path);
+            $validated['image_url'] = Storage::disk('public')->url($path);
         }
+        unset($validated['image']);
 
         $banner->update($validated);
         return response()->json($banner);

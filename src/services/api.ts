@@ -1,12 +1,14 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api';
+// For Hostinger, change this to your domain e.g., 'https://yourdomain.com'
+// Or use an environment variable: import.meta.env.VITE_API_BASE_URL
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://arseninterior.in';
+const API_URL = `${BASE_URL}/api`;
 
 const api = axios.create({
     baseURL: API_URL,
     headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
     }
 });
 

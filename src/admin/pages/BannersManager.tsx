@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Globe, Eye, EyeOff, Save, Loader2, X } from 'lucide-react';
-import api from '../../services/api';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Save, Loader2, Upload, Image as ImageIcon } from 'lucide-react';
+import api, { BASE_URL } from '../../services/api';
 import Modal from '../components/Modal';
+import Notification, { NotificationType } from '../components/Notification';
 
 const BannersManager = () => {
     const [banners, setBanners] = useState<any[]>([]);
@@ -9,12 +10,34 @@ const BannersManager = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingBanner, setEditingBanner] = useState<any>(null);
     const [submitting, setSubmitting] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    // Notification State
+    const [notification, setNotification] = useState<{
+        isOpen: boolean;
+        type: NotificationType;
+        message: string;
+        onConfirm?: () => void;
+    }>({
+        isOpen: false,
+        type: 'info',
+        message: ''
+    });
+
+    const showNotification = (type: NotificationType, message: string, onConfirm?: () => void) => {
+        setNotification({ isOpen: true, type, message, onConfirm });
+    };
+
+    const closeNotification = () => {
+        setNotification(prev => ({ ...prev, isOpen: false }));
+    };
 
     const [formData, setFormData] = useState({
         title: '',
         subtitle: '',
         badge: '',
-        image_url: '',
         order_index: 0,
         is_active: true
     });
@@ -35,47 +58,95 @@ const BannersManager = () => {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setSelectedFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const confirmSave = (e: React.FormEvent) => {
         e.preventDefault();
+        showNotification(
+            'confirm',
+            editingBanner ? 'Update this banner?' : 'Create new banner?',
+            () => executeSubmit()
+        );
+    };
+
+    const executeSubmit = async () => {
         setSubmitting(true);
+
+        const data = new FormData();
+        data.append('title', formData.title || '');
+        data.append('subtitle', formData.subtitle || '');
+        data.append('badge', formData.badge || '');
+        data.append('order_index', formData.order_index.toString());
+        data.append('is_active', formData.is_active ? '1' : '0');
+
+        if (selectedFile) {
+            data.append('image', selectedFile);
+        }
+
         try {
             if (editingBanner) {
-                await api.put(`/banners/${editingBanner.id}`, formData);
+                await api.post(`/banners/${editingBanner.id}`, data);
             } else {
-                await api.post('/banners', formData);
+                await api.post('/banners', data);
             }
             fetchBanners();
             setModalOpen(false);
-        } catch (err) {
+            showNotification('success', editingBanner ? 'Banner updated successfully!' : 'Banner created successfully!');
+        } catch (err: any) {
             console.error(err);
+            const message = err.response?.data?.message || 'Error saving banner. Please check all fields and try again.';
+            showNotification('error', message);
         } finally {
             setSubmitting(false);
         }
     };
 
-    const handleDelete = async (id: number) => {
-        if (!window.confirm('Delete this banner?')) return;
+    const confirmDelete = (id: number) => {
+        showNotification(
+            'confirm',
+            'Delete this banner? This action cannot be undone.',
+            () => executeDelete(id)
+        );
+    };
+
+    const executeDelete = async (id: number) => {
         try {
             await api.delete(`/banners/${id}`);
             fetchBanners();
-        } catch (err) { console.error(err); }
+            showNotification('success', 'Banner deleted successfully.');
+        } catch (err) {
+            console.error(err);
+            showNotification('error', 'Failed to delete banner.');
+        }
     };
 
     const openModal = (banner?: any) => {
         if (banner) {
             setEditingBanner(banner);
             setFormData({
-                title: banner.title,
-                subtitle: banner.subtitle,
+                title: banner.title || '',
+                subtitle: banner.subtitle || '',
                 badge: banner.badge || '',
-                image_url: banner.image_url,
                 order_index: banner.order_index,
                 is_active: !!banner.is_active
             });
+            setImagePreview(banner.image_url);
         } else {
             setEditingBanner(null);
-            setFormData({ title: '', subtitle: '', badge: 'FEATURED', image_url: '', order_index: banners.length + 1, is_active: true });
+            setFormData({ title: '', subtitle: '', badge: 'FEATURED', order_index: banners.length + 1, is_active: true });
+            setImagePreview(null);
         }
+        setSelectedFile(null);
         setModalOpen(true);
     };
 
@@ -98,7 +169,7 @@ const BannersManager = () => {
                 {loading ? <div className="text-slate-500 p-4">Loading banners...</div> : banners.map((banner) => (
                     <div key={banner.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col hover:border-[#022C22]/30 group">
                         <div className="relative h-48 bg-slate-100">
-                            <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
+                            <img src={banner.image_url?.startsWith('http') ? banner.image_url : `${BASE_URL}${banner.image_url}`} alt={banner.title} className="w-full h-full object-cover" />
                             <div className="absolute top-3 right-3 flex gap-2">
                                 <span className="bg-white/90 text-slate-800 text-xs font-bold px-2 py-1 rounded border border-slate-200 shadow-sm">Seq: {banner.order_index}</span>
                             </div>
@@ -122,7 +193,7 @@ const BannersManager = () => {
                                 <button onClick={() => openModal(banner)} className="flex-1 py-2 bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 border border-slate-200">
                                     <Edit2 size={14} /> Edit
                                 </button>
-                                <button onClick={() => handleDelete(banner.id)} className="flex-1 py-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 border border-red-100">
+                                <button onClick={() => confirmDelete(banner.id)} className="flex-1 py-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 border border-red-100">
                                     <Trash2 size={14} /> Delete
                                 </button>
                             </div>
@@ -133,11 +204,12 @@ const BannersManager = () => {
 
             {/* Simple Modal */}
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingBanner ? 'Edit Banner' : 'New Banner'}>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={confirmSave} className="space-y-4">
                     <div>
                         <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Title</label>
-                        <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+                        <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required={!editingBanner} />
                     </div>
+
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Badge</label>
@@ -149,8 +221,37 @@ const BannersManager = () => {
                         </div>
                     </div>
                     <div>
-                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Image URL</label>
-                        <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm font-mono outline-none focus:border-[#022C22]" value={formData.image_url} onChange={e => setFormData({ ...formData, image_url: e.target.value })} required />
+                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Banner Image</label>
+                        <div
+                            onClick={() => fileInputRef.current?.click()}
+                            className="bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-slate-100 hover:border-[#022C22]/30 transition-all group overflow-hidden min-h-[160px] relative"
+                        >
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                                accept="image/*"
+                            />
+
+                            {imagePreview ? (
+                                <>
+                                    <img src={imagePreview} alt="Preview" className="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity group-hover:opacity-40" />
+                                    <div className="relative z-10 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center">
+                                        <Upload className="text-[#022C22]" size={32} />
+                                        <p className="text-sm font-bold text-slate-800">Change Image</p>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <ImageIcon className="text-slate-400 group-hover:text-[#022C22] transition-colors" size={32} />
+                                    <div className="text-center">
+                                        <p className="text-sm font-bold text-slate-800">Click to upload image</p>
+                                        <p className="text-[10px] text-slate-500 uppercase font-black mt-1">PNG, JPG or WEBP (Max 2MB)</p>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div>
                         <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Subtitle</label>
@@ -169,8 +270,17 @@ const BannersManager = () => {
                     </div>
                 </form>
             </Modal>
+
+            <Notification
+                type={notification.type}
+                message={notification.message}
+                isOpen={notification.isOpen}
+                onClose={closeNotification}
+                onConfirm={notification.onConfirm}
+            />
         </div>
     );
 };
 
 export default BannersManager;
+

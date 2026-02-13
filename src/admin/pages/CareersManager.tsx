@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, MapPin, Briefcase, Tag, AlertCircle, Save, Loader2, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, MapPin, Briefcase, Save, Loader2, X, Upload, Image as ImageIcon } from 'lucide-react';
 import api from '../../services/api';
 import Modal from '../components/Modal';
+import Notification, { NotificationType } from '../components/Notification';
 
 const CareersManager = () => {
     const [careers, setCareers] = useState<any[]>([]);
@@ -10,14 +11,41 @@ const CareersManager = () => {
     const [editingCareer, setEditingCareer] = useState<any>(null);
     const [submitting, setSubmitting] = useState(false);
     const [specInput, setSpecInput] = useState('');
+    const [skillInput, setSkillInput] = useState('');
+    const [respInput, setRespInput] = useState('');
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    // Notification State
+    const [notification, setNotification] = useState<{
+        isOpen: boolean;
+        type: NotificationType;
+        message: string;
+        onConfirm?: () => void;
+    }>({
+        isOpen: false,
+        type: 'info',
+        message: ''
+    });
+
+    const showNotification = (type: NotificationType, message: string, onConfirm?: () => void) => {
+        setNotification({ isOpen: true, type, message, onConfirm });
+    };
+
+    const closeNotification = () => {
+        setNotification(prev => ({ ...prev, isOpen: false }));
+    };
 
     const [formData, setFormData] = useState({
         title: '',
         department: '',
         location: '',
         salary: '',
-        image_url: '',
+        description: '',
         specifications: [] as string[],
+        skills: [] as string[],
+        responsibilities: [] as string[],
         is_active: true
     });
 
@@ -34,28 +62,80 @@ const CareersManager = () => {
         finally { setLoading(false); }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setSelectedFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const confirmSave = (e: React.FormEvent) => {
         e.preventDefault();
+        showNotification(
+            'confirm',
+            editingCareer ? 'Update this job listing?' : 'Post new job listing?',
+            () => executeSubmit()
+        );
+    };
+
+    const executeSubmit = async () => {
         setSubmitting(true);
+
+        const data = new FormData();
+        data.append('title', formData.title);
+        data.append('department', formData.department);
+        data.append('location', formData.location);
+        data.append('salary', formData.salary || '');
+        data.append('description', formData.description || '');
+        data.append('is_active', formData.is_active ? '1' : '0');
+
+        formData.specifications.forEach((s, i) => data.append(`specifications[${i}]`, s));
+        formData.skills.forEach((s, i) => data.append(`skills[${i}]`, s));
+        formData.responsibilities.forEach((s, i) => data.append(`responsibilities[${i}]`, s));
+
+        if (selectedFile) {
+            data.append('image', selectedFile);
+        }
+
         try {
-            const payload = { ...formData, specifications: JSON.stringify(formData.specifications) };
             if (editingCareer) {
-                await api.put(`/careers/${editingCareer.id}`, payload);
+                await api.post(`/careers/${editingCareer.id}`, data);
             } else {
-                await api.post('/careers', payload);
+                await api.post('/careers', data);
             }
             fetchCareers();
             setModalOpen(false);
-        } catch (err) { console.error(err); }
-        finally { setSubmitting(false); }
+            showNotification('success', editingCareer ? 'Job updated successfully!' : 'Job posted successfully!');
+        } catch (err) {
+            console.error(err);
+            showNotification('error', 'Error saving job listing.');
+        } finally {
+            setSubmitting(false);
+        }
     };
 
-    const handleDelete = async (id: number) => {
-        if (!window.confirm('Delete this job listing?')) return;
+    const confirmDelete = (id: number) => {
+        showNotification(
+            'confirm',
+            'Delete this job listing? This action cannot be undone.',
+            () => executeDelete(id)
+        );
+    };
+
+    const executeDelete = async (id: number) => {
         try {
             await api.delete(`/careers/${id}`);
             fetchCareers();
-        } catch (err) { console.error(err); }
+            showNotification('success', 'Job listing deleted successfully.');
+        } catch (err) {
+            console.error(err);
+            showNotification('error', 'Failed to delete job listing.');
+        }
     };
 
     const addSpec = () => {
@@ -68,24 +148,62 @@ const CareersManager = () => {
         setFormData({ ...formData, specifications: formData.specifications.filter((_, i) => i !== idx) });
     };
 
+    const addSkill = () => {
+        if (skillInput.trim()) {
+            setFormData({ ...formData, skills: [...formData.skills, skillInput.trim()] });
+            setSkillInput('');
+        }
+    };
+    const removeSkill = (idx: number) => {
+        setFormData({ ...formData, skills: formData.skills.filter((_, i) => i !== idx) });
+    };
+
+    const addResp = () => {
+        if (respInput.trim()) {
+            setFormData({ ...formData, responsibilities: [...formData.responsibilities, respInput.trim()] });
+            setRespInput('');
+        }
+    };
+    const removeResp = (idx: number) => {
+        setFormData({ ...formData, responsibilities: formData.responsibilities.filter((_, i) => i !== idx) });
+    };
+
     const openModal = (career?: any) => {
+        setSelectedFile(null);
+        setImagePreview(career?.image_url || null);
         if (career) {
             setEditingCareer(career);
             let parsedSpecs = [];
-            try { parsedSpecs = typeof career.specifications === 'string' ? JSON.parse(career.specifications) : career.specifications; } catch (e) { }
+            let parsedSkills = [];
+            let parsedResps = [];
+            try { parsedSpecs = typeof career.specifications === 'string' ? JSON.parse(career.specifications) : (career.specifications || []); } catch (e) { }
+            try { parsedSkills = typeof career.skills === 'string' ? JSON.parse(career.skills) : (career.skills || []); } catch (e) { }
+            try { parsedResps = typeof career.responsibilities === 'string' ? JSON.parse(career.responsibilities) : (career.responsibilities || []); } catch (e) { }
 
             setFormData({
                 title: career.title,
                 department: career.department,
                 location: career.location,
-                salary: career.salary,
-                image_url: career.image_url || '',
+                salary: career.salary || '',
+                description: career.description || '',
                 specifications: Array.isArray(parsedSpecs) ? parsedSpecs : [],
+                skills: Array.isArray(parsedSkills) ? parsedSkills : [],
+                responsibilities: Array.isArray(parsedResps) ? parsedResps : [],
                 is_active: !!career.is_active
             });
         } else {
             setEditingCareer(null);
-            setFormData({ title: '', department: '', location: '', salary: '', image_url: '', specifications: [], is_active: true });
+            setFormData({
+                title: '',
+                department: '',
+                location: '',
+                salary: '',
+                description: '',
+                specifications: [],
+                skills: [],
+                responsibilities: [],
+                is_active: true
+            });
         }
         setModalOpen(true);
     };
@@ -146,7 +264,7 @@ const CareersManager = () => {
                                 <button onClick={() => openModal(job)} className="flex-1 py-2 bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 border border-slate-200">
                                     <Edit2 size={14} /> Edit
                                 </button>
-                                <button onClick={() => handleDelete(job.id)} className="flex-1 py-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 border border-red-100">
+                                <button onClick={() => confirmDelete(job.id)} className="flex-1 py-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 border border-red-100">
                                     <Trash2 size={14} /> Delete
                                 </button>
                             </div>
@@ -157,60 +275,135 @@ const CareersManager = () => {
 
             {/* Modal */}
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingCareer ? 'Edit Job Posting' : 'New Job Posting'}>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="col-span-2">
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Job Title</label>
-                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+                <form onSubmit={confirmSave} className="space-y-4">
+                    <div className="max-h-[60vh] overflow-y-auto px-1 space-y-4 custom-scrollbar">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="col-span-2">
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Job Title</label>
+                                <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Department</label>
+                                <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} required />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Location</label>
+                                <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} required />
+                            </div>
                         </div>
-                        <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Department</label>
-                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} required />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Location</label>
-                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} required />
-                        </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Salary Range</label>
-                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.salary} onChange={e => setFormData({ ...formData, salary: e.target.value })} placeholder="e.g. Competitive" />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Salary Range</label>
+                                <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.salary} onChange={e => setFormData({ ...formData, salary: e.target.value })} placeholder="e.g. Competitive" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Status</label>
+                                <select className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.is_active ? '1' : '0'} onChange={e => setFormData({ ...formData, is_active: e.target.value === '1' })}>
+                                    <option value="1">Active (Open)</option>
+                                    <option value="0">Inactive (Closed)</option>
+                                </select>
+                            </div>
                         </div>
+
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Status</label>
-                            <select className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.is_active ? '1' : '0'} onChange={e => setFormData({ ...formData, is_active: e.target.value === '1' })}>
-                                <option value="1">Active (Open)</option>
-                                <option value="0">Inactive (Closed)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Cover Image URL</label>
-                        <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm font-mono outline-none focus:border-[#022C22]" value={formData.image_url} onChange={e => setFormData({ ...formData, image_url: e.target.value })} placeholder="https://..." />
-                    </div>
-
-                    {/* Specifications Builder */}
-                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
-                        <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Qualifications / Specifications</label>
-                        <div className="flex gap-2 mb-2">
-                            <input
-                                className="flex-1 bg-white border border-slate-300 rounded px-2 py-1.5 text-sm outline-none focus:border-[#022C22]"
-                                placeholder="Add a requirement..."
-                                value={specInput}
-                                onChange={e => setSpecInput(e.target.value)}
-                                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())}
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Job Description</label>
+                            <textarea
+                                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22] min-h-[100px]"
+                                value={formData.description}
+                                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                placeholder="Write a detailed job description..."
                             />
-                            <button type="button" onClick={addSpec} className="px-3 bg-[#022C22] text-white rounded font-bold text-sm hover:bg-[#033a2d]">+</button>
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                            {formData.specifications.map((spec, i) => (
-                                <span key={i} className="bg-white border border-slate-200 text-slate-700 px-2 py-1 rounded text-xs flex items-center gap-1 shadow-sm">
-                                    {spec} <button type="button" onClick={() => removeSpec(i)} className="text-slate-400 hover:text-red-500"><X size={12} /></button>
-                                </span>
-                            ))}
+
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Featured Image</label>
+                            <div
+                                onClick={() => fileInputRef.current?.click()}
+                                className="group relative h-32 w-full bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl overflow-hidden cursor-pointer hover:border-[#022C22] transition-colors flex flex-col items-center justify-center gap-2"
+                            >
+                                {imagePreview ? (
+                                    <>
+                                        <img src={imagePreview} alt="Preview" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition-opacity" />
+                                        <div className="relative z-10 flex flex-col items-center gap-1">
+                                            <Upload className="text-slate-700" size={20} />
+                                            <span className="text-xs font-bold text-slate-800 bg-white/80 px-2 py-1 rounded">Change Image</span>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <ImageIcon className="text-slate-400" size={24} />
+                                        <span className="text-xs font-bold text-slate-500">Click to upload image</span>
+                                    </>
+                                )}
+                                <input ref={fileInputRef} type="file" onChange={handleFileChange} className="hidden" accept="image/*" />
+                            </div>
+                        </div>
+
+                        {/* Specifications Builder */}
+                        <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Qualifications / Specifications</label>
+                            <div className="flex gap-2 mb-2">
+                                <input
+                                    className="flex-1 bg-white border border-slate-300 rounded px-2 py-1.5 text-sm outline-none focus:border-[#022C22]"
+                                    placeholder="Add a requirement..."
+                                    value={specInput}
+                                    onChange={e => setSpecInput(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())}
+                                />
+                                <button type="button" onClick={addSpec} className="px-3 bg-[#022C22] text-white rounded font-bold text-sm hover:bg-[#033a2d]">+</button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 text-slate-700">
+                                {formData.specifications.map((spec, i) => (
+                                    <span key={i} className="bg-white border border-slate-200 px-2 py-1 rounded text-xs flex items-center gap-1 shadow-sm font-medium">
+                                        {spec} <button type="button" onClick={() => removeSpec(i)} className="text-slate-400 hover:text-red-500"><X size={12} /></button>
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Skills Builder */}
+                        <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Required Skills</label>
+                            <div className="flex gap-2 mb-2">
+                                <input
+                                    className="flex-1 bg-white border border-slate-300 rounded px-2 py-1.5 text-sm outline-none focus:border-[#022C22]"
+                                    placeholder="Add a skill..."
+                                    value={skillInput}
+                                    onChange={e => setSkillInput(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSkill())}
+                                />
+                                <button type="button" onClick={addSkill} className="px-3 bg-[#022C22] text-white rounded font-bold text-sm hover:bg-[#033a2d]">+</button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 text-slate-700">
+                                {formData.skills.map((skill, i) => (
+                                    <span key={i} className="bg-white border border-slate-200 px-2 py-1 rounded text-xs flex items-center gap-1 shadow-sm font-medium">
+                                        {skill} <button type="button" onClick={() => removeSkill(i)} className="text-slate-400 hover:text-red-500"><X size={12} /></button>
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Responsibilities Builder */}
+                        <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Responsibilities</label>
+                            <div className="flex gap-2 mb-2">
+                                <input
+                                    className="flex-1 bg-white border border-slate-300 rounded px-2 py-1.5 text-sm outline-none focus:border-[#022C22]"
+                                    placeholder="Add a responsibility..."
+                                    value={respInput}
+                                    onChange={e => setRespInput(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addResp())}
+                                />
+                                <button type="button" onClick={addResp} className="px-3 bg-[#022C22] text-white rounded font-bold text-sm hover:bg-[#033a2d]">+</button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 text-slate-700">
+                                {formData.responsibilities.map((resp, i) => (
+                                    <span key={i} className="bg-white border border-slate-200 px-2 py-1 rounded text-xs flex items-center gap-1 shadow-sm font-medium">
+                                        {resp} <button type="button" onClick={() => removeResp(i)} className="text-slate-400 hover:text-red-500"><X size={12} /></button>
+                                    </span>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
@@ -222,6 +415,14 @@ const CareersManager = () => {
                     </div>
                 </form>
             </Modal>
+
+            <Notification
+                type={notification.type}
+                message={notification.message}
+                isOpen={notification.isOpen}
+                onClose={closeNotification}
+                onConfirm={notification.onConfirm}
+            />
         </div>
     );
 };

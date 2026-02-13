@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Phone, Mail, MapPin, Globe, Loader2, Link as LinkIcon, Instagram, Facebook, Twitter, Linkedin, Save } from 'lucide-react';
 import api from '../../services/api';
 import Modal from '../components/Modal';
+import Notification, { NotificationType } from '../components/Notification';
 
 const ContactDetailsManager = () => {
     const [details, setDetails] = useState<any[]>([]);
@@ -9,6 +10,26 @@ const ContactDetailsManager = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingDetail, setEditingDetail] = useState<any>(null);
     const [submitting, setSubmitting] = useState(false);
+
+    // Notification State
+    const [notification, setNotification] = useState<{
+        isOpen: boolean;
+        type: NotificationType;
+        message: string;
+        onConfirm?: () => void;
+    }>({
+        isOpen: false,
+        type: 'info',
+        message: ''
+    });
+
+    const showNotification = (type: NotificationType, message: string, onConfirm?: () => void) => {
+        setNotification({ isOpen: true, type, message, onConfirm });
+    };
+
+    const closeNotification = () => {
+        setNotification(prev => ({ ...prev, isOpen: false }));
+    };
 
     const [formData, setFormData] = useState({
         type: 'phone',
@@ -31,8 +52,16 @@ const ContactDetailsManager = () => {
         finally { setLoading(false); }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const confirmSave = (e: React.FormEvent) => {
         e.preventDefault();
+        showNotification(
+            'confirm',
+            editingDetail ? 'Update this contact detail?' : 'Add new contact detail?',
+            () => executeSubmit()
+        );
+    };
+
+    const executeSubmit = async () => {
         setSubmitting(true);
         try {
             if (editingDetail) {
@@ -42,13 +71,31 @@ const ContactDetailsManager = () => {
             }
             fetchDetails();
             setModalOpen(false);
-        } catch (err) { console.error(err); }
-        finally { setSubmitting(false); }
+            showNotification('success', editingDetail ? 'Contact info updated!' : 'Contact info added!');
+        } catch (err) {
+            console.error(err);
+            showNotification('error', 'Failed to save contact info.');
+        } finally {
+            setSubmitting(false);
+        }
     };
 
-    const handleDelete = async (id: number) => {
-        if (!window.confirm('Delete data?')) return;
-        try { await api.delete(`/contact-details/${id}`); fetchDetails(); } catch (e) { }
+    const confirmDelete = (id: number) => {
+        showNotification(
+            'confirm',
+            'Delete this contact info?',
+            () => executeDelete(id)
+        );
+    };
+
+    const executeDelete = async (id: number) => {
+        try {
+            await api.delete(`/contact-details/${id}`);
+            fetchDetails();
+            showNotification('success', 'Contact info deleted.');
+        } catch (e) {
+            showNotification('error', 'Failed to delete contact info.');
+        }
     };
 
     const getIcon = (iconName: string) => {
@@ -118,7 +165,7 @@ const ContactDetailsManager = () => {
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-2">
                                         <button onClick={() => openModal(detail)} className="p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-lg transition-colors border border-transparent hover:border-slate-200"><Edit2 size={16} /></button>
-                                        <button onClick={() => handleDelete(detail.id)} className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition-colors border border-transparent hover:border-red-100"><Trash2 size={16} /></button>
+                                        <button onClick={() => confirmDelete(detail.id)} className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition-colors border border-transparent hover:border-red-100"><Trash2 size={16} /></button>
                                     </div>
                                 </td>
                             </tr>
@@ -129,7 +176,7 @@ const ContactDetailsManager = () => {
 
             {/* Modal */}
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingDetail ? 'Edit Info' : 'New Contact Info'}>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={confirmSave} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Type</label>
@@ -175,6 +222,14 @@ const ContactDetailsManager = () => {
                     </div>
                 </form>
             </Modal>
+
+            <Notification
+                type={notification.type}
+                message={notification.message}
+                isOpen={notification.isOpen}
+                onClose={closeNotification}
+                onConfirm={notification.onConfirm}
+            />
         </div>
     );
 };
