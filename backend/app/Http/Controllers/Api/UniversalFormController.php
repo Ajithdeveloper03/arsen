@@ -14,6 +14,12 @@ class UniversalFormController extends Controller
     {
         $formType = $request->input('form_type', 'General Submission');
         $data = $request->except(['form_type']);
+        
+        // Filter out files from data array to avoid issues in the email view
+        $data = array_filter($data, function($value) {
+            return !($value instanceof \Illuminate\Http\UploadedFile);
+        });
+
         $files = $request->allFiles();
 
         // Basic validation
@@ -26,6 +32,7 @@ class UniversalFormController extends Controller
         ]);
 
         try {
+            $recipients = ['sales@arseninterior.in', 'admin@inymart.in'];
             $mail = new FormSubmissionMail($formType, $data);
 
             // Attach files if any
@@ -49,7 +56,8 @@ class UniversalFormController extends Controller
                 ]);
             }
 
-            Mail::to('sales@arseninterior.in')
+            $recipients = ['sales@arseninterior.in', 'admin@inymart.in'];
+            Mail::to($recipients)
                 ->send($mail);
 
             return response()->json([

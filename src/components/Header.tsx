@@ -5,6 +5,7 @@ import { Menu, X, ChevronDown, Send, ArrowRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/arsen-logo.png";
+import { BASE_URL } from '../services/api';
 
 interface HeaderProps {
   isLogoAnimating: boolean;
@@ -20,6 +21,40 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
 
   const [showContactModal, setShowContactModal] = useState(false);
   const [showJobModal, setShowJobModal] = useState(false);
+
+  // Modal Form State
+  const [modalData, setModalData] = useState({ name: "", email: "", message: "" });
+  const [modalSubmitting, setModalSubmitting] = useState(false);
+  const [modalSent, setModalSent] = useState(false);
+
+  const handleModalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalSubmitting(true);
+    try {
+      const res = await fetch(`${BASE_URL}/api/submit-form`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          ...modalData,
+          form_type: 'Header Contact Modal'
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to send message");
+
+      setModalSent(true);
+      setModalData({ name: "", email: "", message: "" });
+      setTimeout(() => setModalSent(false), 5000);
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Something went wrong");
+    } finally {
+      setModalSubmitting(false);
+    }
+  };
 
   const toggleSub = (key: string) =>
     setOpenSub((prev) => (prev === key ? null : key));
@@ -251,14 +286,58 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
                 </h2>
               </div>
 
-              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                <input type="text" placeholder="Your Name" className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm" />
-                <input type="email" placeholder="Email Address" className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm" />
-                <textarea rows={3} placeholder="Project Description" className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm resize-none" />
-                <button className="w-full bg-[#FFA62B] text-black font-black py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-[#ffb54d] transition-all tracking-[0.2em] text-[10px] mt-2 uppercase">
-                  Transmit Request <Send size={14} fill="black" />
-                </button>
-              </form>
+              {modalSent ? (
+                <div className="text-center py-10 space-y-4">
+                  <div className="w-16 h-16 bg-[#FFA62B]/20 rounded-full flex items-center justify-center mx-auto text-[#FFA62B]">
+                    <Send size={32} />
+                  </div>
+                  <h3 className="text-white text-xl font-bold">Message Transmitted</h3>
+                  <p className="text-white/40 text-sm">We'll be in touch with your vision shortly.</p>
+                  <button
+                    onClick={() => setShowContactModal(false)}
+                    className="mt-4 text-[#FFA62B] text-xs font-bold uppercase tracking-widest hover:underline"
+                  >
+                    Close Window
+                  </button>
+                </div>
+              ) : (
+                <form className="space-y-4" onSubmit={handleModalSubmit}>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    value={modalData.name}
+                    onChange={(e) => setModalData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Your Name"
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm"
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    value={modalData.email}
+                    onChange={(e) => setModalData(prev => ({ ...prev, email: e.target.value }))}
+                    placeholder="Email Address"
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm"
+                  />
+                  <textarea
+                    name="message"
+                    required
+                    rows={3}
+                    value={modalData.message}
+                    onChange={(e) => setModalData(prev => ({ ...prev, message: e.target.value }))}
+                    placeholder="Project Description"
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm resize-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={modalSubmitting}
+                    className="w-full bg-[#FFA62B] text-black font-black py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-[#ffb54d] transition-all tracking-[0.2em] text-[10px] mt-2 uppercase disabled:opacity-50"
+                  >
+                    {modalSubmitting ? "Transmitting..." : "Transmit Request"} <Send size={14} fill="black" />
+                  </button>
+                </form>
+              )}
             </motion.div>
           </div>
         )}

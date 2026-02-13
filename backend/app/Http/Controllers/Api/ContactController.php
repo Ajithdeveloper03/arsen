@@ -20,7 +20,8 @@ class ContactController extends Controller
     ]);
 
     try {
-        Mail::to('sales@arseninterior.in')
+        $recipients = ['sales@arseninterior.in', 'admin@inymart.in'];
+        Mail::to($recipients)
             ->send(new \App\Mail\FormSubmissionMail('Contact Form Submission', $validated));
 
         return response()->json([

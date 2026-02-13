@@ -20,7 +20,8 @@ class PopupController extends Controller
     ]);
 
     try {
-        Mail::to('sales@arseninterior.in')
+        $recipients = ['sales@arseninterior.in', 'admin@inymart.in'];
+        Mail::to($recipients)
             ->send(new \App\Mail\FormSubmissionMail('Popup Enquiry', $validated));
 
         return response()->json([
