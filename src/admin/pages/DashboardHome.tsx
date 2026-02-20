@@ -2,11 +2,16 @@ import { useState, useEffect } from 'react';
 import { Layers, Image as ImageIcon, Briefcase, Plus, Activity, Database } from 'lucide-react';
 import api, { BASE_URL } from '../../services/api';
 import { Link } from 'react-router-dom';
+// Data & Utils for accurate count
+import { FEATURED_PROJECTS, RAW_COMPLETED_PROJECTS_LIST } from '../../data/completedProjects';
+import { HARDCODED_ONGOING_PROJECTS } from '../../data/ongoingProjects';
+import { mergeProjectsWithApi } from '../../utils/projectMerge';
 
 const DashboardHome = () => {
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [activities, setActivities] = useState<any[]>([]);
+    const [totalProjectCount, setTotalProjectCount] = useState(0);
 
     useEffect(() => {
         fetchData();
@@ -15,9 +20,26 @@ const DashboardHome = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const res = await api.get('/dashboard/stats');
-            setStats(res.data);
-            setActivities(res.data.activities || []);
+            // Fetch Stats & Projects
+            const [statsRes, projectsRes] = await Promise.all([
+                api.get('/dashboard/stats'),
+                api.get('/projects')
+            ]);
+
+            setStats(statsRes.data);
+            setActivities(statsRes.data.activities || []);
+
+            // Calculate "Real" Count using Merge Logic (same as ProjectsManager)
+            const LOCAL_MASTER_LIST = [
+                ...HARDCODED_ONGOING_PROJECTS,
+                ...FEATURED_PROJECTS.map((p) => ({ title: p.title })),
+                ...RAW_COMPLETED_PROJECTS_LIST.map((t) => ({ title: t.replace(/^\d+\s+/, "").trim() }))
+            ];
+
+            // Merge checks for duplicates by title
+            const merged = mergeProjectsWithApi(LOCAL_MASTER_LIST.map(p => ({ ...p, id: 'temp' })), projectsRes.data);
+            setTotalProjectCount(merged.length);
+
         } catch (err) {
             console.error(err);
         } finally {
@@ -54,7 +76,7 @@ const DashboardHome = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <SimpleStat
                     title="Total Projects"
-                    value={stats?.projects_count || 0}
+                    value={totalProjectCount || stats?.projects_count || 0}
                     icon={Layers}
                     bg="bg-emerald-50"
                     color="text-emerald-600"

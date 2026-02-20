@@ -161,25 +161,20 @@ export default function InteriorFooter() {
               )}
 
               <div className="flex items-center justify-start gap-2 pt-2">
-                {[
-                  { Icon: Facebook, href: "https://www.facebook.com/profile.php?id=100025176500300" },
-                  { Icon: Twitter, href: "https://twitter.com/ArsenSenthil" },
-                  { Icon: Instagram, href: "https://www.instagram.com/arseninterio/" },
-                  { Icon: Linkedin, href: "https://www.linkedin.com/company/13732875/" }
-                ].concat(socialLinks.map(s => {
-                  const IconComp = IconMap[s.icon] || Globe;
-                  return { Icon: IconComp, href: s.value };
-                })).map((social, i) => (
-                  <a
-                    key={i}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-full border border-white/20 hover:border-[#FFA62B] hover:bg-[#FFA62B]/10 transition-all duration-300"
-                  >
-                    <social.Icon className="w-3 h-3 text-slate-300 hover:text-[#FFA62B]" />
-                  </a>
-                ))}
+                {socialLinks.map((social, i) => {
+                  const IconComp = IconMap[social.icon] || Globe;
+                  return (
+                    <a
+                      key={i}
+                      href={social.value}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-full border border-white/20 hover:border-[#FFA62B] hover:bg-[#FFA62B]/10 transition-all duration-300"
+                    >
+                      <IconComp className="w-3 h-3 text-slate-300 hover:text-[#FFA62B]" />
+                    </a>
+                  );
+                })}
               </div>
             </ul>
           </div>
@@ -188,7 +183,7 @@ export default function InteriorFooter() {
         {/* BOTTOM BAR */}
         <div className="mt-16 md:mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-slate-400 text-xs tracking-[0.2em] uppercase text-center md:text-left">
-            © {currentYear} Arsen Interio Pvt Ltd — All Rights Reserved.
+            © {currentYear} Arsen Interio Pvt Ltd — All Rights Reserved | Designed by <a href="https://inymartlabs.com" target="_blank" rel="noopener noreferrer" className="text-[#FFA62B] hover:underline">Inymart Labs</a>
           </p>
           <p className="text-white font-bold text-[10px] tracking-[0.1em] uppercase">
             Architectural Excellence & Interior Solutions

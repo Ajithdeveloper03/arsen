@@ -45,6 +45,7 @@ const Careers = () => {
 
   const [formData, setFormData] = useState({
     name: "",
+    phone: "",
     email: "",
     portfolio: "",
     cv: null,
@@ -77,7 +78,8 @@ const Careers = () => {
     img: j.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200",
     specs: typeof j.specifications === 'string' ? JSON.parse(j.specifications) : (j.specifications || []),
     skills: typeof j.skills === 'string' ? JSON.parse(j.skills) : (j.skills || []),
-    responsibilities: typeof j.responsibilities === 'string' ? JSON.parse(j.responsibilities) : (j.responsibilities || [])
+    responsibilities: typeof j.responsibilities === 'string' ? JSON.parse(j.responsibilities) : (j.responsibilities || []),
+    contact_email: j.contact_email
   })) : vacancies;
 
   const handleInputChange = (e: any) => {
@@ -91,12 +93,17 @@ const Careers = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.phone || formData.phone.length < 10) {
+      alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
     setIsSubmitting(true);
 
     try {
       const data = new FormData();
       data.append("form_type", "Career Application: " + (activeJob?.title || "General"));
       data.append("name", formData.name);
+      data.append("phone", formData.phone);
       data.append("email", formData.email);
       data.append("portfolio_link", formData.portfolio);
       if (formData.cv) {
@@ -115,7 +122,7 @@ const Careers = () => {
 
       if (res.ok) {
         setFormSubmitted(true);
-        setFormData({ name: "", email: "", portfolio: "", cv: null });
+        setFormData({ name: "", phone: "", email: "", portfolio: "", cv: null });
         setTimeout(() => {
           setFormSubmitted(false);
           setShowForm(false);
@@ -303,6 +310,20 @@ const Careers = () => {
                       </div>
                     )}
 
+                    {(activeJob as any)?.contact_email && (
+                      <div className="mb-6 p-4 bg-emerald-50 rounded-xl flex items-center gap-3">
+                        <div className="p-2 bg-emerald-100 rounded-full text-emerald-700">
+                          <Mail size={16} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-emerald-700">Or Email your CV directly</p>
+                          <a href={`mailto:${(activeJob as any).contact_email}`} className="text-sm font-bold text-emerald-900 underline">
+                            {(activeJob as any).contact_email}
+                          </a>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="pt-8 border-t border-gray-100">
                       <h3 className="text-xl font-bold mb-6">Apply Now</h3>
                       <form onSubmit={handleFormSubmit} className="space-y-5">
@@ -315,6 +336,21 @@ const Careers = () => {
                             <label className="text-[10px] uppercase font-bold text-gray-400">Email Address</label>
                             <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" />
                           </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase font-bold text-gray-400">Phone Number</label>
+                          <input
+                            required
+                            name="phone"
+                            type="tel"
+                            value={formData.phone}
+                            onChange={(e: any) => {
+                              const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                              setFormData(prev => ({ ...prev, phone: value }));
+                            }}
+                            className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all"
+                            placeholder="10-digit Mobile Number"
+                          />
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] uppercase font-bold text-gray-400">Portfolio Link (URL)</label>

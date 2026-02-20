@@ -1,42 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Activity, Globe, ChevronRight, MoveRight, ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import api, { BASE_URL } from "../services/api";
+import banner from '../assets/corporate3.jpg';
+// import { HARDCODED_ONGOING_PROJECTS } from "../data/ongoingProjects"; // Disabled as per user request for "no default"
+import { mergeProjectsWithApi } from "../utils/projectMerge";
 
 // Helper to open the header popup
 const openContactPopup = () => {
   window.dispatchEvent(new Event("open-contact"));
 };
-
-const PROJECTS = [
-  {
-    id: 1,
-    title: "Temenos – KG360",
-    progress: 92,
-    location: "Perungudi, Chennai",
-    img: "https://res.cloudinary.com/jerrick/image/upload/d_642250b563292b35f27461a7.png,f_jpg,fl_progressive,q_auto,w_1024/640eff394904ce001dea70b8.jpg", // Modern Tech Park Interior
-    address: "IT Business Park, Plot No. 232/1 Veera am Street, OMR Bypass Road"
-  },
-  {
-    id: 2,
-    title: "GMMCO",
-    progress: 74,
-    location: "Salem",
-    img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=2070&auto=format&fit=crop", // Industrial/Corporate facade
-    address: "Strategic Industrial Development"
-  },
-  {
-    id: 3,
-    title: "Sundaram Finance",
-    progress: 85,
-    location: "Mount Road, Chennai",
-    img: "https://cdn.buildofy.com/projects/1809e23e-c606-43ce-a215-c6d42c03002f.jpeg", // Premium Financial HQ
-    address: "Iconic Mount Road Landmark"
-  }
-];
 
 export default function OngoingBiophilicProjects() {
   const [apiProjects, setApiProjects] = useState<any[]>([]);
@@ -57,14 +33,11 @@ export default function OngoingBiophilicProjects() {
     }
   };
 
-  const FINAL_PROJECTS = apiProjects.length > 0 ? apiProjects.map(p => ({
-    id: p.id,
-    title: p.title,
-    progress: p.progress || 100,
-    location: p.location || "Chennai",
-    img: p.image_url?.startsWith('http') ? p.image_url : `${BASE_URL}${p.image_url}`,
-    address: p.description || "Executing high-performance architectural standards."
-  })) : PROJECTS;
+  // Prefer API data completely. We pass an empty array as the 'local' list so that only API projects are used.
+  // This satisfies the requirement: "no default in ongoing projects... customizable like deleting".
+  const FINAL_PROJECTS = useMemo(() => {
+    return mergeProjectsWithApi([], apiProjects, true);
+  }, [apiProjects]);
 
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
@@ -73,11 +46,11 @@ export default function OngoingBiophilicProjects() {
   return (
     <div className="bg-black min-h-screen text-white font-sans overflow-x-hidden selection:bg-[#c9a050] selection:text-black">
 
-      {/* 1. CINEMATIC PARALLAX HERO (UNCHANGED) */}
+      {/* 1. CINEMATIC PARALLAX HERO */}
       <section className="relative h-[100svh] w-full flex items-center justify-center overflow-hidden">
         <motion.div className="absolute inset-0 z-0" style={{ scale, opacity }}>
           <img
-            src="https://amazingarchitecture.com/storage/1529/n_cube_villa_cubism_architects_and_interiors_india.jpg"
+            src={banner}
             alt="Biophilic Masterpiece"
             className="w-full h-full object-cover filter brightness-[0.4]"
           />
@@ -123,7 +96,8 @@ export default function OngoingBiophilicProjects() {
               transition={{ duration: 1 }}
             >
               <motion.img
-                src={project.img}
+                // Handle different image sources (Hardcoded import vs API URL)
+                src={project.image_url || project.img}
                 alt={project.title}
                 className="absolute inset-0 w-full h-full object-cover filter brightness-[0.35]"
                 initial={{ scale: 1.1 }}
@@ -148,7 +122,7 @@ export default function OngoingBiophilicProjects() {
                     {project.title}
                   </h3>
                   <p className="text-white/60 text-lg md:text-xl leading-relaxed max-w-xl mx-auto md:mx-0">
-                    {project.address}. <br /> Currently at {project.progress}% completion, executing high-performance architectural standards.
+                    {project.address || project.description}. <br /> Currently at {project.progress}% completion, executing high-performance architectural standards.
                   </p>
                   <Link to="/contact" className="flex items-center gap-3 text-[#c9a050] hover:text-white transition-colors mx-auto md:mx-0">
                     <span className="text-[10px] md:text-md font-black uppercase tracking-[0.2em]">Know more</span>
@@ -187,10 +161,7 @@ export default function OngoingBiophilicProjects() {
         </AnimatePresence>
       </section>
 
-      {/* 3. RESPONSIVE STATS FINALE (UNCHANGED) */}
-      {/* 3. MINIMAL ONGOING STATUS SECTION */}
-      {/* --- 3. ONGOING PROJECT PHILOSOPHY (Minimal & Premium) --- */}
-      {/* --- 3. PREMIUM MINIMAL CALL TO ACTION --- */}
+      {/* 3. PREMIUM MINIMAL CALL TO ACTION */}
       <section className="py-14 md:py-26 bg-black relative overflow-hidden px-6 text-center">
         {/* Subtle Ambient Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#c9a050]/10 blur-[120px] rounded-full pointer-events-none" />

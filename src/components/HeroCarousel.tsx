@@ -123,7 +123,8 @@ export default function HeroLuxuryFinal() {
     title: b.title || "Elite Interiors",
     subtitle: b.subtitle || "Experience architectural perfection and bespoke design solutions tailored for your lifestyle.",
     badge: b.badge || "PREMIUM",
-    link: b.link
+    link_text: b.link_text,
+    link_url: b.link_url
   })) : slides;
 
   const nextSlide = useCallback(() => {
@@ -241,9 +242,16 @@ export default function HeroLuxuryFinal() {
               </p>
 
               <div className="flex flex-wrap gap-4 pt-3">
-                <Link to="/completed" className="px-8 py-4 bg-[#f09f2d] text-white font-bold uppercase tracking-widest text-xs hover:bg-[#d98b1a] transition-all transform hover:-translate-y-1 shadow-lg">
-                  Explore Projects
-                </Link>
+                {(currentSlides[index] as any).link_text && (currentSlides[index] as any).link_url ? (
+                  <Link to={(currentSlides[index] as any).link_url} className="px-8 py-4 bg-[#f09f2d] text-white font-bold uppercase tracking-widest text-xs hover:bg-[#d98b1a] transition-all transform hover:-translate-y-1 shadow-lg">
+                    {(currentSlides[index] as any).link_text}
+                  </Link>
+                ) : (
+                  <Link to="/completed" className="px-8 py-4 bg-[#f09f2d] text-white font-bold uppercase tracking-widest text-xs hover:bg-[#d98b1a] transition-all transform hover:-translate-y-1 shadow-lg">
+                    Explore Projects
+                  </Link>
+                )}
+
                 <Link to="/contact" className="px-8 py-4 border border-white/30 text-white font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-all backdrop-blur-sm">
                   Contact Us
                 </Link>

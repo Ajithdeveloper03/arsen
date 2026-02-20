@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 // Components
 import LogoAnimation from "./components/LogoAnimation";
@@ -94,6 +94,7 @@ function AppContent({ isLogoAnimating, setIsLogoAnimating }: { isLogoAnimating: 
               <AdminLayout />
             </Suspense>
           }>
+            <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardHome />} />
             <Route path="banners" element={<BannersManager />} />
             <Route path="projects" element={<ProjectsManager />} />

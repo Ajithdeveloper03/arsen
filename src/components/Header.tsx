@@ -21,14 +21,19 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
 
   const [showContactModal, setShowContactModal] = useState(false);
   const [showJobModal, setShowJobModal] = useState(false);
+  const [latestJob, setLatestJob] = useState<any>(null);
 
   // Modal Form State
-  const [modalData, setModalData] = useState({ name: "", email: "", message: "" });
+  const [modalData, setModalData] = useState({ name: "", phone: "", email: "", message: "" });
   const [modalSubmitting, setModalSubmitting] = useState(false);
   const [modalSent, setModalSent] = useState(false);
 
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!modalData.phone || modalData.phone.length < 10) {
+      alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
     setModalSubmitting(true);
     try {
       const res = await fetch(`${BASE_URL}/api/submit-form`, {
@@ -46,7 +51,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
       if (!res.ok) throw new Error("Failed to send message");
 
       setModalSent(true);
-      setModalData({ name: "", email: "", message: "" });
+      setModalData({ name: "", phone: "", email: "", message: "" });
       setTimeout(() => setModalSent(false), 5000);
     } catch (err: any) {
       console.error(err);
@@ -62,6 +67,21 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
+
+    const fetchLatestJob = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/public/careers`);
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          // Sort by ID desc to get the latest
+          const sorted = data.sort((a: any, b: any) => b.id - a.id);
+          setLatestJob(sorted[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching latest job:", error);
+      }
+    };
+    fetchLatestJob();
 
     const handleOpenContact = () => setShowContactModal(true);
     window.addEventListener("open-contact", handleOpenContact);
@@ -209,7 +229,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
           </motion.div>
         )}
 
-        {showJobModal && (
+        {showJobModal && latestJob && (
           <motion.div
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -223,17 +243,17 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
             <div className="flex flex-col h-full">
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-2 w-2 rounded-full bg-[#FFA62B] animate-pulse" />
-                <span className="text-[10px] font-black tracking-[0.2em] text-[#FFA62B] uppercase">r
+                <span className="text-[10px] font-black tracking-[0.2em] text-[#FFA62B] uppercase">
                   Latest Job Vacancy
                 </span>
               </div>
 
               <h3 className="text-xl md:text-2xl font-bold text-white leading-tight mb-2">
-                Senior Project <br className="hidden sm:block" /> Engineer
+                {latestJob.title}
               </h3>
 
               <p className="text-white/40 text-[9px] sm:text-[10px] uppercase tracking-widest mb-6">
-                Commercial • 08 Openings • HQ
+                {latestJob.department} • {latestJob.location}
               </p>
 
               <Link
@@ -301,6 +321,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
                   </button>
                 </div>
               ) : (
+
                 <form className="space-y-4" onSubmit={handleModalSubmit}>
                   <input
                     type="text"
@@ -309,6 +330,18 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
                     value={modalData.name}
                     onChange={(e) => setModalData(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="Your Name"
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm"
+                  />
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    value={modalData.phone}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      setModalData(prev => ({ ...prev, phone: value }));
+                    }}
+                    placeholder="Mobile Number"
                     className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm"
                   />
                   <input
@@ -341,7 +374,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence >
     </>
   );
 }

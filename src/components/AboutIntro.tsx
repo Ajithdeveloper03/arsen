@@ -21,10 +21,10 @@ export default function AboutIntro() {
       suffix: "+"
     },
     {
-      number: 15,
-      label: "Property Value Increase",
+      number: 360,
+      label: "Project Management",
       icon: TrendingUp,
-      suffix: "%"
+      suffix: "°"
     }
   ];
 
@@ -140,10 +140,10 @@ export default function AboutIntro() {
               <div className="flex items-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-[#16697A]" />
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                  Space Maximization
+                  Planning Accuracy
                 </p>
               </div>
-              <p className="text-2xl md:text-3xl font-black text-[#16697A]">40%</p>
+              <p className="text-2xl md:text-3xl font-black text-[#16697A]">100%</p>
             </div>
           </div>
 

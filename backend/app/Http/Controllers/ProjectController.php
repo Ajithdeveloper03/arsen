@@ -106,8 +106,8 @@ class ProjectController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'message' => 'An error occurred while updating the project.',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

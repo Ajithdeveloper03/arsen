@@ -61,6 +61,10 @@ const ArsenContact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.phone || formData.phone.length < 10) {
+      alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
     setIsSubmitting(true);
 
     try {
@@ -197,15 +201,15 @@ const ArsenContact = () => {
             <div className="pt-2 border-t border-white/10">
               <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">Follow our journey</p>
               <div className="flex gap-4">
-                {[
+                {(socialLinks.length > 0 ? socialLinks.map(s => ({
+                  Icon: IconMap[s.icon] || Globe,
+                  href: s.value
+                })) : [
                   { Icon: Facebook, href: "https://www.facebook.com/arseninterior.in/" },
                   { Icon: Twitter, href: "https://twitter.com/ArsenSenthil" },
                   { Icon: Instagram, href: "https://www.instagram.com/arseninterio/" },
                   { Icon: Linkedin, href: "https://www.linkedin.com/company/13732875/admin/?feedType=following" }
-                ].concat(socialLinks.map(s => ({
-                  Icon: IconMap[s.icon] || Globe,
-                  href: s.value
-                }))).map((social, i) => (
+                ]).map((social, i) => (
                   <a key={i} href={social.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all">
                     <social.Icon size={16} />
                   </a>
@@ -257,8 +261,13 @@ const ArsenContact = () => {
                     <FloatingInput
                       label="Phone Number"
                       name="phone"
+                      type="tel"
+                      required
                       value={formData.phone}
-                      onChange={handleInputChange}
+                      onChange={(e: any) => {
+                        const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                        setFormData(prev => ({ ...prev, phone: value }));
+                      }}
                     />
                     <FloatingInput
                       label="Subject"

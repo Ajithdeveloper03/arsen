@@ -42,6 +42,7 @@ const CareersManager = () => {
         department: '',
         location: '',
         salary: '',
+        contact_email: '',
         description: '',
         specifications: [] as string[],
         skills: [] as string[],
@@ -91,6 +92,7 @@ const CareersManager = () => {
         data.append('department', formData.department);
         data.append('location', formData.location);
         data.append('salary', formData.salary || '');
+        data.append('contact_email', formData.contact_email || '');
         data.append('description', formData.description || '');
         data.append('is_active', formData.is_active ? '1' : '0');
 
@@ -185,6 +187,7 @@ const CareersManager = () => {
                 department: career.department,
                 location: career.location,
                 salary: career.salary || '',
+                contact_email: career.contact_email || '',
                 description: career.description || '',
                 specifications: Array.isArray(parsedSpecs) ? parsedSpecs : [],
                 skills: Array.isArray(parsedSkills) ? parsedSkills : [],
@@ -198,6 +201,7 @@ const CareersManager = () => {
                 department: '',
                 location: '',
                 salary: '',
+                contact_email: '',
                 description: '',
                 specifications: [],
                 skills: [],
@@ -303,6 +307,10 @@ const CareersManager = () => {
                                     <option value="1">Active (Open)</option>
                                     <option value="0">Inactive (Closed)</option>
                                 </select>
+                            </div>
+                            <div className="col-span-2">
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Contact Email (Optional)</label>
+                                <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.contact_email} onChange={e => setFormData({ ...formData, contact_email: e.target.value })} placeholder="e.g. careers@arsen.com" />
                             </div>
                         </div>
 

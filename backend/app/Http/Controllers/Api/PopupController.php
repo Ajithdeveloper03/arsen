@@ -14,7 +14,7 @@ class PopupController extends Controller
     $validated = $request->validate([
         'name'    => 'required|string|max:100',
         'email'   => 'required|email',
-        'phone'   => 'nullable|string|max:20',
+        'phone'   => 'required|string|max:20',
         
         'description' => 'required|string|max:2000',
     ]);

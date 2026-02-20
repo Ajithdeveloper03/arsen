@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 // Assets
+import aboutbg from '../assets/about-bg.jpg';
 import factory1 from '../assets/factory1.jpg';
 import about1 from '../assets/about1.jpg';
 import about2 from '../assets/about2.jpg';
@@ -74,7 +75,7 @@ const EliteAboutPage = () => {
       {/* ================= HERO ================= */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#010B0A]">
         <img
-          src="https://images.pexels.com/photos/1648768/pexels-photo-1648768.jpeg"
+          src={aboutbg}
           className="absolute inset-0 w-full h-full object-cover opacity-30"
           alt="Hero"
         />
@@ -137,29 +138,35 @@ const EliteAboutPage = () => {
           </div>
 
           <div className="relative">
-            {/* CORRECTED SVG PATH: Starts at -100 and ends at 1700 to prevent awkward cut-offs */}
-            <svg 
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-30 pointer-events-none" 
-              viewBox="0 0 400 1600" 
+            {/* CORRECTED SVG: Uses preserveAspectRatio="none" and a tall viewBox to ensure it covers the scrolling area */}
+            <svg
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[110%] opacity-40 pointer-events-none"
+              viewBox="0 0 400 2000"
               preserveAspectRatio="none"
             >
               <defs>
                 <filter id="glow">
-                  <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                  <feGaussianBlur stdDeviation="6" result="coloredBlur" />
                   <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
+                    <feMergeNode in="coloredBlur" />
+                    <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
+                {/* Gradient to fade out the line at the bottom */}
+                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#FDBA74" stopOpacity="1" />
+                  <stop offset="85%" stopColor="#FDBA74" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#FDBA74" stopOpacity="0" />
+                </linearGradient>
               </defs>
               <motion.path
                 initial={{ pathLength: 0 }}
                 whileInView={{ pathLength: 1 }}
-                viewport={{ once: false, amount: 0.1 }}
-                transition={{ duration: 2.5, ease: "easeInOut" }}
-                d="M200 -100 C 350 200, 50 400, 200 650 C 350 900, 50 1100, 200 1350 C 350 1600, 50 1800, 200 1900"
-                stroke="#FDBA74"
-                strokeWidth="8"
+                viewport={{ once: false, amount: 0.01 }}
+                transition={{ duration: 3, ease: "easeInOut" }}
+                d="M200 0 C 350 300, 50 600, 200 900 C 350 1200, 50 1500, 200 1800 C 300 2000, 100 2200, 200 2400"
+                stroke="url(#lineGradient)"
+                strokeWidth="6"
                 fill="none"
                 filter="url(#glow)"
               />

@@ -362,6 +362,10 @@ export default function LusionInteractiveFooter() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.phone || formData.phone.length < 10) {
+      alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
     setIsSubmitting(true);
 
     try {
@@ -436,7 +440,10 @@ export default function LusionInteractiveFooter() {
                 </div>
                 <div className="relative">
                   <Phone className="absolute left-4 top-4 text-[#16697A]" size={18} />
-                  <input required value={formData.phone} onChange={handleInputChange} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Contact No." />
+                  <input required type="tel" value={formData.phone} onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setFormData(prev => ({ ...prev, phone: value }));
+                  }} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Contact No." />
                 </div>
               </div>
               <div className="relative">

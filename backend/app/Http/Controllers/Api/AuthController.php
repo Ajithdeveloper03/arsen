@@ -17,25 +17,25 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $key = 'login-attempt:' . $request->ip();
+        $throttleKey = 'login:' . \Illuminate\Support\Str::lower($request->input('email')) . '|' . $request->ip();
 
-        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 5)) {
-            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
             return response()->json([
-                'message' => "Too many attempts. Please try again in $seconds seconds."
+                'message' => "Too many login attempts. Please try again in $seconds seconds."
             ], 429);
         }
 
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
+            \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        \Illuminate\Support\Facades\RateLimiter::clear($key);
+        \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
         $token = $user->createToken('admin-token')->plainTextToken;
 
         return response()->json([

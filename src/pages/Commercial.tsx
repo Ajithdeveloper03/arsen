@@ -13,10 +13,13 @@ import {
   Layers, Palette, PenTool, HardHat, ClipboardCheck, Rocket, Eye, Box,  ChevronLeft, ChevronRight 
 } from "lucide-react";
 import gsap from "gsap";
+import workspace from '../assets/workspace.jpg';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import threed1 from '../assets/3d1.jpg';
+import conference from '../assets/conference.jpg';
 import threed2 from '../assets/3d2.jpg';
 // Asset Imports
+import dining from '../assets/home-dining.jpg';
 import furniture from '../assets/comercial-furniture.jpg';
 import vm1 from '../assets/saf-gmaes-vilalge.webp';
 import vm2 from '../assets/vm2.jpg';
@@ -27,10 +30,13 @@ import oecl2 from "../assets/oecl2.jpg";
 import greens1 from "../assets/greens3.jpg";
 import greens2 from "../assets/greens2.jpg";
 import sundaram1 from "../assets/sundaram1.jpg";
+import hero1 from '../assets/home-slider-commercial2.jpg';
+import modular from '../assets/pmc-tafe2.jpg';
 import sundaram2 from "../assets/sundaram2.jpg";
 import tafe1 from "../assets/tafe1.jpg";
 import tafe2 from "../assets/tafe2.jpg";
 import corporate from "../assets/commercial-corporate.jpg";
+import cabins from "../assets/cabins.jpg";
 import Video from '../assets/commercial-banner-video.mp4';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -197,10 +203,10 @@ const ArsenCommercial = () => {
       {/* Header Section */}
       <div className="max-w-7xl mx-auto px-6 mb-16">
         <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-tight text-white mb-6">
-          Modern <br /> <span className="text-[#008b98]">Workstations.</span>
+          Modern <br /> <span className="text-[#008b98]">Furnitures.</span>
         </h2>
         <p className="text-white/60 text-lg md:text-xl leading-relaxed max-w-2xl">
-          We build office spaces that work for you. From open desks for teamwork to quiet spots for deep focus.
+          We create highly functional smart office spaces with modular workstations, executive desks, and efficient storage solutions that support collaboration and focused productivity.
         </p>
       </div>
 
@@ -262,16 +268,17 @@ const ArsenCommercial = () => {
       {/* TEXT CONTENT */}
       <div className="lg:col-span-5 space-y-6 md:space-y-8">
         <span className="text-[#008b98] font-black text-sm tracking-[0.3em] uppercase block">
-          V&M Adhesives
+          Surface Branding
         </span>
         <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9]">
           Virtual<br /> <span className="text-[#008b98]">Merchandise</span>
         </h2>
         
         <div className="space-y-6 pt-4">
-          <VMItem icon={<Box size={20} />} title="Self-Adhesive Wallpapers" desc="Custom-printed high-tack vinyls and textured fabrics." />
-          <VMItem icon={<Eye size={20} />} title="PVC Decor Films" desc="Architecture-grade PVC wraps for furniture refurbishing." />
-          <VMItem icon={<Rocket size={20} />} title="Backlit Banners" desc="Fabric and vinyl banner systems with LED matrix." />
+          <VMItem icon={<Box size={20} />} title="WALL TEXTURES & STUCCO FINISHES" desc="Premium stucco and textured painting solutions for rich, elegant surfaces." />
+          <VMItem icon={<Eye size={20} />} title="WALLPAPERS & CUSTOM WALL POSTERS" desc="Designer wallpapers and customized decorative wall graphics tailored to your space." />
+          <VMItem icon={<Rocket size={20} />} title="PRIVACY SUNFILMS & FROSTED FILMS" desc="Customized privacy, sun-control, and frosted films for glass partitions and windows." />
+          <VMItem icon={<Box size={20} />} title="ACRYLIC LOGOS & BRANDING" desc="Precision-cut acrylic logos, name plates, and complete branding solutions." />
         </div>
       </div>
 
@@ -415,23 +422,23 @@ const ArsenCommercial = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 min-h-[800px] md:h-[600px]">
             <div className="md:col-span-2 md:row-span-2 bg-gray-100 rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 flex flex-col justify-between overflow-hidden relative group min-h-[300px]">
               <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800" className="absolute inset-0 w-full h-full object-cover opacity-60 md:opacity-80 group-hover:scale-110 transition-transform duration-1000" alt="Material" />
-              <h4 className="text-3xl md:text-5xl font-black uppercase relative z-10">Material <br /> Compliance.</h4>
-              <p className="text-black relative z-10 text-base md:text-2xl font-bold italic">Fire-rated fabrics and Grade-A commercial plywood used in all modular setups.</p>
+              <h4 className="text-3xl md:text-5xl font-black uppercase relative z-10">Factory <br /> Standards.</h4>
+              <p className="text-black relative z-10 text-base md:text-2xl font-bold italic">In-house production facility with advanced machinery, skilled technicians, and strict quality control in every stage of manufacturing.</p>
             </div>
             
             <div className="md:col-span-2 bg-[#008b98] rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 text-white flex items-center justify-between">
-              <h4 className="text-2xl md:text-5xl font-black uppercase">Zero <br /> Escalation.</h4>
+              <h4 className="text-2xl md:text-5xl font-black uppercase">Zero <br /> Production Delays.</h4>
               <ShieldCheck className="w-12 h-12 md:w-[60px] md:h-[60px]" strokeWidth={1} />
             </div>
 
             <div className="bg-black rounded-[2rem] md:rounded-[3rem] p-6 md:p-8 text-white flex flex-col justify-center text-center">
               <p className="text-4xl md:text-5xl font-black italic">365</p>
-              <p className="text-[9px] md:text-[20px] uppercase font-bold tracking-widest mt-2 text-white/40">Maintenance Support</p>
+              <p className="text-[9px] md:text-[20px] uppercase font-bold tracking-widest mt-2 text-white/40">Days Service Support</p>
             </div>
             
             <div className="bg-gray-200 rounded-[2rem] md:rounded-[3rem] p-6 md:p-8 flex flex-col justify-center text-center border border-black/5">
               <CheckCircle2 size={40} className="mx-auto text-[#008b98]" />
-              <p className="text-[12px] md:text-[24px] uppercase font-bold tracking-widest mt-4 text-black/40">No <br />Hidden <br /> Costs</p>
+              <p className="text-[12px] md:text-[24px] uppercase font-bold tracking-widest mt-4 text-black/40">No Hidden Costs  <br />&<br /> Quality Compromise</p>
             </div>
           </div>
         </div>
@@ -443,12 +450,13 @@ const ArsenCommercial = () => {
 
 // --- HELPER SUB-COMPONENTS ---
 const features = [
-    { title: "Flexible Desks", desc: "Comfortable desks that easily fit your team's needs, whether sitting or standing.", img: furniture },
-    { title: "Quiet Areas", desc: "Special walls and screens to keep noise down so you can focus on work.", img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=600" },
-    { title: "Power & Light", desc: "Smart lighting and plenty of plug points right where you need them.", img: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400" },
-    { title: "Meeting Spots", desc: "Quick hangout areas with TVs and plants for fast team chats.", img: threed2 },
-    { title: "Office Kitchen", desc: "Strong, easy-to-clean counters and equipment for your coffee breaks.", img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600" },
-    { title: "Front Office", desc: "A beautiful entrance that makes a great first impression on guests.", img: threed1 }
+    { title: "Modular Workstations", desc: "Smart modular workstations designed for flexibility, comfort, and productivity.", img: modular },
+    { title: "Workspace", desc: "Dynamic workspaces crafted with adaptive modular systems, intelligent storage, and ergonomic precision—designed to inspire focus, collaboration, and performance.", img: workspace },
+    { title: "Cabins", desc: "Premium, ergonomic cabin setups with smart storage and refined finishes for focused leadership and productivity.", img: cabins },
+    { title: "Meeting and Conference Spots", desc: "Quick, confidential discussion areas with AV setup and writable glass boards for fast team collaboration, complemented by functional meeting/conference tables and smart storage solutions.", img: conference },
+    { title: "Breakout Area", desc: "Inviting breakout areas with comfortable seating and smart utility zones for relaxed collaboration and quick recharging.", img: hero1 },
+    { title: "Office Pantry", desc: "Durable, comfortable premium counters with functional storage for seamless coffee and snack breaks.", img: dining },
+    { title: "Reception", desc: "Welcoming front office and reception spaces with elegant counters, smart storage, and a professional first impression.", img: sundaram2 }
   ];
 const StatItem = ({ label, val, unit, color }: any) => (
   <div className="space-y-1">
@@ -474,7 +482,7 @@ const VMItem = ({ icon, title, desc }: any) => (
   <div className="flex gap-4 md:gap-6 items-start">
     <div className="p-3 md:p-4 bg-gray-100 rounded-xl md:rounded-2xl flex-shrink-0 text-[#008b98]">{icon}</div>
     <div>
-      <h3 className="text-md md:text-xl font-black uppercase">{title}</h3>
+      <h3 className="text-md md:text-lg font-bold uppercase">{title}</h3>
       <p className="text-sm md:text-lg text-black/50 font-medium leading-tight">{desc}</p>
     </div>
   </div>

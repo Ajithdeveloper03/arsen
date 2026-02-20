@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 
 // Assets
 import banner1 from '../assets/pmc-banner1.jpg';
+import standards from '../assets/standards.png';
+import bhopal from '../assets/Tafe Bhopal Image.jpg';
 import banner2 from '../assets/pmc-banner2.jpg';
 import banner3 from '../assets/pmc-banner3.jpg';
 import banner4 from '../assets/pmc-banner4.jpg';
@@ -119,8 +121,8 @@ const PMC = () => {
             <h3 className="text-xl md:text-2xl font-black uppercase tracking-tighter mb-2">
               99% Design Accuracy
             </h3>
-            <p className="text-md md:text-sm font-medium opacity-80 leading-relaxed">
-              Eliminating costly onsite errors through hyper-detailed 3D modeling and technical drafting.
+            <p className="text-md md:text-md font-medium opacity-80 leading-relaxed">
+               Minimizing onsite errors through hyper-detailed planning, precise technical execution, and the expertise of skilled engineers.
             </p>
           </motion.div>
 
@@ -145,7 +147,7 @@ const PMC = () => {
           <div className="lg:w-1/3 lg:sticky lg:top-32 h-fit text-center lg:text-left">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6">Our <br className="hidden lg:block" /><span className="text-[#FDBA74]">Methodology</span></h2>
             <p className="text-gray-500 mb-8 text-md md:text-base">A scientific approach to interior execution, ensuring every sq.ft is accounted for.</p>
-            <img src={tafe1} className="rounded-2xl opacity-80 hidden lg:block h-[420px] object-cover" alt="Tech" />
+            <img src={bhopal} className="rounded-2xl opacity-80 hidden lg:block h-[420px] object-cover" alt="Tech" />
           </div>
 
           <div className="lg:w-2/3 space-y-8 md:space-y-12">

@@ -26,7 +26,7 @@ class UniversalFormController extends Controller
         $request->validate([
             'email' => 'required|email',
             'name' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'required|string|max:20',
             'message' => 'nullable|string|max:5000',
             'details' => 'nullable|string|max:5000',
         ]);

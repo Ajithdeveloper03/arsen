@@ -38,6 +38,8 @@ const BannersManager = () => {
         title: '',
         subtitle: '',
         badge: '',
+        link_text: '',
+        link_url: '',
         order_index: 0,
         is_active: true
     });
@@ -86,6 +88,8 @@ const BannersManager = () => {
         data.append('title', formData.title || '');
         data.append('subtitle', formData.subtitle || '');
         data.append('badge', formData.badge || '');
+        data.append('link_text', formData.link_text || '');
+        data.append('link_url', formData.link_url || '');
         data.append('order_index', formData.order_index.toString());
         data.append('is_active', formData.is_active ? '1' : '0');
 
@@ -137,13 +141,15 @@ const BannersManager = () => {
                 title: banner.title || '',
                 subtitle: banner.subtitle || '',
                 badge: banner.badge || '',
+                link_text: banner.link_text || '',
+                link_url: banner.link_url || '',
                 order_index: banner.order_index,
                 is_active: !!banner.is_active
             });
             setImagePreview(banner.image_url);
         } else {
             setEditingBanner(null);
-            setFormData({ title: '', subtitle: '', badge: 'FEATURED', order_index: banners.length + 1, is_active: true });
+            setFormData({ title: '', subtitle: '', badge: 'FEATURED', link_text: '', link_url: '', order_index: banners.length + 1, is_active: true });
             setImagePreview(null);
         }
         setSelectedFile(null);
@@ -257,6 +263,7 @@ const BannersManager = () => {
                         <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Subtitle</label>
                         <textarea rows={3} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.subtitle} onChange={e => setFormData({ ...formData, subtitle: e.target.value })} />
                     </div>
+
                     <div className="flex items-center gap-2">
                         <input type="checkbox" id="active" checked={formData.is_active} onChange={e => setFormData({ ...formData, is_active: e.target.checked })} className="w-4 h-4 cursor-pointer accent-[#022C22]" />
                         <label htmlFor="active" className="text-sm font-bold text-slate-700 cursor-pointer">Active on Website</label>

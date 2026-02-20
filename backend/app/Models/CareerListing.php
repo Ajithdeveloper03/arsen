@@ -13,6 +13,8 @@ class CareerListing extends Model
 
     protected $casts = [
         'specifications' => 'array',
+        'skills' => 'array',
+        'responsibilities' => 'array',
         'is_active' => 'boolean'
     ];
 }

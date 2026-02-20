@@ -7,14 +7,21 @@ import {
   Plus, ArrowRight, Minus,
   MapPin, Send, MousePointer2
 } from "lucide-react";
-
+import jagger from '../assets/jagger.jpeg';
 // Asset Imports
+import banner from '../assets/residential-banner.jpg';
 import residential1 from '../assets/residential1.jpg';
 import kitchen from '../assets/modular-kitchen.png';
+import furniture from '../assets/modular-furniture.jpg';
 import urbanise from '../assets/urbanise.jpg';
 import saff from '../assets/residential-saff.jpg';
 import tharun from '../assets/residential-tharun.jpeg';
 import sunil from '../assets/residential-sunil.jpeg';
+import ceiling from '../assets/ceiling.jpg';
+import wallpaper from '../assets/wallpaper.jpg';
+import lighting from '../assets/lighting.jpg';
+import living from '../assets/living.jpeg';
+import constructing from '../assets/constructing.jpeg';
 import bangalore from '../assets/residential-bangalore.jpeg';
 
 /* --------------------- PROJECT DATA --------------------- */
@@ -49,9 +56,9 @@ const PROJECTS = [
   },
   {
     id: 5,
-    title: "Jagger Residential",
-    loc: "Bangalore",
-    img: urbanise,
+    title: "Sunil Reddy Residential",
+    loc: "Hyderabad",
+    img: jagger,
     desc: "An avant-garde industrial masterpiece utilizing raw materials with a premium finish.",
     featured: true
   }
@@ -69,7 +76,7 @@ const EliteDesignMasterpiece = () => {
       {/* HERO */}
       <section className="relative h-[110vh] flex items-center justify-center overflow-hidden">
         <motion.div style={{ scale: heroScale, opacity: heroFade }} className="absolute inset-0">
-          <img src={residential1} className="w-full h-full object-cover brightness-50" alt="Main Hero" />
+          <img src={banner} className="w-full h-full object-cover brightness-50" alt="Main Hero" />
         </motion.div>
         <div className="relative z-10 text-center px-6">
           <motion.div initial={{ opacity: 0, letterSpacing: "2em" }} animate={{ opacity: 1, letterSpacing: "0.5em" }} transition={{ duration: 2 }} className="text-[#FDBA74] text-[14px] font-black uppercase">
@@ -200,12 +207,13 @@ const HorizontalCategories = () => {
             <p className="text-[18px] font-bold uppercase tracking-[0.4em] text-white/30 mt-6">Core Competencies & Services</p>
           </div>
           <CategoryCard title="Modular Kitchens" img={kitchen} />
-          <CategoryCard title="Living & Garden Areas" img="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800" />
-          <CategoryCard title="Wallpaper & Finishes" img="https://images.pexels.com/photos/35634381/pexels-photo-35634381.jpeg" />
-          <CategoryCard title="Flooring & False Ceilings" img="https://images.pexels.com/photos/7031616/pexels-photo-7031616.jpeg" />
+          <CategoryCard title="Electrical and Lighting's " img={lighting} />
+          <CategoryCard title="Living & Dining Spaces" img={living} />
+          <CategoryCard title="Bedroom & Wardrobes" img={wallpaper} />
+          <CategoryCard title="Flooring & False Ceilings" img={ceiling} />
           <CategoryCard title="Electricals & Lightings" img="https://images.pexels.com/photos/6238608/pexels-photo-6238608.jpeg" />
-          <CategoryCard title="Modular Furnitures" img="https://images.pexels.com/photos/2930894/pexels-photo-2930894.jpeg" />
-          <CategoryCard title="Racks & Storages" img="https://images.pexels.com/photos/29454379/pexels-photo-29454379.jpeg" />
+          <CategoryCard title="Modular Furnitures" img={furniture} />
+          <CategoryCard title="Constructing & Crafting" img={constructing} />
         </motion.div>
       </div>
     </section>
@@ -239,7 +247,7 @@ const FAQSection = () => (
       <AccordionItem q="How long does a full villa design take?" a="Typically 30–90 days, depending on the scale and complexity of the project, your vision, and specific requirements." />
       <AccordionItem q="Do you provide warranty?" a="Yes We offer a comprehensive 10-year warranty on all residential works(Terms and conditions apply)" />
       <AccordionItem q="How can I be sure my home interior project will be completed with high quality and on time?" a="With experienced designers & Engineers a structured process, and clear communication, we ensure your home interior project is completed smoothly, on time, and to your expectations." />
-      <AccordionItem q="Which cities do you serve?" a="Currently, we execute elite interior projects *across India, serving clients in **all major cities and regions*." />
+      <AccordionItem q="Which cities do you serve?" a="Currently, we execute elite interior projects across India, serving clients in all major cities and regions." />
     </div>
   </div>
 );
@@ -266,6 +274,7 @@ const AccordionItem = ({ q, a }) => {
 const ConsultationForm = () => {
   const [formData, setFormData] = useState({
     name: "",
+    phone: "",
     email: "",
     projectType: "Project Type",
     details: ""
@@ -280,6 +289,10 @@ const ConsultationForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.phone || formData.phone.length < 10) {
+      alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
     setIsSubmitting(true);
 
     try {
@@ -297,7 +310,7 @@ const ConsultationForm = () => {
 
       if (res.ok) {
         setSent(true);
-        setFormData({ name: "", email: "", projectType: "Project Type", details: "" });
+        setFormData({ name: "", phone: "", email: "", projectType: "Project Type", details: "" });
         setTimeout(() => setSent(false), 5000);
       } else {
         const data = await res.json();
@@ -323,6 +336,10 @@ const ConsultationForm = () => {
           <h3 className="text-3xl md:text-4xl font-black italic uppercase mb-8">Initiate<br />Consultation.</h3>
           <form onSubmit={handleSubmit} className="space-y-6">
             <input name="name" value={formData.name} onChange={handleInputChange} required type="text" placeholder="YOUR NAME" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
+            <input name="phone" value={formData.phone} onChange={(e: any) => {
+              const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+              setFormData(prev => ({ ...prev, phone: value }));
+            }} required type="tel" placeholder="YOUR PHONE" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
             <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="YOUR EMAIL" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
             <select name="projectType" value={formData.projectType} onChange={handleInputChange} className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors cursor-pointer">
               <option className="text-black">Project Type</option>

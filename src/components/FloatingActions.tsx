@@ -2,13 +2,13 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  MessageCircle, 
-  Mail, 
-  Instagram, 
-  Calculator, 
-  ChevronLeft, 
-  X 
+import {
+  MessageCircle,
+  Mail,
+  Instagram,
+  Calculator,
+  ChevronLeft,
+  X
 } from "lucide-react";
 
 const FloatingActions = () => {
@@ -35,14 +35,14 @@ const FloatingActions = () => {
     {
       icon: <Mail size={22} />,
       label: "Send Mail",
-      href: "mailto:sales@arseninterior.in",
+      href: "https://mail.google.com/mail/?view=cm&fs=1&to=sales@arseninterior.in",
       color: "bg-[#EA4335]",
     },
   ];
 
   return (
     <div className="fixed right-6 bottom-44 z-[9999] flex flex-col items-end gap-4">
-      
+
       {/* 1. Expandable Social Stack */}
       <div className="flex flex-col items-end gap-3">
         <AnimatePresence>
@@ -94,7 +94,7 @@ const FloatingActions = () => {
       >
         {/* Shine Effect */}
         <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shine" />
-        
+
         <span className="text-[11px] font-black uppercase tracking-[0.2em]">
           Free Estimate
         </span>
