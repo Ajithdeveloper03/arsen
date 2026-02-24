@@ -6,7 +6,7 @@ import { Activity, Globe, ChevronRight, MoveRight, ArrowDown } from "lucide-reac
 import { Link } from "react-router-dom";
 import api, { BASE_URL } from "../services/api";
 import banner from '../assets/corporate3.jpg';
-// import { HARDCODED_ONGOING_PROJECTS } from "../data/ongoingProjects"; // Disabled as per user request for "no default"
+import { HARDCODED_ONGOING_PROJECTS } from "../data/ongoingProjects";
 import { mergeProjectsWithApi } from "../utils/projectMerge";
 
 // Helper to open the header popup
@@ -26,17 +26,16 @@ export default function OngoingBiophilicProjects() {
       const res = await api.get("/public/projects");
       const data = res.data;
       if (data && data.length > 0) {
-        setApiProjects(data.filter((p: any) => p.status === 'ongoing'));
+        setApiProjects(data);
       }
     } catch (err) {
       console.error(err);
     }
   };
 
-  // Prefer API data completely. We pass an empty array as the 'local' list so that only API projects are used.
-  // This satisfies the requirement: "no default in ongoing projects... customizable like deleting".
   const FINAL_PROJECTS = useMemo(() => {
-    return mergeProjectsWithApi([], apiProjects, true);
+    const merged = mergeProjectsWithApi(HARDCODED_ONGOING_PROJECTS, apiProjects, true);
+    return merged.filter((p: any) => p.status === 'ongoing');
   }, [apiProjects]);
 
   const { scrollYProgress } = useScroll();

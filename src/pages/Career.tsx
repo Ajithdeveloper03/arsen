@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from '../services/api';
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { MapPin, ArrowUpRight, X, Star, Globe, Upload, CheckCircle2, Users } from "lucide-react";
+import { MapPin, ArrowUpRight, X, Star, Globe, Upload, CheckCircle2, Users, Mail } from "lucide-react";
 
 const vacancies = [
   {
@@ -50,7 +50,48 @@ const Careers = () => {
     portfolio: "",
     cv: null,
   });
+  const [errors, setErrors] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    portfolio: "",
+    cv: ""
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const validatePhone = (phone: string) => {
+    return /^[6-9]\d{9}$/.test(phone);
+  };
+
+  const validateField = (name: string, value: any) => {
+    let error = "";
+    if (name === "cv") {
+      if (!value) error = "CV is required";
+    } else {
+      const stringVal = String(value || "").trim();
+      if (!stringVal && name !== "portfolio") {
+        error = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+      } else if (name === "email" && !validateEmail(stringVal)) {
+        error = "Please enter a valid email address";
+      } else if (name === "phone" && !validatePhone(stringVal)) {
+        error = "Please enter a valid 10-digit mobile number";
+      } else if (name === "name" && stringVal.length < 2) {
+        error = "Name must be at least 2 characters";
+      } else if (name === "portfolio" && stringVal && !stringVal.startsWith("http")) {
+        error = "Portfolio must be a valid URL starting with http";
+      }
+    }
+    setErrors(prev => ({ ...prev, [name]: error }));
+    return error === "";
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -85,18 +126,30 @@ const Careers = () => {
   const handleInputChange = (e: any) => {
     const { name, value, files } = e.target;
     if (name === "cv") {
-      setFormData(prev => ({ ...prev, cv: files ? files[0] : null }));
+      const file = files ? files[0] : null;
+      setFormData(prev => ({ ...prev, cv: file }));
+      validateField("cv", file);
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
+      if (errors[name as keyof typeof errors]) {
+        validateField(name, value);
+      }
     }
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.phone || formData.phone.length < 10) {
-      alert("Please enter a valid 10-digit mobile number.");
+
+    const isNameValid = validateField("name", formData.name);
+    const isEmailValid = validateField("email", formData.email);
+    const isPhoneValid = validateField("phone", formData.phone);
+    const isCvValid = validateField("cv", formData.cv);
+    const isPortfolioValid = validateField("portfolio", formData.portfolio);
+
+    if (!isNameValid || !isEmailValid || !isPhoneValid || !isCvValid || !isPortfolioValid) {
       return;
     }
+
     setIsSubmitting(true);
 
     try {
@@ -329,16 +382,34 @@ const Careers = () => {
                       <form onSubmit={handleFormSubmit} className="space-y-5">
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <label className="text-[10px] uppercase font-bold text-gray-400">Full Name</label>
-                            <input required name="name" value={formData.name} onChange={handleInputChange} type="text" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" />
+                            <label className={`text-[10px] uppercase font-bold ${errors.name ? 'text-red-500' : 'text-gray-400'}`}>Full Name</label>
+                            <input
+                              required
+                              name="name"
+                              value={formData.name}
+                              onChange={handleInputChange}
+                              onBlur={(e) => validateField("name", e.target.value)}
+                              type="text"
+                              className={`w-full bg-white border ${errors.name ? 'border-red-400' : 'border-gray-100'} p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all`}
+                            />
+                            {errors.name && <p className="text-[10px] text-red-500 font-medium">{errors.name}</p>}
                           </div>
                           <div className="space-y-2">
-                            <label className="text-[10px] uppercase font-bold text-gray-400">Email Address</label>
-                            <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" />
+                            <label className={`text-[10px] uppercase font-bold ${errors.email ? 'text-red-500' : 'text-gray-400'}`}>Email Address</label>
+                            <input
+                              required
+                              name="email"
+                              value={formData.email}
+                              onChange={handleInputChange}
+                              onBlur={(e) => validateField("email", e.target.value)}
+                              type="email"
+                              className={`w-full bg-white border ${errors.email ? 'border-red-400' : 'border-gray-100'} p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all`}
+                            />
+                            {errors.email && <p className="text-[10px] text-red-500 font-medium">{errors.email}</p>}
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] uppercase font-bold text-gray-400">Phone Number</label>
+                          <label className={`text-[10px] uppercase font-bold ${errors.phone ? 'text-red-500' : 'text-gray-400'}`}>Phone Number</label>
                           <input
                             required
                             name="phone"
@@ -347,23 +418,36 @@ const Careers = () => {
                             onChange={(e: any) => {
                               const value = e.target.value.replace(/\D/g, '').slice(0, 10);
                               setFormData(prev => ({ ...prev, phone: value }));
+                              if (errors.phone) validateField("phone", value);
                             }}
-                            className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all"
+                            onBlur={(e) => validateField("phone", e.target.value)}
+                            className={`w-full bg-white border ${errors.phone ? 'border-red-400' : 'border-gray-100'} p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all`}
                             placeholder="10-digit Mobile Number"
                           />
+                          {errors.phone && <p className="text-[10px] text-red-500 font-medium">{errors.phone}</p>}
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] uppercase font-bold text-gray-400">Portfolio Link (URL)</label>
-                          <input name="portfolio" value={formData.portfolio} onChange={handleInputChange} type="url" className="w-full bg-white border border-gray-100 p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all" placeholder="https://..." />
+                          <label className={`text-[10px] uppercase font-bold ${errors.portfolio ? 'text-red-500' : 'text-gray-400'}`}>Portfolio Link (URL)</label>
+                          <input
+                            name="portfolio"
+                            value={formData.portfolio}
+                            onChange={handleInputChange}
+                            onBlur={(e) => validateField("portfolio", e.target.value)}
+                            type="url"
+                            className={`w-full bg-white border ${errors.portfolio ? 'border-red-400' : 'border-gray-100'} p-4 rounded-xl focus:ring-2 ring-[#DFA45B] outline-none transition-all`}
+                            placeholder="https://..."
+                          />
+                          {errors.portfolio && <p className="text-[10px] text-red-500 font-medium">{errors.portfolio}</p>}
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] uppercase font-bold text-gray-400">Upload CV (PDF)</label>
-                          <label className="w-full flex flex-col items-center justify-center bg-white border-2 border-dashed border-gray-100 p-8 rounded-xl cursor-pointer hover:border-[#DFA45B] transition-all">
-                            <Upload size={24} className="text-gray-300 mb-2" />
-                            <span className="text-sm font-bold text-gray-500">{formData.cv ? (formData.cv as any).name : "Drop CV here"}</span>
+                          <label className={`text-[10px] uppercase font-bold ${errors.cv ? 'text-red-500' : 'text-gray-400'}`}>Upload CV (PDF)</label>
+                          <label className={`w-full flex flex-col items-center justify-center bg-white border-2 border-dashed ${errors.cv ? 'border-red-400 bg-red-50' : 'border-gray-100'} p-8 rounded-xl cursor-pointer hover:border-[#DFA45B] transition-all`}>
+                            <Upload size={24} className={errors.cv ? "text-red-300 mb-2" : "text-gray-300 mb-2"} />
+                            <span className={`text-sm font-bold ${errors.cv ? 'text-red-500' : 'text-gray-500'}`}>{formData.cv ? (formData.cv as any).name : "Drop CV here"}</span>
                             <span className="text-[10px] uppercase text-gray-400 mt-1 italic">PDF only • Max 5MB</span>
                             <input name="cv" onChange={handleInputChange} type="file" className="hidden" accept=".pdf" />
                           </label>
+                          {errors.cv && <p className="text-[10px] text-red-500 font-medium">{errors.cv}</p>}
                         </div>
                         <button disabled={isSubmitting} className="w-full bg-[#0F1F2A] text-white py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-[#DFA45B] hover:text-black transition-all disabled:opacity-50 shadow-xl shadow-[#0F1F2A]/20">
                           {isSubmitting ? "Submitting..." : "Send Application"} <ArrowUpRight size={18} />

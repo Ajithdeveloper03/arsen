@@ -10,6 +10,7 @@ import {
 import { Link } from "react-router-dom";
 
 // Assets
+import methodology from '../assets/methodology.png';
 import banner1 from '../assets/pmc-banner1.jpg';
 import standards from '../assets/standards.png';
 import bhopal from '../assets/Tafe Bhopal Image.jpg';
@@ -21,6 +22,7 @@ import tafe2 from '../assets/pmc-tafe2.jpg';
 import tafe3 from '../assets/3d2.jpg';
 import tafe5 from '../assets/pmc-tafe1.jpg';
 import arrow from '../assets/arrow.webp';
+import ecosystem1 from '../assets/Flooring.jpg';
 import ecosystem2 from '../assets/FAS and PA System.jpg';
 import ecosystem3 from '../assets/Hvac.jpg';
 import ecosystem4 from '../assets/Power and Mep.jpg';
@@ -122,7 +124,7 @@ const PMC = () => {
               99% Design Accuracy
             </h3>
             <p className="text-md md:text-md font-medium opacity-80 leading-relaxed">
-               Minimizing onsite errors through hyper-detailed planning, precise technical execution, and the expertise of skilled engineers.
+              Minimizing onsite errors through hyper-detailed planning, precise technical execution, and the expertise of skilled engineers.
             </p>
           </motion.div>
 
@@ -142,36 +144,84 @@ const PMC = () => {
       </section>
 
       {/* 3. THE METHODOLOGY */}
-      <section className="py-20 md:py-32 px-4 md:px-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 md:gap-20">
-          <div className="lg:w-1/3 lg:sticky lg:top-32 h-fit text-center lg:text-left">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6">Our <br className="hidden lg:block" /><span className="text-[#FDBA74]">Methodology</span></h2>
-            <p className="text-gray-500 mb-8 text-md md:text-base">A scientific approach to interior execution, ensuring every sq.ft is accounted for.</p>
-            <img src={bhopal} className="rounded-2xl opacity-80 hidden lg:block h-[420px] object-cover" alt="Tech" />
+      <section className="py-24 md:py-40 px-6 bg-[#010B0A] relative overflow-hidden">
+        {/* Decorative background element */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FDBA74]/5 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
+
+          {/* Left: Dynamic Branding & Images */}
+          <div className="w-full lg:w-[45%] relative">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-12 text-center lg:text-left relative z-30"
+            >
+              <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-6 leading-none">
+                Our <br /> <span className="text-[#FDBA74]">Methodology</span>
+              </h2>
+              <div className="w-20 h-1 bg-[#FDBA74] mb-8 mx-auto lg:mx-0" />
+              <p className="text-gray-400 text-lg md:text-xl max-w-md mx-auto lg:mx-0 font-medium leading-relaxed">
+                A scientific approach to interior execution, ensuring every sq.ft is accounted for.
+              </p>
+            </motion.div>
+
+            <div className="relative w-full aspect-square md:aspect-[4/5] lg:aspect-square max-w-[500px] mx-auto lg:mx-0">
+              {/* Main Site Visual */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className="w-full h-full rounded-[3rem] overflow-hidden shadow-2xl relative group bg-white/5 border border-white/10"
+              >
+                <img src={tafe1} className="w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110" alt="Arsen Site" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#010B0A] via-transparent to-transparent" />
+              </motion.div>
+
+              {/* Floating Professional Visual (Headset Person) - Visible only on laptop+ */}
+              <motion.div
+                initial={{ x: -40, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+                viewport={{ once: true }}
+                className="hidden lg:block absolute -left-4 xl:-left-20 -bottom-10 xl:-bottom-[35%] w-[80%] z-40"
+              >
+                <img src={methodology} className="w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" alt="Methodology Expert" />
+              </motion.div>
+            </div>
           </div>
 
-          <div className="lg:w-2/3 space-y-8 md:space-y-12">
-            {[
-              { title: "Project Audit", icon: Microscope, text: "Initial deep dive into quantities and material specs to prevent budget overruns." },
-              { title: "Vendor Symphony", icon: Users, text: "Aligning contractors and specialists like a conductor for seamless site flow." },
-              { title: "Precision Control", icon: Crosshair, text: "Zero-tolerance quality checks at every milestone of construction." },
-              { title: "Transparent Reporting", icon: FileText, text: "Cloud-based weekly reports with live site images for 100% visibility." }
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group flex flex-col md:flex-row gap-4 md:gap-8 pb-8 md:pb-12 border-b border-white/10"
-              >
-                <div className="text-[#FDBA74]"><item.icon size={28} /></div>
-                <div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-2 md:mb-4 uppercase tracking-tight">{item.title}</h3>
-                  <p className="text-gray-400 text-lg md:text-xl leading-relaxed">{item.text}</p>
-                </div>
-              </motion.div>
-            ))}
+          {/* Right: Methodology Steps */}
+          <div className="w-full lg:w-[55%] relative z-10">
+            <div className="divide-y divide-white/10">
+              {[
+                { title: "Project Audit", icon: Microscope, text: "Initial deep dive into quantities and material specs to prevent budget overruns." },
+                { title: "Vendor Symphony", icon: Users, text: "Aligning contractors and specialists like a conductor for seamless site flow." },
+                { title: "Precision Control", icon: Crosshair, text: "Zero-tolerance quality checks at every milestone of construction." },
+                { title: "Transparent Reporting", icon: FileText, text: "Cloud-based weekly reports with live site images for 100% visibility." }
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15, duration: 0.6 }}
+                  className="group flex gap-8 py-10 px-4 md:px-8 hover:bg-white/[0.03] transition-all duration-500 first:pt-0 last:pb-0"
+                >
+                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#FDBA74] group-hover:bg-[#FDBA74] group-hover:text-black transition-all duration-500 shrink-0">
+                    <item.icon size={24} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-black uppercase tracking-tight mb-3 transition-colors group-hover:text-[#FDBA74]">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-400 text-lg leading-relaxed font-medium group-hover:text-gray-200 transition-colors">
+                      {item.text}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -186,47 +236,62 @@ const PMC = () => {
             <p className="text-gray-400 font-bold text-xs tracking-[0.3em] uppercase mt-4">Full-Stack Technical Control</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:h-[900px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* 1. Interior Fit-outs */}
             <motion.div
               whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }}
-              className="md:col-span-7 relative rounded-[2.5rem] overflow-hidden group h-[400px] md:h-full"
+              className="relative rounded-[2.5rem] overflow-hidden group h-[400px] md:h-[450px]"
             >
-              <img src={ecosystem2} className="w-full h-full object-contain bg-orange-200 transition-transform duration-1000 group-hover:scale-110" alt="Interiors" />
+              <img src={ecosystem1} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Interior Fit-outs" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               <div className="absolute bottom-10 left-10 text-white">
                 <Layout className="text-[#FDBA74] mb-4" size={32} />
-                <h3 className="text-4xl font-black uppercase tracking-tighter">FAS & PA Systems</h3>
-                <p className="text-white/60 text-sm font-medium tracking-wide">High-end corporate fit-outs & acoustic engineering.</p>
+                <h3 className="text-3xl font-black uppercase tracking-tighter">Flooring</h3>
+                <p className="text-white/60 text-sm font-medium tracking-wide">Premium flooring, ceiling & modular partitions.</p>
               </div>
             </motion.div>
 
-            <div className="md:col-span-5 grid grid-rows-2 gap-6 h-full">
-              <motion.div
-                whileInView={{ opacity: 1, x: 0 }} initial={{ opacity: 0, x: 30 }}
-                className="relative rounded-[2.5rem] overflow-hidden group"
-              >
-                <img src={ecosystem3} className="w-full h-full object-cover transition-all duration-700" alt="HVAC" />
-                <div className="absolute inset-0 bg-black/50 group-hover:bg-black/20 transition-all" />
-                <div className="absolute inset-0 p-10 flex flex-col justify-end text-white">
-                  <Wind className="text-[#FDBA74] mb-3" size={24} />
-                  <h3 className="text-2xl font-black uppercase tracking-tighter">HVAC Systems</h3>
-                  <p className="text-white/70 text-md">Precision climate control & industrial air ducting.</p>
-                </div>
-              </motion.div>
+            {/* 2. FAS & PA Systems */}
+            <motion.div
+              whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} transition={{ delay: 0.1 }}
+              className="relative rounded-[2.5rem] overflow-hidden group h-[400px] md:h-[450px]"
+            >
+              <img src={ecosystem2} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="FAS & PA Systems" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+              <div className="absolute bottom-10 left-10 text-white">
+                <Activity className="text-[#FDBA74] mb-4" size={32} />
+                <h3 className="text-3xl font-black uppercase tracking-tighter">FAS & PA Systems</h3>
+                <p className="text-white/60 text-sm font-medium tracking-wide">High-end corporate safety & acoustic engineering.</p>
+              </div>
+            </motion.div>
 
-              <motion.div
-                whileInView={{ opacity: 1, x: 0 }} initial={{ opacity: 0, x: 30 }} transition={{ delay: 0.1 }}
-                className="relative rounded-[2.5rem] overflow-hidden group"
-              >
-                <img src={ecosystem4} className="w-full h-full object-cover transition-all duration-700" alt="Electrical" />
-                <div className="absolute inset-0 bg-black/50 group-hover:bg-black/20 transition-all" />
-                <div className="absolute inset-0 p-10 flex flex-col justify-end text-white">
-                  <Zap className="text-[#FDBA74] mb-3" size={24} />
-                  <h3 className="text-2xl font-black uppercase tracking-tighter">Power & MEP</h3>
-                  <p className="text-white/70 text-md">Smart grid distribution & safety compliance.</p>
-                </div>
-              </motion.div>
-            </div>
+            {/* 3. HVAC Systems */}
+            <motion.div
+              whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} transition={{ delay: 0.2 }}
+              className="relative rounded-[2.5rem] overflow-hidden group h-[400px] md:h-[450px]"
+            >
+              <img src={ecosystem3} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="HVAC Systems" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+              <div className="absolute bottom-10 left-10 text-white">
+                <Wind className="text-[#FDBA74] mb-4" size={32} />
+                <h3 className="text-3xl font-black uppercase tracking-tighter">HVAC Systems</h3>
+                <p className="text-white/60 text-sm font-medium tracking-wide">Precision climate control & industrial air ducting.</p>
+              </div>
+            </motion.div>
+
+            {/* 4. Power & MEP */}
+            <motion.div
+              whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 30 }} transition={{ delay: 0.3 }}
+              className="relative rounded-[2.5rem] overflow-hidden group h-[400px] md:h-[450px]"
+            >
+              <img src={ecosystem4} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Power & MEP" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+              <div className="absolute bottom-10 left-10 text-white">
+                <Zap className="text-[#FDBA74] mb-4" size={32} />
+                <h3 className="text-3xl font-black uppercase tracking-tighter">Power & MEP</h3>
+                <p className="text-white/60 text-sm font-medium tracking-wide">Smart grid distribution & safety compliance.</p>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>

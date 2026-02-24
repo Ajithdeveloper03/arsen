@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { Plus, ArrowUpRight, Search, MapPin, Grid } from "lucide-react";
 import { FEATURED_PROJECTS, RAW_COMPLETED_PROJECTS_LIST } from "../data/completedProjects";
 import { mergeProjectsWithApi } from "../utils/projectMerge";
+import { HARDCODED_ONGOING_PROJECTS } from "../data/ongoingProjects";
 
 import completed1 from '../assets/completed/completed1.jpg';
 import completed2 from '../assets/completed/completed2.jpg';
@@ -80,17 +81,60 @@ export default function ArsenArchive() {
         }
     };
 
-    // 1. Dynamic Featured (First 3-6 projects from API)
-    const FINAL_FEATURED = useMemo(() => {
-        // You can customize this filter logic (e.g. only "Luxe Detail" or explicit "featured" flag)
-        // For now, we take the most recent 6 active projects
-        return apiProjects.filter(p => p.status === 'completed').slice(0, 6);
-    }, [apiProjects]);
+    // Generate the Local Master List for Completed Projects
+    const LOCAL_COMPLETED_LIST = useMemo(() => [
+        // Featured Completed
+        ...FEATURED_PROJECTS.map((p, i) => ({
+            id: -100 - i,
+            title: p.title,
+            type: p.category,
+            location: p.location,
+            status: 'completed',
+            progress: 100,
+            image_url: p.image,
+            description: p.description,
+            is_hardcoded: true
+        })),
+        // Remaining Completed (Raw)
+        ...RAW_COMPLETED_PROJECTS_LIST.map((rawTitle, i) => {
+            const cleanTitle = rawTitle.replace(/^\d+\s+/, "").trim();
+            const isFeatured = FEATURED_PROJECTS.some(fp => fp.title.toLowerCase().includes(cleanTitle.toLowerCase()));
+            if (isFeatured) return null;
 
-    // 2. Remaining Projects (Rest of the completed projects)
+            return {
+                id: -2000 - i,
+                title: cleanTitle,
+                type: getCategory(cleanTitle),
+                location: getLocation(rawTitle),
+                status: 'completed',
+                progress: 100,
+                image_url: null,
+                description: "Archive Project",
+                is_hardcoded: true
+            };
+        }).filter(Boolean) as any[]
+    ], []);
+
+    // Merge with API and filter for Completed
+    const MERGED_COMPLETED = useMemo(() => {
+        const MASTER_LIST = [
+            ...LOCAL_COMPLETED_LIST,
+            ...HARDCODED_ONGOING_PROJECTS.map((p: any) => ({ ...p, is_hardcoded: true }))
+        ];
+        const merged = mergeProjectsWithApi(MASTER_LIST, apiProjects, true);
+        return merged.filter((p: any) => p.status === 'completed');
+    }, [apiProjects, LOCAL_COMPLETED_LIST]);
+
+    // 1. Dynamic Featured (Prefer projects with images)
+    const FINAL_FEATURED = useMemo(() => {
+        return MERGED_COMPLETED.filter(p => p.image_url).slice(0, 6);
+    }, [MERGED_COMPLETED]);
+
+    // 2. Remaining Projects
     const REMAINING_PROJECTS = useMemo(() => {
-        return apiProjects.filter(p => p.status === 'completed').slice(6);
-    }, [apiProjects]);
+        const featuredIds = new Set(FINAL_FEATURED.map(f => f.id));
+        return MERGED_COMPLETED.filter(p => !featuredIds.has(p.id));
+    }, [MERGED_COMPLETED, FINAL_FEATURED]);
 
     const filteredRemaining = REMAINING_PROJECTS.filter((p: any) =>
         p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -271,9 +315,6 @@ export default function ArsenArchive() {
                 </div>
             </section>
 
-            <style jsx>{`
-        .text-outline { -webkit-text-stroke: 1px rgba(255,255,255,0.3); }
-      `}</style>
         </div>
     );
 }

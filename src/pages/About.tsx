@@ -1,20 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Maximize, MoveRight, Quote, ChevronLeft, ChevronRight,
+  Quote, ChevronLeft, ChevronRight,
   ShieldCheck, Clock, Settings, Headphones, Star, MapPin, Factory, Calendar, Trophy,
-  Cpu, HardHat, Ruler, Layers
+  Cpu, Layers
 } from "lucide-react";
 
 // Assets
+import floating1 from '../assets/floating1.png';
+import floating2 from '../assets/floating2.png';
+import floating3 from '../assets/floating3.png';
+import floating4 from '../assets/floating4.png';
+import floating5 from '../assets/floating5.png';
 import aboutbg from '../assets/about-bg.jpg';
-import factory1 from '../assets/factory1.jpg';
+import factory1 from '../assets/standard1.png';
+import factory2 from '../assets/standard2.png';
+import factory3 from '../assets/standard3.png';
+import factory4 from '../assets/standard4.png';
+import factory5 from '../assets/standard5.png';
 import about1 from '../assets/about1.jpg';
 import about2 from '../assets/about2.jpg';
 import about3 from '../assets/about3.jpg';
 import about4 from '../assets/about4.jpg';
+
+
 import factoryVideo from '../assets/factory.mp4';
 
 const EliteAboutPage = () => {
@@ -138,7 +149,6 @@ const EliteAboutPage = () => {
           </div>
 
           <div className="relative">
-            {/* CORRECTED SVG: Uses preserveAspectRatio="none" and a tall viewBox to ensure it covers the scrolling area */}
             <svg
               className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[110%] opacity-40 pointer-events-none"
               viewBox="0 0 400 2000"
@@ -152,18 +162,18 @@ const EliteAboutPage = () => {
                     <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
-                {/* Gradient to fade out the line at the bottom */}
                 <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#FDBA74" stopOpacity="1" />
+                  <stop offset="0%" stopColor="#FDBA74" stopOpacity="0" />
+                  <stop offset="15%" stopColor="#FDBA74" stopOpacity="1" />
                   <stop offset="85%" stopColor="#FDBA74" stopOpacity="1" />
                   <stop offset="100%" stopColor="#FDBA74" stopOpacity="0" />
                 </linearGradient>
               </defs>
               <motion.path
-                initial={{ pathLength: 0 }}
-                whileInView={{ pathLength: 1 }}
-                viewport={{ once: false, amount: 0.01 }}
-                transition={{ duration: 3, ease: "easeInOut" }}
+                initial={{ pathLength: 0, opacity: 0 }}
+                whileInView={{ pathLength: 1, opacity: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 4, ease: [0.22, 1, 0.36, 1], opacity: { duration: 1.5 } }}
                 d="M200 0 C 350 300, 50 600, 200 900 C 350 1200, 50 1500, 200 1800 C 300 2000, 100 2200, 200 2400"
                 stroke="url(#lineGradient)"
                 strokeWidth="6"
@@ -189,7 +199,6 @@ const EliteAboutPage = () => {
                     <p className="text-white/50 text-lg font-medium leading-relaxed">{m.desc}</p>
                   </div>
 
-                  {/* Year Marker */}
                   <div className="w-full md:w-[10%] flex flex-col items-center py-12 md:py-0">
                     <div className="relative">
                       <motion.span
@@ -286,59 +295,132 @@ const EliteAboutPage = () => {
       </section>
 
       {/* ================= FACTORY INFRASTRUCTURE ================= */}
-      <section className="py-32 bg-white px-6 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row gap-16 items-start">
-            <div className="lg:w-1/2 space-y-10">
-              <div className="space-y-4">
-                <span className="text-[#032d29] font-black text-xs tracking-[0.3em] uppercase block">Established in 2013</span>
-                <h2 className="text-6xl md:text-7xl font-black tracking-tighter uppercase leading-[0.85]">
-                  Our <span className="text-[#FDBA74]">Factory</span> <br /> Setup
-                </h2>
-              </div>
-              <p className="text-gray-600 text-xl leading-relaxed max-w-xl">
-                Spanning over <span className="text-black font-bold">25,000+ Sq.ft</span>, Arsen Furnitures & Fixtures is equipped with the latest European machinery. This in-house facility allows us to maintain surgical precision and absolute quality control over every component we produce.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 py-2">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-[#032d29]">
-                    <Cpu size={24} />
-                    <span className="font-bold uppercase text-md tracking-widest">Hi-Tech Machinery</span>
-                  </div>
-                  <p className="text-md text-gray-500 leading-relaxed">Precision Panel Saw cutting, Triple-Head Multi-Boring, and Automatic Edge-Banding.</p>
+      <section className="relative py-24 md:py-32 bg-[#FCFCFA] px-4 md:px-8 overflow-hidden">
+        {/* Main Wrapper to contain floating elements and content together */}
+        <div className="max-w-[1600px] mx-auto relative">
+
+          {/* Floating Left Elements (Machines) - Visible on lg+ */}
+          <div className="hidden lg:flex absolute left-0 top-[10%] flex-col gap-24 xl:gap-32 z-10 w-[150px] xl:w-[200px]">
+            <motion.div
+              initial={{ x: -50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }}
+              className=" rotate-[-10deg] hover:rotate-0 transition-transform duration-500"
+            >
+              <img src={floating1} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="Cold press Machine" />
+
+            </motion.div>
+            <motion.div
+              initial={{ x: -50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}
+              className=" rotate-[5deg] hover:rotate-0 transition-transform duration-500"
+            >
+              <img src={floating2} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="Multiboreing machine" />
+
+            </motion.div>
+          </div>
+
+          {/* Floating Right Elements (Machines) - Visible on lg+ */}
+          <div className="hidden lg:flex absolute right-0 top-[5%] flex-col gap-16 xl:gap-24 z-10 w-[150px] xl:w-[220px]">
+            <motion.div
+              initial={{ x: 50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }}
+              className=" rotate-[8deg] hover:rotate-0 transition-transform duration-500"
+            >
+              <img src={floating3} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="Edge Binding" />
+
+            </motion.div>
+            <motion.div
+              initial={{ x: 50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}
+              className="rotate-[-5deg] hover:rotate-0 transition-transform duration-500"
+            >
+              <img src={floating4} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="Panel Saw" />
+
+            </motion.div>
+            <motion.div
+              initial={{ x: 50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: 0.4 }}
+              className="rotate-[12deg] hover:rotate-0 transition-transform duration-500"
+            >
+              <img src={floating5} className="w-full h-auto aspect-video object-cover rounded-xl mb-2" alt="Router" />
+
+            </motion.div>
+          </div>
+
+          {/* Main Content Container */}
+          <div className="max-w-7xl mx-auto px-4 lg:px-12 xl:px-24 relative z-0">
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
+              {/* Left Content */}
+              <div className="w-full lg:w-[45%] space-y-8 md:space-y-10">
+                <div className="space-y-4 text-center lg:text-left">
+                  <span className="text-[#032d29] font-black text-xs tracking-[0.3em] uppercase block">Established in 2013</span>
+                  <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase leading-[0.85]">
+                    Our <span className="text-[#FDBA74]">Factory</span> <br /> Setup
+                  </h2>
                 </div>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-[#032d29]">
-                    <Layers size={24} />
-                    <span className="font-bold uppercase text-md tracking-widest">Material Grade</span>
+                <p className="text-gray-600 text-lg md:text-xl leading-relaxed max-w-xl text-center lg:text-left mx-auto lg:mx-0">
+                  Spanning over <span className="text-black font-bold">25,000+ Sq.ft</span>, Arsen Furnitures & Fixtures is equipped with the latest European machinery. This in-house facility allows us to maintain surgical precision and absolute quality control.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 py-2">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 text-[#032d29] justify-center lg:justify-start">
+                      <Cpu size={24} />
+                      <span className="font-bold uppercase text-sm md:text-md tracking-widest">Hi-Tech Machinery</span>
+                    </div>
+                    <p className="text-sm md:text-md text-gray-500 leading-relaxed text-center lg:text-left">Precision Panel Saw cutting, Triple-Head Multi-Boring, and Automatic Edge-Banding.</p>
                   </div>
-                  <p className="text-md text-gray-500">Certified HDMR, BWP Plywood, and premium veneers only.</p>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 text-[#032d29] justify-center lg:justify-start">
+                      <Layers size={24} />
+                      <span className="font-bold uppercase text-sm md:text-md tracking-widest">Material Grade</span>
+                    </div>
+                    <p className="text-sm md:text-md text-gray-500 text-center lg:text-left">Certified HDMR, BWP Plywood, and premium veneers only.</p>
+                  </div>
+                </div>
+
+                <div className="bg-[#032d29] p-6 rounded-[2rem] text-white flex flex-row justify-between items-center max-w-sm mx-auto lg:mx-0 shadow-xl">
+                  <div className="flex items-center gap-4">
+                    <Factory size={32} className="text-[#FDBA74]" />
+                    <div>
+                      <h3 className="text-2xl md:text-3xl font-black">25,000+</h3>
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-white/50">Square Feet Capacity</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="bg-[#032d29] p-8 rounded-[2rem] text-white flex flex-row justify-between items-center max-w-sm">
-                <div className="flex items-center gap-4">
-                  <Factory size={32} className="text-[#FDBA74]" />
-                  <div>
-                    <h3 className="text-3xl font-black">25,000+</h3>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/50">Square Feet Capacity</p>
-                  </div>
+
+              {/* Right Multimedia Content */}
+              <div className="w-full lg:w-[55%] mt-12 lg:mt-0">
+                <div className="flex flex-col gap-4">
+                  {/* Vertical Video - Filling the space */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
+                    className="w-full relative group overflow-hidden rounded-[2.5rem] shadow-2xl h-[350px] sm:h-[450px] md:h-[650px] bg-black"
+                  >
+                    <video autoPlay loop muted playsInline className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500">
+                      <source src={factoryVideo} type="video/mp4" />
+                    </video>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 text-white">
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FDBA74]">Live Workshop</span>
+                      <p className="text-lg md:text-xl font-bold uppercase tracking-tight">Automated Precision</p>
+                    </div>
+                  </motion.div>
                 </div>
               </div>
             </div>
-            <div className="lg:w-1/2 flex flex-col gap-6 w-full">
-              <motion.div whileHover={{ scale: 1.01 }} className="relative group overflow-hidden rounded-[2rem] shadow-xl h-[300px] md:h-[350px] bg-black">
-                <video autoPlay loop muted playsInline className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500">
-                  <source src={factoryVideo} type="video/mp4" />
-                </video>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 text-white">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FDBA74]">Live Workshop</span>
-                  <p className="text-sm font-bold uppercase">Automated Precision</p>
-                </div>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.01 }} className="relative group overflow-hidden rounded-[2rem] shadow-xl h-[250px] md:h-[300px]">
-                <img src={factory1} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Factory Floor" />
-              </motion.div>
+
+            {/* Bottom Factory Gallery (min 5 pics) */}
+            <div className="mt-16 md:mt-24">
+              <h3 className="text-black font-black uppercase text-[10px] tracking-[0.4em] mb-8 text-center opacity-30">Inside Our Facility</h3>
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
+                {[factory1, factory2, factory3, factory4, factory5].map((img, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}
+                    whileHover={{ y: -10 }}
+                    className="rounded-[2rem] md:rounded-[2.5rem] overflow-hidden h-[180px] md:h-[250px] shadow-xl group border-[3px] md:border-4 border-white"
+                  >
+                    <img src={img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Factory Floor" />
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

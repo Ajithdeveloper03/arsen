@@ -4,16 +4,14 @@ import React, { useRef, useState } from "react";
 import { BASE_URL } from '../services/api';
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import {
-  Plus, ArrowRight, Minus,
+  Plus, Minus,
   MapPin, Send, MousePointer2
 } from "lucide-react";
 import jagger from '../assets/jagger.jpeg';
 // Asset Imports
 import banner from '../assets/residential-banner.jpg';
-import residential1 from '../assets/residential1.jpg';
 import kitchen from '../assets/modular-kitchen.png';
 import furniture from '../assets/modular-furniture.jpg';
-import urbanise from '../assets/urbanise.jpg';
 import saff from '../assets/residential-saff.jpg';
 import tharun from '../assets/residential-tharun.jpeg';
 import sunil from '../assets/residential-sunil.jpeg';
@@ -220,7 +218,7 @@ const HorizontalCategories = () => {
   );
 };
 
-const CategoryCard = ({ title, img }) => (
+const CategoryCard = ({ title, img }: { title: string; img: string }) => (
   <div className="min-w-[260px] md:min-w-[480px] h-[45vh] md:h-[60vh] relative group rounded-[2rem] md:rounded-[3rem] overflow-hidden">
     <img src={img} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" alt={title} />
     <div className="absolute inset-0 bg-black/40 p-8 flex flex-col justify-end">
@@ -229,7 +227,7 @@ const CategoryCard = ({ title, img }) => (
   </div>
 );
 
-const ProcessItem = ({ num, title, desc }) => (
+const ProcessItem = ({ num, title, desc }: { num: string; title: string; desc: string }) => (
   <motion.div whileHover={{ x: 10 }} className="group flex gap-8 p-10 border border-white/10 rounded-[2rem] hover:bg-white/5 transition">
     <span className="text-4xl md:text-5xl font-black text-white/10 group-hover:text-[#FDBA74]">{num}</span>
     <div>
@@ -252,7 +250,7 @@ const FAQSection = () => (
   </div>
 );
 
-const AccordionItem = ({ q, a }) => {
+const AccordionItem = ({ q, a }: { q: string; a: string }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-black/10 py-5">
@@ -279,20 +277,66 @@ const ConsultationForm = () => {
     projectType: "Project Type",
     details: ""
   });
+  const [errors, setErrors] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    projectType: "",
+    details: ""
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const validatePhone = (phone: string) => {
+    return /^[6-9]\d{9}$/.test(phone);
+  };
+
+  const validateField = (name: string, value: string) => {
+    let error = "";
+    if (!value.trim() || value === "Project Type") {
+      error = `${name.charAt(0).toUpperCase() + name.slice(1).replace(/([A-Z])/g, ' $1')} is required`;
+    } else if (name === "email" && !validateEmail(value)) {
+      error = "Please enter a valid email address";
+    } else if (name === "phone" && !validatePhone(value)) {
+      error = "Please enter a valid 10-digit mobile number";
+    } else if (name === "name" && value.length < 2) {
+      error = "Name must be at least 2 characters";
+    } else if (name === "details" && value.length < 10) {
+      error = "Message must be at least 10 characters";
+    }
+    setErrors(prev => ({ ...prev, [name]: error }));
+    return error === "";
+  };
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name as keyof typeof errors]) {
+      validateField(name, value);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.phone || formData.phone.length < 10) {
-      alert("Please enter a valid 10-digit mobile number.");
+
+    const isNameValid = validateField("name", formData.name);
+    const isEmailValid = validateField("email", formData.email);
+    const isPhoneValid = validateField("phone", formData.phone);
+    const isProjectTypeValid = validateField("projectType", formData.projectType);
+    const isDetailsValid = validateField("details", formData.details);
+
+    if (!isNameValid || !isEmailValid || !isPhoneValid || !isProjectTypeValid || !isDetailsValid) {
       return;
     }
+
     setIsSubmitting(true);
 
     try {
@@ -333,25 +377,42 @@ const ConsultationForm = () => {
         </div>
       ) : (
         <>
-          <h3 className="text-3xl md:text-4xl font-black italic uppercase mb-8">Initiate<br />Consultation.</h3>
+          <h3 className="text-2xl md:text-2xl font-black italic uppercase mb-8">Initiate<br />Consultation.</h3>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <input name="name" value={formData.name} onChange={handleInputChange} required type="text" placeholder="YOUR NAME" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
-            <input name="phone" value={formData.phone} onChange={(e: any) => {
-              const value = e.target.value.replace(/\D/g, '').slice(0, 10);
-              setFormData(prev => ({ ...prev, phone: value }));
-            }} required type="tel" placeholder="YOUR PHONE" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
-            <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="YOUR EMAIL" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors" />
-            <select name="projectType" value={formData.projectType} onChange={handleInputChange} className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors cursor-pointer">
-              <option className="text-black">Project Type</option>
-              <option className="text-black">Villa</option>
-              <option className="text-black">Apartment</option>
-              <option className="text-black">Commercial</option>
-            </select>
-            <textarea name="details" value={formData.details} onChange={handleInputChange} required placeholder="PROJECT DETAILS" className="w-full bg-transparent border-b border-white/20 py-4 outline-none h-28 focus:border-[#FDBA74] transition-colors" />
+            <div className="relative">
+              <input name="name" value={formData.name} onChange={handleInputChange} onBlur={(e) => validateField("name", e.target.value)} required type="text" placeholder="YOUR NAME" className={`w-full bg-transparent border-b ${errors.name ? 'border-red-500/50' : 'border-white/20'} py-4 outline-none focus:border-[#FDBA74] transition-colors`} />
+              {errors.name && <p className="text-[10px] text-red-400 mt-1 font-medium">{errors.name}</p>}
+            </div>
+            <div className="relative">
+              <input name="phone" value={formData.phone} onChange={(e: any) => {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                setFormData(prev => ({ ...prev, phone: value }));
+                if (errors.phone) validateField("phone", value);
+              }} onBlur={(e) => validateField("phone", e.target.value)} required type="tel" placeholder="YOUR PHONE" className={`w-full bg-transparent border-b ${errors.phone ? 'border-red-500/50' : 'border-white/20'} py-4 outline-none focus:border-[#FDBA74] transition-colors`} />
+              {errors.phone && <p className="text-[10px] text-red-400 mt-1 font-medium">{errors.phone}</p>}
+            </div>
+            <div className="relative">
+              <input name="email" value={formData.email} onChange={handleInputChange} onBlur={(e) => validateField("email", e.target.value)} required type="email" placeholder="YOUR EMAIL" className={`w-full bg-transparent border-b ${errors.email ? 'border-red-500/50' : 'border-white/20'} py-4 outline-none focus:border-[#FDBA74] transition-colors`} />
+              {errors.email && <p className="text-[10px] text-red-400 mt-1 font-medium">{errors.email}</p>}
+            </div>
+            <div className="relative">
+              <select name="projectType" value={formData.projectType} onChange={handleInputChange} onBlur={(e) => validateField("projectType", e.target.value)} className={`w-full bg-transparent border-b ${errors.projectType ? 'border-red-500/50' : 'border-white/20'} py-4 outline-none focus:border-[#FDBA74] transition-colors cursor-pointer`}>
+                <option className="text-black">Project Type</option>
+                <option className="text-black">Villa</option>
+                <option className="text-black">Apartment</option>
+                <option className="text-black">Commercial</option>
+              </select>
+              {errors.projectType && <p className="text-[10px] text-red-400 mt-1 font-medium">{errors.projectType}</p>}
+            </div>
+            <div className="relative">
+              <textarea name="details" value={formData.details} onChange={handleInputChange} onBlur={(e) => validateField("details", e.target.value)} required placeholder="PROJECT DETAILS" className={`w-full bg-transparent border-b ${errors.details ? 'border-red-500/50' : 'border-white/20'} py-4 outline-none h-28 focus:border-[#FDBA74] transition-colors`} />
+              {errors.details && <p className="text-[10px] text-red-400 mt-1 font-medium">{errors.details}</p>}
+            </div>
             <button disabled={isSubmitting} type="submit" className="group flex items-center gap-3 text-[#FDBA74] font-black uppercase tracking-widest text-xs pt-4 disabled:opacity-50">
               {isSubmitting ? "Sending..." : "Send Enquiry"} <Send size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </button>
           </form>
+
         </>
       )}
     </div>

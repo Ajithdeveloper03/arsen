@@ -25,15 +25,52 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
 
   // Modal Form State
   const [modalData, setModalData] = useState({ name: "", phone: "", email: "", message: "" });
+  const [modalErrors, setModalErrors] = useState({ name: "", phone: "", email: "", message: "" });
   const [modalSubmitting, setModalSubmitting] = useState(false);
   const [modalSent, setModalSent] = useState(false);
 
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const validatePhone = (phone: string) => {
+    return /^[6-9]\d{9}$/.test(phone);
+  };
+
+  const validateModalField = (name: string, value: string) => {
+    let error = "";
+    if (!value.trim()) {
+      error = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+    } else if (name === "email" && !validateEmail(value)) {
+      error = "Please enter a valid email address";
+    } else if (name === "phone" && !validatePhone(value)) {
+      error = "Please enter a valid 10-digit mobile number";
+    } else if (name === "name" && value.length < 2) {
+      error = "Name must be at least 2 characters";
+    } else if (name === "message" && value.length < 10) {
+      error = "Message must be at least 10 characters";
+    }
+    setModalErrors(prev => ({ ...prev, [name]: error }));
+    return error === "";
+  };
+
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!modalData.phone || modalData.phone.length < 10) {
-      alert("Please enter a valid 10-digit mobile number.");
+
+    // Validate all fields
+    const isNameValid = validateModalField("name", modalData.name);
+    const isPhoneValid = validateModalField("phone", modalData.phone);
+    const isEmailValid = validateModalField("email", modalData.email);
+    const isMessageValid = validateModalField("message", modalData.message);
+
+    if (!isNameValid || !isPhoneValid || !isEmailValid || !isMessageValid) {
       return;
     }
+
     setModalSubmitting(true);
     try {
       const res = await fetch(`${BASE_URL}/api/submit-form`, {
@@ -52,6 +89,7 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
 
       setModalSent(true);
       setModalData({ name: "", phone: "", email: "", message: "" });
+      setModalErrors({ name: "", phone: "", email: "", message: "" });
       setTimeout(() => setModalSent(false), 5000);
     } catch (err: any) {
       console.error(err);
@@ -323,45 +361,76 @@ export default function Header({ isLogoAnimating }: HeaderProps) {
               ) : (
 
                 <form className="space-y-4" onSubmit={handleModalSubmit}>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    value={modalData.name}
-                    onChange={(e) => setModalData(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Your Name"
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm"
-                  />
-                  <input
-                    type="tel"
-                    name="phone"
-                    required
-                    value={modalData.phone}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, '').slice(0, 10);
-                      setModalData(prev => ({ ...prev, phone: value }));
-                    }}
-                    placeholder="Mobile Number"
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm"
-                  />
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={modalData.email}
-                    onChange={(e) => setModalData(prev => ({ ...prev, email: e.target.value }))}
-                    placeholder="Email Address"
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm"
-                  />
-                  <textarea
-                    name="message"
-                    required
-                    rows={3}
-                    value={modalData.message}
-                    onChange={(e) => setModalData(prev => ({ ...prev, message: e.target.value }))}
-                    placeholder="Project Description"
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm resize-none"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      value={modalData.name}
+                      onChange={(e) => {
+                        setModalData(prev => ({ ...prev, name: e.target.value }));
+                        if (modalErrors.name) validateModalField("name", e.target.value);
+                      }}
+                      onBlur={(e) => validateModalField("name", e.target.value)}
+                      placeholder="Your Name"
+                      className={`w-full bg-white/[0.03] border ${modalErrors.name ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm transition-all`}
+                    />
+                    {modalErrors.name && <p className="text-[10px] text-red-400 mt-1 ml-2 font-medium">{modalErrors.name}</p>}
+                  </div>
+
+                  <div className="relative">
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      value={modalData.phone}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                        setModalData(prev => ({ ...prev, phone: value }));
+                        if (modalErrors.phone) validateModalField("phone", value);
+                        else if (value.length === 10) validateModalField("phone", value);
+                      }}
+                      onBlur={(e) => validateModalField("phone", e.target.value)}
+                      placeholder="Mobile Number"
+                      className={`w-full bg-white/[0.03] border ${modalErrors.phone ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm transition-all`}
+                    />
+                    {modalErrors.phone && <p className="text-[10px] text-red-400 mt-1 ml-2 font-medium">{modalErrors.phone}</p>}
+                  </div>
+
+                  <div className="relative">
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={modalData.email}
+                      onChange={(e) => {
+                        setModalData(prev => ({ ...prev, email: e.target.value }));
+                        if (modalErrors.email) validateModalField("email", e.target.value);
+                      }}
+                      onBlur={(e) => validateModalField("email", e.target.value)}
+                      placeholder="Email Address"
+                      className={`w-full bg-white/[0.03] border ${modalErrors.email ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm transition-all`}
+                    />
+                    {modalErrors.email && <p className="text-[10px] text-red-400 mt-1 ml-2 font-medium">{modalErrors.email}</p>}
+                  </div>
+
+                  <div className="relative">
+                    <textarea
+                      name="message"
+                      required
+                      rows={3}
+                      value={modalData.message}
+                      onChange={(e) => {
+                        setModalData(prev => ({ ...prev, message: e.target.value }));
+                        if (modalErrors.message) validateModalField("message", e.target.value);
+                      }}
+                      onBlur={(e) => validateModalField("message", e.target.value)}
+                      placeholder="Project Description"
+                      className={`w-full bg-white/[0.03] border ${modalErrors.message ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-5 py-3.5 sm:px-6 sm:py-4 text-white outline-none focus:border-[#FFA62B]/40 text-sm resize-none transition-all`}
+                    />
+                    {modalErrors.message && <p className="text-[10px] text-red-400 mt-1 ml-2 font-medium">{modalErrors.message}</p>}
+                  </div>
+
                   <button
                     type="submit"
                     disabled={modalSubmitting}

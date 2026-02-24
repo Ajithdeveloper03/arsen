@@ -8,7 +8,6 @@ import {
   Mail,
   MapPin,
   Twitter,
-  Clock,
   ArrowRight,
   Send,
   Instagram,
@@ -35,8 +34,42 @@ const ArsenContact = () => {
   const [formData, setFormData] = useState({
     name: "", email: "", phone: "", subject: "", message: "",
   });
+  const [errors, setErrors] = useState({
+    name: "", email: "", phone: "", subject: "", message: "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const validatePhone = (phone: string) => {
+    return /^[6-9]\d{9}$/.test(phone);
+  };
+
+  const validateField = (name: string, value: string) => {
+    let error = "";
+    if (!value.trim()) {
+      error = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+    } else if (name === "email" && !validateEmail(value)) {
+      error = "Please enter a valid email address";
+    } else if (name === "phone" && !validatePhone(value)) {
+      error = "Please enter a valid 10-digit mobile number";
+    } else if (name === "name" && value.length < 2) {
+      error = "Name must be at least 2 characters";
+    } else if (name === "subject" && value.length < 3) {
+      error = "Subject must be at least 3 characters";
+    } else if (name === "message" && value.length < 10) {
+      error = "Message must be at least 10 characters";
+    }
+    setErrors(prev => ({ ...prev, [name]: error }));
+    return error === "";
+  };
 
   useEffect(() => {
     fetchDetails();
@@ -57,14 +90,24 @@ const ArsenContact = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name as keyof typeof errors]) {
+      validateField(name, value);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.phone || formData.phone.length < 10) {
-      alert("Please enter a valid 10-digit mobile number.");
+
+    const isNameValid = validateField("name", formData.name);
+    const isEmailValid = validateField("email", formData.email);
+    const isPhoneValid = validateField("phone", formData.phone);
+    const isSubjectValid = validateField("subject", formData.subject);
+    const isMessageValid = validateField("message", formData.message);
+
+    if (!isNameValid || !isEmailValid || !isPhoneValid || !isSubjectValid || !isMessageValid) {
       return;
     }
+
     setIsSubmitting(true);
 
     try {
@@ -246,6 +289,8 @@ const ArsenContact = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
+                      onBlur={(e: any) => validateField("name", e.target.value)}
+                      error={errors.name}
                       required
                     />
                     <FloatingInput
@@ -254,6 +299,8 @@ const ArsenContact = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleInputChange}
+                      onBlur={(e: any) => validateField("email", e.target.value)}
+                      error={errors.email}
                       required
                     />
                   </div>
@@ -267,13 +314,18 @@ const ArsenContact = () => {
                       onChange={(e: any) => {
                         const value = e.target.value.replace(/\D/g, '').slice(0, 10);
                         setFormData(prev => ({ ...prev, phone: value }));
+                        if (errors.phone) validateField("phone", value);
                       }}
+                      onBlur={(e: any) => validateField("phone", e.target.value)}
+                      error={errors.phone}
                     />
                     <FloatingInput
                       label="Subject"
                       name="subject"
                       value={formData.subject}
                       onChange={handleInputChange}
+                      onBlur={(e: any) => validateField("subject", e.target.value)}
+                      error={errors.subject}
                       required
                     />
                   </div>
@@ -283,12 +335,14 @@ const ArsenContact = () => {
                       required
                       value={formData.message}
                       onChange={handleInputChange}
-                      className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors resize-none h-32 peer placeholder-transparent"
+                      onBlur={(e: any) => validateField("message", e.target.value)}
+                      className={`w-full bg-transparent border-b ${errors.message ? 'border-red-500/50' : 'border-white/20'} py-4 outline-none focus:border-[#FDBA74] transition-colors resize-none h-32 peer placeholder-transparent`}
                       placeholder="Tell us about your space..."
                     />
-                    <label className="absolute left-0 top-0 text-[10px] uppercase tracking-widest text-gray-500 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-6 peer-focus:top-0 peer-focus:text-[10px] peer-focus:text-[#FDBA74]">
+                    <label className={`absolute left-0 top-0 text-[10px] uppercase tracking-widest ${errors.message ? 'text-red-400' : 'text-gray-500'} transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-6 peer-focus:top-0 peer-focus:text-[10px] peer-focus:text-[#FDBA74]`}>
                       Tell us about your space...
                     </label>
+                    {errors.message && <p className="text-[10px] text-red-400 mt-1 font-medium">{errors.message}</p>}
                   </div>
 
                   <button
@@ -342,21 +396,22 @@ const ArsenContact = () => {
 };
 
 // Helper Component for the elegant input style
-const FloatingInput = ({ label, name, ...props }: any) => (
+const FloatingInput = ({ label, name, error, ...props }: any) => (
   <div className="relative group pt-2">
     <input
       {...props}
       name={name}
       id={name}
-      className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-[#FDBA74] transition-colors peer placeholder-transparent"
+      className={`w-full bg-transparent border-b ${error ? 'border-red-500/50' : 'border-white/20'} py-4 outline-none focus:border-[#FDBA74] transition-colors peer placeholder-transparent`}
       placeholder={label}
     />
     <label
       htmlFor={name}
-      className="absolute left-0 top-0 text-[10px] uppercase tracking-widest text-gray-500 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-6 peer-focus:top-0 peer-focus:text-[10px] peer-focus:text-[#FDBA74]"
+      className={`absolute left-0 top-0 text-[10px] uppercase tracking-widest ${error ? 'text-red-400' : 'text-gray-500'} transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-6 peer-focus:top-0 peer-focus:text-[10px] peer-focus:text-[#FDBA74]`}
     >
       {label}
     </label>
+    {error && <p className="text-[10px] text-red-400 mt-1 font-medium">{error}</p>}
   </div>
 );
 

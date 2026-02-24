@@ -345,27 +345,64 @@ export default function LusionInteractiveFooter() {
     email: "",
     message: ""
   });
+  const [errors, setErrors] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    message: ""
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const validatePhone = (phone: string) => {
+    return /^[6-9]\d{9}$/.test(phone);
+  };
+
+  const validateField = (name: string, value: string) => {
+    let error = "";
+    if (!value.trim()) {
+      error = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+    } else if (name === "email" && !validateEmail(value)) {
+      error = "Please enter a valid email address";
+    } else if (name === "phone" && !validatePhone(value)) {
+      error = "Please enter a valid 10-digit mobile number";
+    } else if (name === "name" && value.length < 2) {
+      error = "Name must be at least 2 characters";
+    } else if (name === "message" && value.length < 10) {
+      error = "Message must be at least 10 characters";
+    }
+    setErrors(prev => ({ ...prev, [name]: error }));
+    return error === "";
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { placeholder, value } = e.target;
-    const nameMap: { [key: string]: string } = {
-      "Full Name": "name",
-      "Contact No.": "phone",
-      "Email Address": "email",
-      "Tell us about your project...": "message"
-    };
-    const name = nameMap[placeholder] || placeholder;
+    const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name as keyof typeof errors]) {
+      validateField(name, value);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.phone || formData.phone.length < 10) {
-      alert("Please enter a valid 10-digit mobile number.");
+
+    const isNameValid = validateField("name", formData.name);
+    const isPhoneValid = validateField("phone", formData.phone);
+    const isEmailValid = validateField("email", formData.email);
+    const isMessageValid = validateField("message", formData.message);
+
+    if (!isNameValid || !isPhoneValid || !isEmailValid || !isMessageValid) {
       return;
     }
+
     setIsSubmitting(true);
 
     try {
@@ -436,23 +473,63 @@ export default function LusionInteractiveFooter() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="relative">
                   <User className="absolute left-4 top-4 text-[#16697A]" size={20} strokeWidth={2.2} />
-                  <input required value={formData.name} onChange={handleInputChange} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Full Name" />
+                  <input
+                    required
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    onBlur={(e) => validateField("name", e.target.value)}
+                    className={`w-full bg-white border ${errors.name ? 'border-red-500/50' : 'border-[#daa52085]'} p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22] transition-all`}
+                    placeholder="Full Name"
+                  />
+                  {errors.name && <p className="text-[10px] text-red-500 mt-1 ml-2 font-semibold uppercase tracking-wider">{errors.name}</p>}
                 </div>
                 <div className="relative">
                   <Phone className="absolute left-4 top-4 text-[#16697A]" size={18} />
-                  <input required type="tel" value={formData.phone} onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
-                    setFormData(prev => ({ ...prev, phone: value }));
-                  }} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Contact No." />
+                  <input
+                    required
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      setFormData(prev => ({ ...prev, phone: value }));
+                      if (errors.phone) validateField("phone", value);
+                    }}
+                    onBlur={(e) => validateField("phone", e.target.value)}
+                    className={`w-full bg-white border ${errors.phone ? 'border-red-500/50' : 'border-[#daa52085]'} p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22] transition-all`}
+                    placeholder="Contact No."
+                  />
+                  {errors.phone && <p className="text-[10px] text-red-500 mt-1 ml-2 font-semibold uppercase tracking-wider">{errors.phone}</p>}
                 </div>
               </div>
               <div className="relative">
                 <Mail className="absolute left-4 top-4 text-[#16697A]" size={18} />
-                <input required type="email" value={formData.email} onChange={handleInputChange} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22]" placeholder="Email Address" />
+                <input
+                  required
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  onBlur={(e) => validateField("email", e.target.value)}
+                  className={`w-full bg-white border ${errors.email ? 'border-red-500/50' : 'border-[#daa52085]'} p-4 pl-12 rounded-2xl text-black outline-none focus:border-[#228B22] transition-all`}
+                  placeholder="Email Address"
+                />
+                {errors.email && <p className="text-[10px] text-red-500 mt-1 ml-2 font-semibold uppercase tracking-wider">{errors.email}</p>}
               </div>
               <div className="relative">
                 <MessageSquare className="absolute left-4 top-4 text-[#16697A]" size={18} />
-                <textarea required value={formData.message} onChange={handleInputChange} className="w-full bg-white border border-[#daa52085] p-4 pl-12 rounded-2xl text-black outline-none resize-none focus:border-[#228B22]" rows={4} placeholder="Tell us about your project..." />
+                <textarea
+                  required
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  onBlur={(e) => validateField("message", e.target.value)}
+                  className={`w-full bg-white border ${errors.message ? 'border-red-500/50' : 'border-[#daa52085]'} p-4 pl-12 rounded-2xl text-black outline-none resize-none focus:border-[#228B22] transition-all`}
+                  rows={4}
+                  placeholder="Tell us about your project..."
+                />
+                {errors.message && <p className="text-[10px] text-red-500 mt-1 ml-2 font-semibold uppercase tracking-wider">{errors.message}</p>}
               </div>
               <button disabled={isSubmitting} className="w-full bg-[#16697A] hover:bg-[#DAA520] text-white font-black uppercase tracking-widest py-5 rounded-2xl flex items-center justify-center gap-3 transition-colors disabled:opacity-50">
                 {isSubmitting ? "Sending..." : "Send Enquiry"}

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Plus, Edit2, Trash2, Search, Loader2, Save, ImageIcon, Upload, LayoutGrid, List, MapPin, Database, CheckCircle, AlertCircle } from 'lucide-react';
-import api, { BASE_URL } from '../../services/api';
+import api from '../../services/api';
 import Modal from '../components/Modal';
 import Notification, { NotificationType } from '../components/Notification';
 import { FEATURED_PROJECTS, RAW_COMPLETED_PROJECTS_LIST } from '../../data/completedProjects';
@@ -409,7 +409,12 @@ const ProjectsManager = () => {
             </div>
 
             {/* List/Grid View */}
-            {viewMode === 'grid' ? (
+            {loading ? (
+                <div className="bg-white p-20 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center justify-center gap-4">
+                    <Loader2 className="animate-spin text-[#022C22]" size={40} />
+                    <p className="text-slate-500 font-medium">Loading projects archive...</p>
+                </div>
+            ) : viewMode === 'grid' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {filteredProjects.map((project: any) => (
                         <div key={project.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-[#F28C28]/50 hover:shadow-lg transition-all shadow-sm group flex flex-col h-full">
@@ -425,8 +430,8 @@ const ProjectsManager = () => {
                                 )}
                                 <div className="absolute top-2 right-2 flex gap-1">
                                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase backdrop-blur-md border ${project.status === 'ongoing'
-                                        ? 'bg-orange-50/90 text-orange-600 border-orange-200'
-                                        : 'bg-emerald-50/90 text-emerald-600 border-emerald-200'
+                                            ? 'bg-orange-50/90 text-orange-600 border-orange-200'
+                                            : 'bg-emerald-50/90 text-emerald-600 border-emerald-200'
                                         }`}>
                                         {project.status}
                                     </span>
@@ -472,8 +477,8 @@ const ProjectsManager = () => {
                                     <tr key={project.id} className="hover:bg-slate-50/50 transition-colors group">
                                         <td className="p-4 pl-6">
                                             <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase border ${project.status === 'completed'
-                                                ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
-                                                : 'bg-orange-50 text-orange-600 border-orange-200'
+                                                    ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                                                    : 'bg-orange-50 text-orange-600 border-orange-200'
                                                 }`}>
                                                 {project.status === 'completed' ? 'Done' : 'WIP'}
                                             </span>
@@ -572,7 +577,19 @@ const ProjectsManager = () => {
                                     <CheckCircle size={16} /> 100% Completed
                                 </div>
                             ) : (
-                                <input type="number" className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.progress} onChange={e => setFormData({ ...formData, progress: parseInt(e.target.value) })} />
+                                <input
+                                    type="number"
+                                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]"
+                                    value={formData.progress}
+                                    onChange={e => {
+                                        const newProgress = parseInt(e.target.value);
+                                        setFormData({
+                                            ...formData,
+                                            progress: newProgress,
+                                            status: newProgress >= 100 ? 'completed' : 'ongoing'
+                                        });
+                                    }}
+                                />
                             )}
                         </div>
                     </div>
