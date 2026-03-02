@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Layers, Image as ImageIcon, Briefcase, Plus, Activity, Database } from 'lucide-react';
+import { Layers, Image as ImageIcon, Briefcase, Plus, Activity, Database, Phone } from 'lucide-react';
 import api, { BASE_URL } from '../../services/api';
 import { Link } from 'react-router-dom';
-// Data & Utils for accurate count
-import { FEATURED_PROJECTS, RAW_COMPLETED_PROJECTS_LIST } from '../../data/completedProjects';
-import { HARDCODED_ONGOING_PROJECTS } from '../../data/ongoingProjects';
-import { mergeProjectsWithApi } from '../../utils/projectMerge';
+// No local master lists - use only API counts for "Real Data"
 
 const DashboardHome = () => {
     const [stats, setStats] = useState<any>(null);
@@ -20,28 +17,14 @@ const DashboardHome = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            // Fetch Stats & Projects
-            const [statsRes, projectsRes] = await Promise.all([
-                api.get('/dashboard/stats'),
-                api.get('/projects')
-            ]);
-
+            // Fetch Stats (includes projects_count, banners_count, etc.)
+            const statsRes = await api.get('/dashboard/stats');
             setStats(statsRes.data);
             setActivities(statsRes.data.activities || []);
-
-            // Calculate "Real" Count using Merge Logic (same as ProjectsManager)
-            const LOCAL_MASTER_LIST = [
-                ...HARDCODED_ONGOING_PROJECTS,
-                ...FEATURED_PROJECTS.map((p) => ({ title: p.title })),
-                ...RAW_COMPLETED_PROJECTS_LIST.map((t) => ({ title: t.replace(/^\d+\s+/, "").trim() }))
-            ];
-
-            // Merge checks for duplicates by title
-            const merged = mergeProjectsWithApi(LOCAL_MASTER_LIST.map(p => ({ ...p, id: 'temp' })), projectsRes.data);
-            setTotalProjectCount(merged.length);
+            setTotalProjectCount(statsRes.data.projects_count || 0);
 
         } catch (err) {
-            console.error(err);
+            console.error("Dashboard error:", err);
         } finally {
             setLoading(false);
         }
@@ -73,7 +56,7 @@ const DashboardHome = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <SimpleStat
                     title="Total Projects"
                     value={totalProjectCount || stats?.projects_count || 0}
@@ -97,6 +80,14 @@ const DashboardHome = () => {
                     bg="bg-orange-50"
                     color="text-orange-600"
                     link="/admin/careers"
+                />
+                <SimpleStat
+                    title="Contact Info"
+                    value={stats?.contacts_count || 0}
+                    icon={Phone}
+                    bg="bg-purple-50"
+                    color="text-purple-600"
+                    link="/admin/contact-details"
                 />
             </div>
 

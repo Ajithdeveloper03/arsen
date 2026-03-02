@@ -9,6 +9,12 @@ import {
 } from "lucide-react";
 
 // Assets
+import varun from '../assets/varun.png';
+import loga from '../assets/pachamuthu.png';
+import pradeep from '../assets/pradeep.png';
+import vidya from '../assets/vidya.png';
+import ravi from '../assets/ravi.png';
+import aaryan from '../assets/aaryan.png';
 import floating1 from '../assets/floating1.png';
 import floating2 from '../assets/floating2.png';
 import floating3 from '../assets/floating3.png';
@@ -22,8 +28,8 @@ import factory4 from '../assets/standard4.png';
 import factory5 from '../assets/standard5.png';
 import about1 from '../assets/about1.jpg';
 import about2 from '../assets/about2.jpg';
-import about3 from '../assets/about3.jpg';
-import about4 from '../assets/about4.jpg';
+import about3 from '../assets/residential1.jpg';
+import about4 from '../assets/home-slider-residential2.jpg';
 
 
 import factoryVideo from '../assets/factory.mp4';
@@ -33,40 +39,40 @@ const EliteAboutPage = () => {
 
   const testimonials = [
     {
-      quote: "Arsen Interio transformed our 4BHK into a sanctuary. Their ability to blend luxury marble finishes with practical, kid-friendly storage is truly impressive.",
-      author: "Vikram Malhotra",
-      company: "Private Residence, Mumbai",
-      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400"
+      quote: "Very well experienced staff they are aware of latest and upcoming materials in the market. in house manufacturing is an added advantage for the projects so they can flexible with the alterations and quality manufacturing,excellent knowledge on designing work .Senthil hope will work again on other projects highly recommendable",
+      author: "varun V",
+      // company: "Private Residence, Mumbai",
+      img: varun
     },
     {
-      quote: "The modular kitchen execution was flawless. They managed the entire civil, electrical, and plumbing work, delivering a truly seamless turnkey experience.",
-      author: "Priyanka Sharma",
-      company: "Skyline Apartments",
-      img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400"
+      quote: "I had a great experience with arsen interiors for my boutique...initially I was skeptical but final outcome of the project was amazing and completely satisfied with the quality of materials and innovations.",
+      author: "Loga Palanimuthu",
+      // company: "Skyline Apartments",
+      img: loga
     },
     {
-      quote: "Their attention to lighting design is what sets them apart. Our living room feels twice as large thanks to their intelligent use of mirrors and cove lighting.",
-      author: "Arjun Reddy",
-      company: "Villa Owner",
-      img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400"
+      quote: "Job well done with good finish of interiors. Excellent customer service, flexible giving good insight suggestions according to meet client actual needs.",
+      author: "Pradheep Balakrishnan",
+      // company: "Villa Owner",
+      img: pradeep
     },
     {
       quote: "Found them through a friend and I'm glad I did. They respected our budget without compromising on the premium aesthetic we wanted for our master suite.",
-      author: "Sneha Kapoor",
-      company: "The Grand Residency",
-      img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400"
+      author: "vidya Ravi",
+      // company: "The Grand Residency",
+      img: vidya
     },
     {
-      quote: "Excellent project management. We were kept in the loop with weekly 3D updates and site photos, making the entire renovation process completely stress-free.",
-      author: "Rohan Deshmukh",
-      company: "Penthouse Project",
-      img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400"
+      quote: "Very nice and affordable partner.... Received fast services and made us to feel comfortable.. Reliable team...",
+      author: "Ravi ramanathan",
+      // company: "Penthouse Project",
+      img: ravi
     },
     {
       quote: "The custom wardrobe solutions they provided saved us so much space. The finish quality of the laminates and hardware is clearly superior to local vendors.",
-      author: "Meera Nair",
-      company: "Urban Meadows",
-      img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400"
+      author: "Aaryan Aarush",
+      // company: "Urban Meadows",
+      img: aaryan
     }
   ];
 
@@ -114,14 +120,18 @@ const EliteAboutPage = () => {
               ))}
             </div>
           </div>
-          <div className="md:col-span-7 grid grid-cols-2 gap-4">
+          <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div className="space-y-4">
-              <img src={about1} className="rounded-3xl h-[300px] md:h-[400px] w-full object-cover shadow-2xl" alt="Interior 1" />
-              <img src={about2} className="rounded-3xl h-[200px] md:h-[300px] w-full object-cover shadow-xl" alt="Exterior" />
+              <img src={about1} className="rounded-2xl h-[250px] w-full object-cover shadow-lg" alt="Execution 1" />
+              <img src={about2} className="rounded-2xl h-[180px] w-full object-cover shadow-lg" alt="Execution 2" />
             </div>
-            <div className="space-y-4 pt-12">
-              <img src={about3} className="rounded-3xl h-[200px] md:h-[300px] w-full object-cover shadow-xl" alt="Interior 3" />
-              <img src={about4} className="rounded-3xl h-[300px] md:h-[400px] w-full object-cover shadow-2xl" alt="Interior 4" />
+            <div className="space-y-4 pt-8">
+              <img src={about3} className="rounded-2xl h-[180px] w-full object-cover shadow-lg" alt="Execution 3" />
+              <img src={about4} className="rounded-2xl h-[250px] w-full object-cover shadow-lg" alt="Execution 4" />
+            </div>
+            <div className="space-y-4 pt-4 hidden sm:block">
+              <img src="https://images.pexels.com/photos/7250788/pexels-photo-7250788.jpeg" className="rounded-2xl h-[220px] w-full object-cover shadow-lg" alt="Execution 5" />
+              <img src="https://images.pexels.com/photos/135620/pexels-photo-135620.jpeg" className="rounded-2xl h-[210px] w-full object-cover shadow-lg" alt="Execution 6" />
             </div>
           </div>
         </div>
@@ -150,7 +160,7 @@ const EliteAboutPage = () => {
 
           <div className="relative">
             <svg
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[110%] opacity-40 pointer-events-none"
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[110%] opacity-40 pointer-events-none z-0"
               viewBox="0 0 400 2000"
               preserveAspectRatio="none"
             >
@@ -174,7 +184,7 @@ const EliteAboutPage = () => {
                 whileInView={{ pathLength: 1, opacity: 1 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 4, ease: [0.22, 1, 0.36, 1], opacity: { duration: 1.5 } }}
-                d="M200 0 C 350 300, 50 600, 200 900 C 350 1200, 50 1500, 200 1800 C 300 2000, 100 2200, 200 2400"
+                d="M200 0 C 350 300, 50 600, 200 900 C 350 1200, 50 1500, 200 1700 C 300 1850, 100 1950, 200 2000"
                 stroke="url(#lineGradient)"
                 strokeWidth="6"
                 fill="none"
@@ -182,7 +192,7 @@ const EliteAboutPage = () => {
               />
             </svg>
 
-            <div className="space-y-32 md:space-y-28 relative z-10">
+            <div className="space-y-32 md:space-y-28 relative z-20">
               {milestones.map((m, i) => (
                 <motion.div
                   key={i}
@@ -191,7 +201,7 @@ const EliteAboutPage = () => {
                   viewport={{ once: true, margin: "-100px" }}
                   className={`flex flex-col md:flex-row items-center justify-center ${i % 2 === 0 ? "md:flex-row-reverse" : ""}`}
                 >
-                  <div className={`w-full md:w-[45%] p-8 md:p-12 rounded-[3rem] bg-white/[0.03] border border-[#FDBA74]/20 backdrop-blur-sm group hover:bg-white/[0.06] transition-all ${i % 2 === 0 ? "text-center md:text-right" : "text-center md:text-left"}`}>
+                  <div className={`w-full md:w-[45%] p-8 md:p-12 rounded-[3rem] bg-white/[0.03] border border-[#FDBA74]/20 backdrop-blur-sm group hover:bg-white/[0.06] transition-all relative z-30 ${i % 2 === 0 ? "text-center md:text-right" : "text-center md:text-left"}`}>
                     <div className={`inline-flex items-center justify-center p-4 rounded-2xl bg-[#FDBA74] text-black mb-6 ${i % 2 === 0 ? "md:ml-auto" : ""}`}>
                       {m.icon}
                     </div>
@@ -199,7 +209,7 @@ const EliteAboutPage = () => {
                     <p className="text-white/50 text-lg font-medium leading-relaxed">{m.desc}</p>
                   </div>
 
-                  <div className="w-full md:w-[10%] flex flex-col items-center py-12 md:py-0">
+                  <div className="w-full md:w-[10%] flex flex-col items-center py-12 md:py-0 relative z-30">
                     <div className="relative">
                       <motion.span
                         whileInView={{ scale: [0.8, 1.1, 1] }}
@@ -301,45 +311,42 @@ const EliteAboutPage = () => {
 
           {/* Floating Left Elements (Machines) - Visible on lg+ */}
           <div className="hidden lg:flex absolute left-0 top-[10%] flex-col gap-24 xl:gap-32 z-10 w-[150px] xl:w-[200px]">
-            <motion.div
-              initial={{ x: -50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }}
-              className=" rotate-[-10deg] hover:rotate-0 transition-transform duration-500"
-            >
-              <img src={floating1} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="Cold press Machine" />
+            {/* Custom Styles for Floating Animation */}
+            <style dangerouslySetInnerHTML={{
+              __html: `
+               @keyframes smoothFloat {
+                 0%, 100% { transform: translateY(0); }
+                 50% { transform: translateY(-20px); }
+               }
+               .floating-machine {
+                 animation: smoothFloat 4s ease-in-out infinite;
+               }
+             ` }} />
 
-            </motion.div>
-            <motion.div
-              initial={{ x: -50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}
-              className=" rotate-[5deg] hover:rotate-0 transition-transform duration-500"
-            >
-              <img src={floating2} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="Multiboreing machine" />
-
-            </motion.div>
+            <div className="floating-machine rotate-[-10deg] hover:rotate-0 transition-transform duration-500">
+              <img src={floating1} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="spencial-design-machine" />
+              <p className="text-[10px] font-black uppercase text-center tracking-widest text-[#032d29]/40">Spencial-Design-Machine</p>
+            </div>
+            <div className="floating-machine rotate-[5deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '1s' }}>
+              <img src={floating2} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="coldpress machine" />
+              <p className="text-[10px] font-black uppercase text-center tracking-widest text-[#032d29]/40">Cold-Press</p>
+            </div>
           </div>
 
           {/* Floating Right Elements (Machines) - Visible on lg+ */}
           <div className="hidden lg:flex absolute right-0 top-[5%] flex-col gap-16 xl:gap-24 z-10 w-[150px] xl:w-[220px]">
-            <motion.div
-              initial={{ x: 50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }}
-              className=" rotate-[8deg] hover:rotate-0 transition-transform duration-500"
-            >
+            <div className="floating-machine rotate-[8deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '0.5s' }}>
               <img src={floating3} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="Edge Binding" />
-
-            </motion.div>
-            <motion.div
-              initial={{ x: 50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}
-              className="rotate-[-5deg] hover:rotate-0 transition-transform duration-500"
-            >
-              <img src={floating4} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="Panel Saw" />
-
-            </motion.div>
-            <motion.div
-              initial={{ x: 50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: 0.4 }}
-              className="rotate-[12deg] hover:rotate-0 transition-transform duration-500"
-            >
-              <img src={floating5} className="w-full h-auto aspect-video object-cover rounded-xl mb-2" alt="Router" />
-
-            </motion.div>
+              <p className="text-[10px] font-black uppercase pl-2 text-center tracking-widest text-[#032d29]/40">Edge Binding Machine</p>
+            </div>
+            <div className="floating-machine rotate-[-5deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '1.5s' }}>
+              <img src={floating4} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="multi-boring-machine" />
+              <p className="text-[10px] font-black uppercase pl-2 text-center tracking-widest text-[#032d29]/40">Multi-Boring-Machine</p>
+            </div>
+            <div className="floating-machine rotate-[12deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '2s' }}>
+              <img src={floating5} className="w-full h-auto aspect-video object-cover rounded-xl mb-2" alt="panel-saws-j-3200-in-pro-plus-1" />
+              <p className="text-[10px] font-black uppercase text-center pl-2 tracking-widest text-[#032d29]/40">Panel-Saws-j-3200-in-pro-plus-1</p>
+            </div>
           </div>
 
           {/* Main Content Container */}
@@ -393,7 +400,7 @@ const EliteAboutPage = () => {
                     initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
                     className="w-full relative group overflow-hidden rounded-[2.5rem] shadow-2xl h-[350px] sm:h-[450px] md:h-[650px] bg-black"
                   >
-                    <video autoPlay loop muted playsInline className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500">
+                    <video autoPlay loop muted playsInline className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500">
                       <source src={factoryVideo} type="video/mp4" />
                     </video>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
@@ -428,18 +435,18 @@ const EliteAboutPage = () => {
 
       {/* ================= TESTIMONIALS ================= */}
       <section className="py-20 bg-[#032d29] rounded-[4rem] mx-4 md:mx-10 mb-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-2">
+        <div className="max-w-4xl mx-auto px-6 space-y-10">
+          <div className="text-center mb-2 space-y-5">
             <div className="flex justify-center gap-1 mb-4">
               {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="#FDBA74" stroke="none" />)}
             </div>
             <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
               Verified <span className="text-[#FDBA74]">Google</span> Reviews
             </h2>
-            <p className="text-white/40 font-bold uppercase tracking-widest text-xs mt-4">Transparent Feedback from our esteemed clients</p>
+            {/* <p className="text-white/40 font-bold uppercase tracking-widest text-xs mt-4">Transparent Feedback from our esteemed clients</p> */}
           </div>
 
-          <div className="relative h-[300px] flex items-center">
+          <div className="relative h-[300px] mb-5 flex items-center">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTestimonial}
@@ -451,11 +458,11 @@ const EliteAboutPage = () => {
                 <h2 className="text-2xl md:text-4xl font-bold text-white italic mb-5">
                   "{testimonials[activeTestimonial].quote}"
                 </h2>
-                <div className="flex justify-center gap-3">
+                <div className="flex justify-center items-center gap-3">
                   <img src={testimonials[activeTestimonial].img} className="w-14 h-14 rounded-full border border-[#FDBA74]" />
                   <div>
                     <p className="text-[#FDBA74] font-black uppercase text-xs">{testimonials[activeTestimonial].author}</p>
-                    <p className="text-white/50 uppercase text-[10px] font-bold">{testimonials[activeTestimonial].company}</p>
+                    {/* <p className="text-white/50 uppercase text-[10px] font-bold">{testimonials[activeTestimonial].company}</p> */}
                   </div>
                 </div>
               </motion.div>

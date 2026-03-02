@@ -101,15 +101,26 @@ const BannersManager = () => {
             if (editingBanner) {
                 await api.post(`/banners/${editingBanner.id}`, data);
             } else {
+                if (!selectedFile) {
+                    showNotification('error', 'Please upload a banner image.');
+                    setSubmitting(false);
+                    return;
+                }
                 await api.post('/banners', data);
             }
             fetchBanners();
             setModalOpen(false);
-            showNotification('success', editingBanner ? 'Banner updated successfully!' : 'Banner created successfully!');
+            showNotification('success', editingBanner ? '✅ Banner updated successfully!' : '✅ Banner created successfully!');
         } catch (err: any) {
-            console.error(err);
-            const message = err.response?.data?.message || 'Error saving banner. Please check all fields and try again.';
-            showNotification('error', message);
+            console.error('Banner save error:', err.response?.data);
+            const errors = err.response?.data?.errors;
+            if (errors) {
+                const messages = Object.values(errors).flat().join(' | ');
+                showNotification('error', `Validation Error: ${messages}`);
+            } else {
+                const message = err.response?.data?.message || 'Error saving banner. Please try again.';
+                showNotification('error', message);
+            }
         } finally {
             setSubmitting(false);
         }
@@ -146,7 +157,13 @@ const BannersManager = () => {
                 order_index: banner.order_index,
                 is_active: !!banner.is_active
             });
-            setImagePreview(banner.image_url);
+            // Build correct preview URL
+            let previewUrl = banner.image_url || null;
+            if (previewUrl && !previewUrl.startsWith('http') && !previewUrl.startsWith('data:')) {
+                previewUrl = `${BASE_URL}${previewUrl}`;
+            }
+            setImagePreview(previewUrl);
+
         } else {
             setEditingBanner(null);
             setFormData({ title: '', subtitle: '', badge: 'FEATURED', link_text: '', link_url: '', order_index: banners.length + 1, is_active: true });
@@ -237,7 +254,7 @@ const BannersManager = () => {
                                 ref={fileInputRef}
                                 onChange={handleFileChange}
                                 className="hidden"
-                                accept="image/*"
+                                accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.avif,.heic,.heif,.tiff,.ico"
                             />
 
                             {imagePreview ? (
@@ -261,7 +278,18 @@ const BannersManager = () => {
                     </div>
                     <div>
                         <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Subtitle</label>
-                        <textarea rows={3} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.subtitle} onChange={e => setFormData({ ...formData, subtitle: e.target.value })} />
+                        <textarea rows={2} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.subtitle} onChange={e => setFormData({ ...formData, subtitle: e.target.value })} />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Button Text</label>
+                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.link_text} onChange={e => setFormData({ ...formData, link_text: e.target.value })} placeholder="e.g. View Project" />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Button Link</label>
+                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.link_url} onChange={e => setFormData({ ...formData, link_url: e.target.value })} placeholder="e.g. /projects" />
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-2">

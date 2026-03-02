@@ -4,9 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { BASE_URL } from '../services/api';
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Plus, ArrowUpRight, Search, MapPin, Grid } from "lucide-react";
-import { FEATURED_PROJECTS, RAW_COMPLETED_PROJECTS_LIST } from "../data/completedProjects";
-import { mergeProjectsWithApi } from "../utils/projectMerge";
-import { HARDCODED_ONGOING_PROJECTS } from "../data/ongoingProjects";
+// Using API data for "Real Data Only"
 
 import completed1 from '../assets/completed/completed1.jpg';
 import completed2 from '../assets/completed/completed2.jpg';
@@ -24,29 +22,24 @@ import completed13 from '../assets/completed/completed13.jpg';
 import completed14 from '../assets/completed/completed14.jpg';
 import completed15 from '../assets/completed/completed15.jpg';
 
+// Import flagship images from other pages as "Real Images"
+import sunil from '../assets/residential-sunil.jpeg';
+import living from '../assets/living.jpeg';
+import sundaram1 from "../assets/sundaram1.jpg";
+import tafe1 from "../assets/tafe1.jpg";
+import oecl1 from "../assets/oecl1.jpg";
+import greens1 from "../assets/greens3.jpg";
+import people1 from "../assets/commercial-corporate.jpg";
+import banner from '../assets/residential-banner.jpg';
+import constructing from '../assets/constructing.jpeg';
+
 const heroImages = [
     completed1, completed2, completed3, completed4, completed5,
     completed6, completed7, completed8, completed9, completed10,
     completed11, completed12, completed13, completed14, completed15,
 ];
 
-// Helper to deduce category from title for the raw list
-// (Ideally this should be shared too, but we will keep it here for now)
-const getCategory = (title: string) => {
-    const lower = title.toLowerCase();
-    if (lower.includes("residencial") || lower.includes("residence") || lower.includes("house") || lower.includes("villa")) return "Residential";
-    if (lower.includes("green trends") || lower.includes("hotel") || lower.includes("restaurant") || lower.includes("cafe") || lower.includes("limelite")) return "Hospitality";
-    if (lower.includes("dr agarwal") || lower.includes("hospital") || lower.includes("clinic") || lower.includes("lab")) return "Luxe Detail";
-    return "Commercial";
-};
-
-const getLocation = (title: string) => {
-    if (title.includes("(")) {
-        const parts = title.split("(");
-        return parts[parts.length - 1].replace(")", "").trim();
-    }
-    return "India";
-}
+// Archive Titles logic is now handled via state and useMemo
 
 export default function ArsenArchive() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -74,63 +67,47 @@ export default function ArsenArchive() {
             const res = await fetch(`${BASE_URL}/api/public/projects`);
             const data = await res.json();
             if (data && data.length > 0) {
-                setApiProjects(data); // Store all, filtering happens via merge
+                // Map real flagship assets for grid display
+                const mapped = data.map((p: any) => {
+                    const title = p.title.toLowerCase();
+                    if (title.includes("sundaram finance")) p.realImg = sundaram1;
+                    if (title.includes("tafe")) p.realImg = tafe1;
+                    if (title.includes("oecl")) p.realImg = oecl1;
+                    if (title.includes("green trends")) p.realImg = greens1;
+                    if (title.includes("aditya birla") || title.includes("people")) p.realImg = people1;
+                    if (title.includes("sunil reddy")) p.realImg = sunil;
+                    if (title.includes("tharun")) p.realImg = living;
+                    if (title.includes("saf games") || title.includes("village")) p.realImg = constructing;
+                    if (title.includes("windsor")) p.realImg = banner;
+                    return p;
+                });
+                setApiProjects(mapped);
             }
         } catch (err) {
             console.error(err);
         }
     };
 
-    // Generate the Local Master List for Completed Projects
-    const LOCAL_COMPLETED_LIST = useMemo(() => [
-        // Featured Completed
-        ...FEATURED_PROJECTS.map((p, i) => ({
-            id: -100 - i,
-            title: p.title,
-            type: p.category,
-            location: p.location,
-            status: 'completed',
-            progress: 100,
-            image_url: p.image,
-            description: p.description,
-            is_hardcoded: true
-        })),
-        // Remaining Completed (Raw)
-        ...RAW_COMPLETED_PROJECTS_LIST.map((rawTitle, i) => {
-            const cleanTitle = rawTitle.replace(/^\d+\s+/, "").trim();
-            const isFeatured = FEATURED_PROJECTS.some(fp => fp.title.toLowerCase().includes(cleanTitle.toLowerCase()));
-            if (isFeatured) return null;
-
-            return {
-                id: -2000 - i,
-                title: cleanTitle,
-                type: getCategory(cleanTitle),
-                location: getLocation(rawTitle),
-                status: 'completed',
-                progress: 100,
-                image_url: null,
-                description: "Archive Project",
-                is_hardcoded: true
-            };
-        }).filter(Boolean) as any[]
-    ], []);
-
-    // Merge with API and filter for Completed
+    // Filter for Completed from API
     const MERGED_COMPLETED = useMemo(() => {
-        const MASTER_LIST = [
-            ...LOCAL_COMPLETED_LIST,
-            ...HARDCODED_ONGOING_PROJECTS.map((p: any) => ({ ...p, is_hardcoded: true }))
-        ];
-        const merged = mergeProjectsWithApi(MASTER_LIST, apiProjects, true);
-        return merged.filter((p: any) => p.status === 'completed');
-    }, [apiProjects, LOCAL_COMPLETED_LIST]);
+        return apiProjects.filter((p: any) => p.status === 'completed');
+    }, [apiProjects]);
 
-    // 1. Dynamic Featured (Prefer projects with images)
+    // 1. Dynamic Featured (Only display REAL FLAGSHIP images from Commercial/Residential)
     const FINAL_FEATURED = useMemo(() => {
-        return MERGED_COMPLETED.filter(p => p.image_url).slice(0, 6);
+        const flagshipTitles = [
+            "Sundaram Finance", "Tafe", "Oecl", "Green Trends", "Aditya Birla (People)",
+            "Sunil Reddy Residence", "MR.tharun Residential", "Saf Games Village", "Windsor Garden"
+        ];
+
+        // Match API projects with these titles
+        return MERGED_COMPLETED.filter(p => {
+            const isFlagship = flagshipTitles.some(t => p.title.toLowerCase().includes(t.toLowerCase()));
+            return isFlagship && (p.image_url || p.is_featured);
+        });
     }, [MERGED_COMPLETED]);
 
-    // 2. Remaining Projects
+    // 2. Remaining Projects (Exclude the flagship grid items)
     const REMAINING_PROJECTS = useMemo(() => {
         const featuredIds = new Set(FINAL_FEATURED.map(f => f.id));
         return MERGED_COMPLETED.filter(p => !featuredIds.has(p.id));
@@ -210,7 +187,7 @@ export default function ArsenArchive() {
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10" />
                                 {/* Priority: Active Image URL -> Fallback Image Import */}
                                 <img
-                                    src={project.image_url || project.image}
+                                    src={project.realImg || project.image_url || project.image}
                                     alt={project.title}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />

@@ -17,7 +17,7 @@ import bhopal from '../assets/Tafe Bhopal Image.jpg';
 import banner2 from '../assets/pmc-banner2.jpg';
 import banner3 from '../assets/pmc-banner3.jpg';
 import banner4 from '../assets/pmc-banner4.jpg';
-import tafe1 from '../assets/pmc-tafe.jpg';
+import tafe1 from '../assets/pmcTafe.jpg';
 import tafe2 from '../assets/pmc-tafe2.jpg';
 import tafe3 from '../assets/3d2.jpg';
 import tafe5 from '../assets/pmc-tafe1.jpg';
@@ -174,7 +174,7 @@ const PMC = () => {
                 viewport={{ once: true }}
                 className="w-full h-full rounded-[3rem] overflow-hidden shadow-2xl relative group bg-white/5 border border-white/10"
               >
-                <img src={tafe1} className="w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110" alt="Arsen Site" />
+                <img src={tafe1} className="w-full h-full object-cover opacity-90 transition-all duration-1000 group-hover:scale-110" alt="Arsen Site" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#010B0A] via-transparent to-transparent" />
               </motion.div>
 

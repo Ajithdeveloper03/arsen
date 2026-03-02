@@ -17,7 +17,8 @@ return new class extends Migration
             $table->text('subtitle')->nullable();
             $table->string('badge')->nullable();
             $table->string('image_url');
-            $table->string('link')->nullable();
+            $table->string('link_text')->nullable();
+            $table->string('link_url')->nullable();
             $table->integer('order_index')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

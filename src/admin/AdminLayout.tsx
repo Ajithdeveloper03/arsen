@@ -104,9 +104,9 @@ const AdminLayout = () => {
                     </button>
                 </div>
 
-                <main className="relative z-10 p-4 md:p-8 max-w-[1600px] mx-auto min-h-screen w-full">
+                <main className="relative z-10 p-3 sm:p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto min-h-screen w-full">
                     {/* Use Outlet to render child routes */}
-                    <div className="bg-white rounded-3xl p-4 md:p-8 shadow-sm border border-slate-200 min-h-[calc(100vh-6rem)]">
+                    <div className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-sm border border-slate-200 min-h-[calc(100vh-6rem)]">
                         <Outlet />
                     </div>
                 </main>

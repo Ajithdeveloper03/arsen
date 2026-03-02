@@ -25,7 +25,17 @@ export default function InteriorFooter() {
     fetch(`${BASE_URL}/api/public/contact-details`)
       .then(res => res.json())
       .then(data => setContacts(data))
-      .catch(err => console.error("Footer fetch error:", err));
+      .catch(err => {
+        console.error("Footer fetch error:", err);
+        // Set fallback data if API fails
+        setContacts([
+          { type: "address", label: "Head Office", value: "Chennai, Tamil Nadu\nIndia", order_index: 1 },
+          { type: "phone", value: "+91 98765 43210", order_index: 1 },
+          { type: "email", value: "info@arseninterio.com", order_index: 1 },
+          { type: "social", icon: "Facebook", value: "https://facebook.com/arseninterio" },
+          { type: "social", icon: "Instagram", value: "https://instagram.com/arseninterio" }
+        ]);
+      });
   }, []);
 
   // Filter specific types

@@ -22,7 +22,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
                 className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto"
                 onClick={onClose}
             >
-                <div onClick={e => e.stopPropagation()} className="w-full max-w-2xl my-8">
+                <div onClick={e => e.stopPropagation()} className="w-full max-w-4xl my-8">
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -35,7 +35,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
                                 <X size={20} />
                             </button>
                         </div>
-                        <div className="p-6 md:p-8">
+                        <div className="p-4 sm:p-6 md:p-8 max-h-[85vh] overflow-y-auto custom-scrollbar">
                             {children}
                         </div>
                     </motion.div>

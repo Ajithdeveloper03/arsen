@@ -8,6 +8,7 @@ import {
     PhoneCall,
     LogOut,
     Home,
+    Settings,
     X
 } from 'lucide-react';
 import logo from '../../assets/arsen-logo.png';
@@ -61,6 +62,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         { name: 'Banners', icon: ImageIcon, path: '/admin/banners' },
         { name: 'Careers', icon: Briefcase, path: '/admin/careers' },
         { name: 'Contacts', icon: PhoneCall, path: '/admin/contact-details' },
+        { name: 'Security', icon: Settings, path: '/admin/security' },
     ];
 
     return (

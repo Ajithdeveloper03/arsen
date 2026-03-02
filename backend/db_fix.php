@@ -14,8 +14,8 @@ ini_set('display_errors', 1);
 ini_set('max_execution_time', 300); // 5 mins
 
 // 1. BOOTSTRAP LARAVEL
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__ . '/vendor/autoload.php';
+$app = require_once __DIR__ . '/bootstrap/app.php';
 
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
@@ -42,7 +42,7 @@ try {
     echo "\n> Seeding Admin User...\n";
     runArtisan('db:seed --class=AdminUserSeeder --force', $kernel);
     
-    // 5. Seed CMS Data (The corrected one with nullable image handling)
+    // 5. Seed CMS Data (The new comprehensive one)
     echo "\n> Seeding CMS Data (Banners, Projects, Careers, Contacts)...\n";
     runArtisan('db:seed --class=CmsDataSeeder --force', $kernel);
     

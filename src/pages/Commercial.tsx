@@ -15,11 +15,14 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Asset Imports
+import cFactory1 from '../assets/commercialFactory1.png';
+import cFactory2 from '../assets/commercialFactory2.png';
+import cFactory3 from '../assets/commercialFactory3.png';
+
 import sundar1 from '../assets/sundar1.jpg';
 import sundar2 from '../assets/sundar2.jpg';
 import factoryStandard from '../assets/factory-standard.jpg';
 import workspace from '../assets/workspace.jpg';
-import threed1 from '../assets/3d1.jpg';
 import conference from '../assets/conference.jpg';
 import threed2 from '../assets/3d2.jpg';
 import dining from '../assets/home-dining.jpg';
@@ -35,8 +38,8 @@ import sundaram1 from "../assets/sundaram1.jpg";
 import hero1 from '../assets/home-slider-commercial2.jpg';
 import modular from '../assets/pmc-tafe2.jpg';
 import sundaram2 from "../assets/sundaram2.jpg";
-import tafe1 from "../assets/tafe1.jpg";
-import tafe2 from "../assets/tafe2.jpg";
+import tafe1 from "../assets/commercialTafe1.jpg";
+import tafe2 from "../assets/commercialTafe2.jpg";
 import corporate from "../assets/commercial-corporate.jpg";
 import cabins from "../assets/cabins.jpg";
 import Video from '../assets/commercial-banner-video.mp4';
@@ -81,7 +84,7 @@ const ArsenCommercial = () => {
   const specializedAreas = [
     { title: "Corporate Offices", img: corporate, desc: "High-performance ergonomic workspace environments." },
     { title: "Retail & Malls", img: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1200", desc: "Conversion-optimized outlets and showrooms." },
-    { title: "Restaurants & Cafes", img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200", desc: "Atmospheric culinary spaces and industrial kitchens." },
+    { title: "Restaurants & Cafes", img: "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200_webp/fc30b819181239.562d62402df51.png", desc: "Atmospheric culinary spaces and industrial kitchens." },
     { title: "Healthcare & Hospitals", img: "https://images.pexels.com/photos/7250788/pexels-photo-7250788.jpeg", desc: "Specialized clinical interiors and functional labs." },
     { title: "Spa & Salons", img: greens1, desc: "Premium wellness sanctuaries and luxury fit-outs." },
   ];
@@ -95,8 +98,8 @@ const ArsenCommercial = () => {
       hasBranches: true,
       branchCount: "15",
       locations: [
-        "Head Office (Chennai)", "Sundaram Home Corporate (Chennai)", "Sundaram Infotech (Chennai)", "Branch Office (Pune)", "Branch Office (Hyderabad)", 
-        "Branch Office (Ernakulam)", "Branch Office (Ajmer)", "Branch Office (Indore)", "Amirpet (Telangana)", "Bhopal (MP)", 
+        "Head Office (Chennai)", "Sundaram Home Corporate (Chennai)", "Sundaram Infotech (Chennai)", "Branch Office (Pune)", "Branch Office (Hyderabad)",
+        "Branch Office (Ernakulam)", "Branch Office (Ajmer)", "Branch Office (Indore)", "Amirpet (Telangana)", "Bhopal (MP)",
         "Belgaum (Karnataka)", "Thanjavur", "Ghatkaser (Telangana)", "Hasan (Karnataka)", "Dharmapuri"
       ]
     },
@@ -128,19 +131,7 @@ const ArsenCommercial = () => {
         "HBR Layout (Bangalore)", "Manipal County (Bangalore)", "Vijayawada", "Guntur", "Vellore", "Pondicherry", "Pollachi"
       ]
     },
-    {
-      brand: "Aditya Birla (People)",
-      desc: "Retail infrastructure partner for 28 'People' fashion outlets. We delivered high-traffic retail environments across major malls (Phoenix, Amanora, Vivera) and prime commercial streets in Bangalore, Pune, and Maharashtra.",
-      images: [hero1, modular],
-      tags: ["Retail", "Fashion"],
-      hasBranches: true,
-      branchCount: "28",
-      locations: [
-        "Phoenix Mall (Chennai)", "Vivera Mall (Chennai)", "Skywalk (Chennai)", "Brigade Road (Bangalore)", "Jaya Nagar (Bangalore)",
-        "Koramangala (Bangalore)", "Indira Nagar (Bangalore)", "MG Road (Bangalore)", "Whitefield (Bangalore)", "Amanora Mall (Pune)",
-        "Premier Plaza (Pune)", "Aundh (Pune)", "Kolhapur (Maharashtra)", "Nasik (Maharashtra)", "Hubli (Karnataka)", "Hassan (Karnataka)"
-      ]
-    },
+    
     {
       brand: "TAFE",
       desc: "Industrial administrative interiors and corporate blocks for TAFE across 12 locations, including Corporate Offices in Nungambakkam and regional centers in Chennai and Bhopal.",
@@ -396,19 +387,19 @@ const ArsenCommercial = () => {
 
                 {/* --- BRANCH LIST TABLE DESIGN --- */}
                 {project.hasBranches && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     className="mt-24 md:mt-40 bg-white/5 rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-12 border border-white/10"
                   >
                     <div className="flex items-center gap-4 mb-8">
-                        <MapPin className="text-[#008b98]" size={28} />
-                        <h4 className="text-2xl md:text-4xl font-black uppercase tracking-tighter text-white">Branch Network <span className="text-[#008b98]">Map.</span></h4>
+                      <MapPin className="text-[#008b98]" size={28} />
+                      <h4 className="text-2xl md:text-4xl font-black uppercase tracking-tighter text-white">Branch Network <span className="text-[#008b98]">Map.</span></h4>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-4">
                       {project.locations?.map((loc, i) => (
                         <div key={i} className="flex items-center gap-4 py-3 border-b border-white/5 group hover:border-[#008b98]/50 transition-colors">
-                          <span className="text-[10px] font-black text-[#008b98] opacity-50">{i + 1 < 10 ? `0${i+1}` : i+1}</span>
+                          <span className="text-[10px] font-black text-[#008b98] opacity-50">{i + 1 < 10 ? `0${i + 1}` : i + 1}</span>
                           <span className="text-sm md:text-base font-bold text-white/80 group-hover:text-white uppercase tracking-wider">{loc}</span>
                         </div>
                       ))}
@@ -437,25 +428,35 @@ const ArsenCommercial = () => {
       </section>
 
       {/* 7. WHY ARSEN */}
-      <section className="py-20 md:py-40 bg-white text-black">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-20 md:py-40 relative overflow-hidden bg-[#0A0D0C]">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 min-h-[800px] md:h-[600px]">
-            <div className="md:col-span-2 md:row-span-2 bg-gray-100 rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 flex flex-col justify-between overflow-hidden relative group min-h-[300px]">
-              <img src={factoryStandard} className="absolute inset-0 w-full h-full object-cover opacity-60 md:opacity-80 group-hover:scale-110 transition-transform duration-1000" alt="Material" />
-              <h4 className="text-3xl md:text-5xl font-black uppercase relative z-10">Factory <br /> Standards.</h4>
-              <p className="text-black relative z-10 text-base md:text-2xl font-bold italic">In-house production facility with advanced machinery and strict quality control.</p>
+            {/* Box 1: Factory Standards */}
+            <div className="md:col-span-2 md:row-span-2 bg-white/5 backdrop-blur-md rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 flex flex-col justify-between overflow-hidden relative group min-h-[300px] border border-white/10">
+              <img src={factoryStandard} className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 group-hover:scale-110 transition-all duration-1000" alt="Material" />
+              <h4 className="text-3xl md:text-5xl font-black uppercase relative z-10 text-white">Factory <br /> Standards.</h4>
+              <p className="text-white/80 relative z-10 text-base md:text-2xl font-bold italic">In-house production facility with advanced machinery and strict quality control.</p>
             </div>
-            <div className="md:col-span-2 bg-[#008b98] rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 text-white flex items-center justify-between">
-              <h4 className="text-2xl md:text-5xl font-black uppercase">Zero <br /> Production Delays.</h4>
-              <ShieldCheck className="w-12 h-12 md:w-[60px] md:h-[60px]" strokeWidth={1} />
+
+            {/* Box 2: Zero Production Delays */}
+            <div className="md:col-span-2 bg-[#008b98] rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 text-white flex items-center justify-between shadow-2xl relative overflow-hidden group">
+              <img src={cFactory1} className="absolute inset-0 w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity" alt="Efficiency" />
+              <h4 className="text-2xl md:text-5xl font-black uppercase relative z-10">Zero <br /> Production Delays.</h4>
+              <ShieldCheck className="w-12 h-12 md:w-[60px] md:h-[60px] relative z-10" strokeWidth={1} />
             </div>
-            <div className="bg-black rounded-[2rem] md:rounded-[3rem] p-6 md:p-8 text-white flex flex-col justify-center text-center">
-              <p className="text-4xl md:text-5xl font-black italic">365</p>
-              <p className="text-[9px] md:text-[20px] uppercase font-bold tracking-widest mt-2 text-white/40">Days Service Support</p>
+
+            {/* Box 3: 365 Days Support */}
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-[2rem] md:rounded-[3rem] p-6 md:p-8 text-white flex flex-col justify-center text-center relative overflow-hidden group">
+              <img src={cFactory2} className="absolute inset-0 w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity" alt="Support" />
+              <p className="text-4xl md:text-5xl font-black italic text-[#81d6de] relative z-10">365</p>
+              <p className="text-[9px] md:text-[20px] uppercase font-bold tracking-widest mt-2 text-white/40 relative z-10">Days Service Support</p>
             </div>
-            <div className="bg-gray-200 rounded-[2rem] md:rounded-[3rem] p-6 md:p-8 flex flex-col justify-center text-center border border-black/5">
-              <CheckCircle2 size={40} className="mx-auto text-[#008b98]" />
-              <p className="text-[12px] md:text-[24px] uppercase font-bold tracking-widest mt-4 text-black/40">No Hidden Costs & Quality Compromise</p>
+
+            {/* Box 4: Quality Compromise */}
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-[2rem] md:rounded-[3rem] p-6 md:p-8 flex flex-col justify-center text-center text-white relative overflow-hidden group">
+              <img src={cFactory3} className="absolute inset-0 w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity" alt="Quality" />
+              <CheckCircle2 size={40} className="mx-auto text-[#008b98] relative z-10" />
+              <p className="text-[12px] md:text-[18px] lg:text-[22px] uppercase font-bold tracking-widest mt-4 text-white/60 leading-tight relative z-10">No Hidden Costs & Quality Compromise</p>
             </div>
           </div>
         </div>

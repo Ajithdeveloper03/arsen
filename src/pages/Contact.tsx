@@ -235,7 +235,24 @@ const ArsenContact = () => {
                   </div>
                   <div>
                     <p className="text-[14px] uppercase tracking-widest text-gray-500 mb-1">{item.label}</p>
-                    <p className="text-base md:text-lg font-medium break-words whitespace-pre-wrap">{item.val}</p>
+                    <p className="text-base md:text-lg font-medium break-words whitespace-pre-wrap">
+                      {item.label === "Call Us" ? (
+                        item.val.split(',').map((phone: string, index: number) => (
+                          <span key={index}>
+                            <a href={`tel:${phone.trim().replace(/\s+/g, '')}`} className="text-white hover:text-[#FDBA74] transition-colors">
+                              {phone.trim()}
+                            </a>
+                            {index < item.val.split(',').length - 1 && ', '}
+                          </span>
+                        ))
+                      ) : item.label === "Email Us" ? (
+                        <a href={`mailto:${item.val}`} className="text-white hover:text-[#FDBA74] transition-colors">
+                          {item.val}
+                        </a>
+                      ) : (
+                        item.val
+                      )}
+                    </p>
                   </div>
                 </motion.div>
               ))}

@@ -20,7 +20,7 @@ import 'swiper/css/free-mode';
 
 // Assets
 import dinning from '../assets/home-dining.jpg';
-import corporate from '../assets/home-corporate.jpg';
+import corporate from '../assets/sundaram1.jpg';
 import greens from '../assets/greens3.jpg';
 
 if (typeof window !== "undefined") {
@@ -31,7 +31,7 @@ const sectors = [
   { icon: Building2, title: "Corporate", subtitle: "Offices", img: corporate },
   { icon: ShoppingBag, title: "Retail", subtitle: "Showrooms", img: "https://images.pexels.com/photos/5705490/pexels-photo-5705490.jpeg" },
   { icon: Utensils, title: "Dining", subtitle: "Cafes", img: dinning },
-  { icon: Stethoscope, title: "Medical", subtitle: "Healthcare", img: "https://images.pexels.com/photos/34260030/pexels-photo-34260030.jpeg" },
+  { icon: Stethoscope, title: "Medical", subtitle: "Healthcare", img: "https://images.pexels.com/photos/12081338/pexels-photo-12081338.jpeg" },
   { icon: Flower2, title: "Wellness", subtitle: "Spas", img: greens },
 ];
 

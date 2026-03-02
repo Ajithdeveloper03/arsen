@@ -3,18 +3,26 @@
 import React, { useRef, useState } from "react";
 import { BASE_URL } from '../services/api';
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import {
-  Plus, Minus,
-  MapPin, Send, MousePointer2
-} from "lucide-react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay, Pagination } from 'swiper/modules';
+import { ChevronLeft, ChevronRight, MousePointer2, MapPin, Plus, Send } from "lucide-react";
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import jagger from '../assets/jagger.jpeg';
+import sunil2 from '../assets/sunil2.jpeg';
+import sunil3 from '../assets/sunil3.jpeg';
+import sunil4 from '../assets/sunil4.jpeg';
+import sunil5 from '../assets/sunil5.jpeg';
 // Asset Imports
 import banner from '../assets/residential-banner.jpg';
 import kitchen from '../assets/modular-kitchen.png';
 import furniture from '../assets/modular-furniture.jpg';
 import saff from '../assets/residential-saff.jpg';
 import tharun from '../assets/residential-tharun.jpeg';
-import sunil from '../assets/residential-sunil.jpeg';
+import sunil from '../assets/residential-sunil.jpg';
 import ceiling from '../assets/ceiling.jpg';
 import wallpaper from '../assets/wallpaper.jpg';
 import lighting from '../assets/lighting.jpg';
@@ -33,8 +41,8 @@ const PROJECTS = [
   },
   {
     id: 2,
-    title: "Sunil Reddy Residence",
-    loc: "Hyderabad",
+    title: "Golden Treasure - Jeevan's Residential",
+    loc: "Chennai",
     img: sunil,
     desc: "Bespoke woodwork and floor-to-ceiling glass transitions.",
   },
@@ -58,7 +66,8 @@ const PROJECTS = [
     loc: "Hyderabad",
     img: jagger,
     desc: "An avant-garde industrial masterpiece utilizing raw materials with a premium finish.",
-    featured: true
+    featured: true,
+    images: [jagger, sunil2, sunil3, sunil4, sunil5]
   }
 ];
 
@@ -134,28 +143,67 @@ const EliteDesignMasterpiece = () => {
             ))}
           </div>
 
-          {/* Featured Large Project (Jagger) */}
+          {/* Featured Large Project (Sunil Reddy with Slider) */}
           {PROJECTS.filter(p => p.featured).map((project) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              className="relative rounded-[3rem] overflow-hidden bg-black text-white h-[400px] md:h-[500px] flex items-end group"
+              className="relative rounded-[3rem] overflow-hidden bg-black text-white h-[400px] md:h-[600px] group shadow-2xl"
             >
-              <img src={project.img} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-700" alt={project.title} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-              <div className="relative p-8 md:p-16 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="max-w-xl">
-                  <span className="text-[#FDBA74] text-xs font-black uppercase tracking-[0.5em] mb-4 block">Masterpiece Selection</span>
-                  <h3 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4">{project.title}</h3>
-                  <p className="text-white/60 text-lg leading-relaxed">{project.desc}</p>
+              <Swiper
+                modules={[Navigation, Autoplay, Pagination]}
+                navigation={{
+                  prevEl: '.sunil-prev-btn',
+                  nextEl: '.sunil-next-btn',
+                }}
+                pagination={{
+                  el: '.sunil-pagination',
+                  clickable: true,
+                  bulletClass: 'swiper-pagination-bullet !bg-white/50 !w-2 !h-2',
+                  bulletActiveClass: 'swiper-pagination-bullet-active !bg-[#FDBA74] !w-8',
+                }}
+                autoplay={{ delay: 4000, disableOnInteraction: false }}
+                loop={true}
+                className="h-full w-full"
+              >
+                {project.images?.map((image, index) => (
+                  <SwiperSlide key={index}>
+                    <div className="relative h-full w-full">
+                      <img 
+                        src={image} 
+                        className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-90 transition-opacity duration-700" 
+                        alt={`${project.title} - Image ${index + 1}`} 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+
+              {/* Content Overlay */}
+              <div className="absolute inset-0 flex items-end">
+                <div className="relative p-8 md:p-16 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
+                  <div className="max-w-xl">
+                    <span className="text-[#FDBA74] text-xs font-black uppercase tracking-[0.5em] mb-4 block opacity-100">Masterpiece Selection</span>
+                    <h3 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-white opacity-100">{project.title}</h3>
+                    <p className="text-white text-lg leading-relaxed opacity-100">{project.desc}</p>
+                  </div>
                 </div>
-                {/* <div className="flex items-center gap-4">
-                   <div className="bg-white text-black p-5 rounded-full hover:bg-[#FDBA74] transition-colors cursor-pointer">
-                     <ArrowRight size={24} />
-                   </div>
-                </div> */}
               </div>
+
+              {/* Navigation Controls */}
+              <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 z-20 flex justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button className="sunil-prev-btn p-3 md:p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-[#FDBA74] hover:text-black transition-all">
+                  <ChevronLeft size={20} className="md:w-6 md:h-6" />
+                </button>
+                <button className="sunil-next-btn p-3 md:p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-[#FDBA74] hover:text-black transition-all">
+                  <ChevronRight size={20} className="md:w-6 md:h-6" />
+                </button>
+              </div>
+
+              {/* Pagination Dots */}
+              <div className="sunil-pagination absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2" />
             </motion.div>
           ))}
         </div>
@@ -209,7 +257,7 @@ const HorizontalCategories = () => {
           <CategoryCard title="Living & Dining Spaces" img={living} />
           <CategoryCard title="Bedroom & Wardrobes" img={wallpaper} />
           <CategoryCard title="Flooring & False Ceilings" img={ceiling} />
-          <CategoryCard title="Electricals & Lightings" img="https://images.pexels.com/photos/6238608/pexels-photo-6238608.jpeg" />
+         
           <CategoryCard title="Modular Furnitures" img={furniture} />
           <CategoryCard title="Constructing & Crafting" img={constructing} />
         </motion.div>

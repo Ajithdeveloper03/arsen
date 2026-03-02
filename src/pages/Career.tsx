@@ -116,7 +116,7 @@ const Careers = () => {
     loc: j.location,
     salary: j.salary || "Competitive",
     description: j.description || "",
-    img: j.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200",
+    img: j.image_url ? (j.image_url.startsWith('http') ? j.image_url : `${BASE_URL}${j.image_url}`) : "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200",
     specs: typeof j.specifications === 'string' ? JSON.parse(j.specifications) : (j.specifications || []),
     skills: typeof j.skills === 'string' ? JSON.parse(j.skills) : (j.skills || []),
     responsibilities: typeof j.responsibilities === 'string' ? JSON.parse(j.responsibilities) : (j.responsibilities || []),

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Project;
 use App\Models\CareerListing;
+use App\Models\ContactDetail;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -57,11 +58,27 @@ class DashboardController extends Controller
                         'action' => $j->created_at == $j->updated_at ? 'created' : 'updated',
                         'description' => "Job '{$j->title}' was " . ($j->created_at == $j->updated_at ? 'posted' : 'updated'),
                         'time' => $j->updated_at,
-                        'image_url' => null // Career listings might not have a main image in the list view
+                        'image_url' => null
                     ];
                 });
 
-            $activities = $recentProjects->concat($recentBanners)->concat($recentJobs)
+            $recentContacts = ContactDetail::select('id', 'label', 'type', 'created_at', 'updated_at')
+                ->orderBy('updated_at', 'desc')
+                ->limit(5)
+                ->get()
+                ->map(function($c) {
+                    return [
+                        'id' => 'cont_' . $c->id,
+                        'type' => 'Contact',
+                        'title' => $c->label,
+                        'action' => 'updated',
+                        'description' => "Contact info '{$c->label}' was updated",
+                        'time' => $c->updated_at,
+                        'image_url' => null
+                    ];
+                });
+
+            $activities = $recentProjects->concat($recentBanners)->concat($recentJobs)->concat($recentContacts)
                 ->sortByDesc('time')
                 ->values()
                 ->take(10);
@@ -69,6 +86,7 @@ class DashboardController extends Controller
             return response()->json([
                 'banners_count' => Banner::count(),
                 'projects_count' => Project::count(),
+                'contacts_count' => ContactDetail::count(),
                 'active_jobs_count' => CareerListing::where('is_active', true)->count(),
                 'activities' => $activities
             ]);

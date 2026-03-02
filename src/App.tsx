@@ -35,6 +35,7 @@ const ProjectsManager = lazy(() => import("./admin/pages/ProjectsManager"));
 const CareersManager = lazy(() => import("./admin/pages/CareersManager"));
 const BannersManager = lazy(() => import("./admin/pages/BannersManager"));
 const ContactDetailsManager = lazy(() => import("./admin/pages/ContactDetailsManager"));
+const SecuritySettings = lazy(() => import("./admin/pages/SecuritySettings"));
 
 function AppContent({ isLogoAnimating, setIsLogoAnimating }: { isLogoAnimating: boolean, setIsLogoAnimating: (val: boolean) => void }) {
   const location = useLocation();
@@ -100,6 +101,7 @@ function AppContent({ isLogoAnimating, setIsLogoAnimating }: { isLogoAnimating: 
             <Route path="projects" element={<ProjectsManager />} />
             <Route path="careers" element={<CareersManager />} />
             <Route path="contact-details" element={<ContactDetailsManager />} />
+            <Route path="security" element={<SecuritySettings />} />
           </Route>
         </Routes>
       </main>

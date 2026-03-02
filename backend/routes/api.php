@@ -30,6 +30,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/change-credentials', [AuthController::class, 'changeCredentials']);
 
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 

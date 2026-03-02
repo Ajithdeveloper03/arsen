@@ -113,9 +113,16 @@ const CareersManager = () => {
             fetchCareers();
             setModalOpen(false);
             showNotification('success', editingCareer ? 'Job updated successfully!' : 'Job posted successfully!');
-        } catch (err) {
-            console.error(err);
-            showNotification('error', 'Error saving job listing.');
+        } catch (err: any) {
+            console.error('Career save error:', err.response?.data);
+            const errors = err.response?.data?.errors;
+            if (errors) {
+                const messages = Object.values(errors).flat().join(' | ');
+                showNotification('error', `Validation Error: ${messages}`);
+            } else {
+                const message = err.response?.data?.message || 'Error saving job listing. Please try again.';
+                showNotification('error', message);
+            }
         } finally {
             setSubmitting(false);
         }
@@ -233,7 +240,7 @@ const CareersManager = () => {
                         {/* Image Preview if available */}
                         {job.image_url && (
                             <div className="h-40 w-full relative">
-                                <img src={job.image_url} alt={job.title} className="w-full h-full object-cover" />
+                                <img src={job.image_url?.startsWith('http') ? job.image_url : `${api.defaults.baseURL?.replace('/api', '')}${job.image_url}`} alt={job.title} className="w-full h-full object-cover" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                             </div>
                         )}
@@ -344,7 +351,7 @@ const CareersManager = () => {
                                         <span className="text-xs font-bold text-slate-500">Click to upload image</span>
                                     </>
                                 )}
-                                <input ref={fileInputRef} type="file" onChange={handleFileChange} className="hidden" accept="image/*" />
+                                <input ref={fileInputRef} type="file" onChange={handleFileChange} className="hidden" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.avif,.heic,.heif,.tiff,.ico" />
                             </div>
                         </div>
 
