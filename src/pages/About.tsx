@@ -28,8 +28,8 @@ import factory4 from '../assets/standard4.png';
 import factory5 from '../assets/standard5.png';
 import about1 from '../assets/about1.jpg';
 import about2 from '../assets/about2.jpg';
-import about3 from '../assets/residential1.jpg';
-import about4 from '../assets/home-slider-residential2.jpg';
+import about3 from '../assets/about-residentq.jpg';
+import about4 from '../assets/about-residentqq.jpg';
 
 
 import factoryVideo from '../assets/factory.mp4';

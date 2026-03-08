@@ -198,22 +198,6 @@ const ContactDetailsManager = () => {
                         <textarea rows={2} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.value} onChange={e => setFormData({ ...formData, value: e.target.value })} required />
                     </div>
 
-                    <div>
-                        <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Display Icon</label>
-                        <div className="flex flex-wrap gap-2">
-                            {['Phone', 'Mail', 'MapPin', 'Globe', 'Facebook', 'Instagram', 'Twitter', 'Linkedin'].map(icon => (
-                                <button
-                                    type="button"
-                                    key={icon}
-                                    onClick={() => setFormData({ ...formData, icon })}
-                                    className={`p-2 rounded-lg border flex items-center gap-2 text-xs font-medium transition-all ${formData.icon === icon ? 'bg-[#022C22] text-white border-[#022C22]' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
-                                >
-                                    {getIcon(icon)} {icon}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
                     <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                         <button type="button" onClick={() => setModalOpen(false)} className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-100 rounded-lg transition-colors">Cancel</button>
                         <button disabled={submitting} className="px-6 py-2 bg-[#022C22] text-white font-bold rounded-lg hover:bg-[#033a2d] transition-colors flex items-center gap-2 shadow-md">

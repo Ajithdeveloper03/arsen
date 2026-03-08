@@ -315,10 +315,6 @@ const CareersManager = () => {
                                     <option value="0">Inactive (Closed)</option>
                                 </select>
                             </div>
-                            <div className="col-span-2">
-                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Contact Email (Optional)</label>
-                                <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.contact_email} onChange={e => setFormData({ ...formData, contact_email: e.target.value })} placeholder="e.g. careers@arsen.com" />
-                            </div>
                         </div>
 
                         <div>

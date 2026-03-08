@@ -38,8 +38,6 @@ const BannersManager = () => {
         title: '',
         subtitle: '',
         badge: '',
-        link_text: '',
-        link_url: '',
         order_index: 0,
         is_active: true
     });
@@ -88,13 +86,16 @@ const BannersManager = () => {
         data.append('title', formData.title || '');
         data.append('subtitle', formData.subtitle || '');
         data.append('badge', formData.badge || '');
-        data.append('link_text', formData.link_text || '');
-        data.append('link_url', formData.link_url || '');
         data.append('order_index', formData.order_index.toString());
         data.append('is_active', formData.is_active ? '1' : '0');
 
         if (selectedFile) {
             data.append('image', selectedFile);
+            console.log('Appending image file:', selectedFile.name, selectedFile.type, selectedFile.size);
+        } else if (!editingBanner) {
+            showNotification('error', 'Banner image is required for new banners.');
+            setSubmitting(false);
+            return;
         }
 
         try {
@@ -152,8 +153,6 @@ const BannersManager = () => {
                 title: banner.title || '',
                 subtitle: banner.subtitle || '',
                 badge: banner.badge || '',
-                link_text: banner.link_text || '',
-                link_url: banner.link_url || '',
                 order_index: banner.order_index,
                 is_active: !!banner.is_active
             });
@@ -166,7 +165,7 @@ const BannersManager = () => {
 
         } else {
             setEditingBanner(null);
-            setFormData({ title: '', subtitle: '', badge: 'FEATURED', link_text: '', link_url: '', order_index: banners.length + 1, is_active: true });
+            setFormData({ title: '', subtitle: '', badge: 'FEATURED', order_index: banners.length + 1, is_active: true });
             setImagePreview(null);
         }
         setSelectedFile(null);
@@ -279,17 +278,6 @@ const BannersManager = () => {
                     <div>
                         <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Subtitle</label>
                         <textarea rows={2} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.subtitle} onChange={e => setFormData({ ...formData, subtitle: e.target.value })} />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Button Text</label>
-                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.link_text} onChange={e => setFormData({ ...formData, link_text: e.target.value })} placeholder="e.g. View Project" />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Button Link</label>
-                            <input className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 outline-none focus:border-[#022C22]" value={formData.link_url} onChange={e => setFormData({ ...formData, link_url: e.target.value })} placeholder="e.g. /projects" />
-                        </div>
                     </div>
 
                     <div className="flex items-center gap-2">

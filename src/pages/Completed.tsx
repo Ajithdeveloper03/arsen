@@ -74,7 +74,7 @@ export default function ArsenArchive() {
                     if (title.includes("tafe")) p.realImg = tafe1;
                     if (title.includes("oecl")) p.realImg = oecl1;
                     if (title.includes("green trends")) p.realImg = greens1;
-                    if (title.includes("aditya birla") || title.includes("people")) p.realImg = people1;
+                    // if (title.includes("aditya birla") || title.includes("people")) p.realImg = people1;
                     if (title.includes("sunil reddy")) p.realImg = sunil;
                     if (title.includes("tharun")) p.realImg = living;
                     if (title.includes("saf games") || title.includes("village")) p.realImg = constructing;
@@ -96,7 +96,7 @@ export default function ArsenArchive() {
     // 1. Dynamic Featured (Only display REAL FLAGSHIP images from Commercial/Residential)
     const FINAL_FEATURED = useMemo(() => {
         const flagshipTitles = [
-            "Sundaram Finance", "Tafe", "Oecl", "Green Trends", "Aditya Birla (People)",
+            "Sundaram Finance", "Tafe", "Oecl", "Green Trends",
             "Sunil Reddy Residence", "MR.tharun Residential", "Saf Games Village", "Windsor Garden"
         ];
 

@@ -38,8 +38,8 @@ import sundaram1 from "../assets/sundaram1.jpg";
 import hero1 from '../assets/home-slider-commercial2.jpg';
 import modular from '../assets/pmc-tafe2.jpg';
 import sundaram2 from "../assets/sundaram2.jpg";
-import tafe1 from "../assets/commercialTafe1.jpg";
-import tafe2 from "../assets/commercialTafe2.jpg";
+import tafe1 from "../assets/commercial-tafe1.jpg";
+import tafe2 from "../assets/commercial-tafe2.jpeg";
 import corporate from "../assets/commercial-corporate.jpg";
 import cabins from "../assets/cabins.jpg";
 import Video from '../assets/commercial-banner-video.mp4';
@@ -106,7 +106,7 @@ const ArsenCommercial = () => {
     {
       brand: "Dr Agarwal's Eye Hospital",
       desc: "Dedicated healthcare fit-out partner across 25 locations. Our work spans sterile surgical environments, diagnostic labs, and corporate offices across Chennai, Bangalore, Kolkata, and major districts in Tamil Nadu and Andhra Pradesh.",
-      images: ["https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800", "https://images.pexels.com/photos/26108454/pexels-photo-26108454.jpeg"],
+      images: ["https://images.pexels.com/photos/7617612/pexels-photo-7617612.jpeg", "https://images.pexels.com/photos/26108454/pexels-photo-26108454.jpeg"],
       tags: ["Healthcare", "Specialized"],
       hasBranches: true,
       branchCount: "25",

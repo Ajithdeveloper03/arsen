@@ -144,6 +144,12 @@ const ArsenContact = () => {
     }
   };
 
+  const handlePhoneClick = (phoneNumber: string) => {
+    const dialableNumber = phoneNumber.replace(/[^\d+]/g, "");
+    // Just use one method. This is the most compatible across iOS/Android.
+    window.location.assign(`tel:${dialableNumber}`);
+  };
+
   const getDetailIcon = (d: any) => {
     if (d.icon && IconMap[d.icon]) return IconMap[d.icon];
     switch (d.type) {
@@ -155,18 +161,18 @@ const ArsenContact = () => {
     }
   };
 
-  // Filter out social links for the main grid, show only direct contact info
   const directContacts = apiDetails.length > 0
     ? apiDetails.filter(d => d.type !== 'social' && d.type !== 'link').map(d => ({
       icon: getDetailIcon(d),
       label: d.label,
-      val: d.value
+      val: d.value,
+      type: d.type  // preserve type for correct rendering
     }))
     : [
-      { icon: Phone, label: "Call Us", val: "+91 8098085553, 8144555522" },
-      { icon: Mail, label: "Email Us", val: "sales@arseninterior.in" },
-      { icon: MapPin, label: "Arsen Interior PVT LTD", val: "#4, Noombal Road, Velappanchavadi Chennai – 600 077." },
-      { icon: MapPin, label: "Arsen Furnitures and Fixtures", val: "No.211/1B, Metro city phase 1, Rajankuppam, Ayanambakkam, Chennai - 600095" },
+      { icon: Phone, label: "Call Us", val: "+91 8098085553, 8144555522", type: 'phone' },
+      { icon: Mail, label: "Email Us", val: "sales@arseninterior.in", type: 'email' },
+      { icon: MapPin, label: "Arsen Interior PVT LTD", val: "#4, Noombal Road, Velappanchavadi Chennai – 600 077.", type: 'address' },
+      { icon: MapPin, label: "Arsen Furnitures and Fixtures", val: "No.211/1B, Metro city phase 1, Rajankuppam, Ayanambakkam, Chennai - 600095", type: 'address' },
     ];
 
   const socialLinks = apiDetails.filter(d => d.type === 'social');
@@ -214,7 +220,7 @@ const ArsenContact = () => {
           {/* LEFT: BRAND INFO */}
           <div className="lg:col-span-5 space-y-10 md:space-y-12">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 italic">Where Vision  Meets Reality.</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 italic">Where Vision Meets Reality.</h2>
               <p className="text-gray-400 max-w-md leading-relaxed text-sm md:text-base">
                 Whether you're looking to redefine your home or seeking elite project management, our team is ready to assist.
               </p>
@@ -228,31 +234,39 @@ const ArsenContact = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex gap-4 md:gap-6 items-start group"
+                  className="flex gap-4 md:gap-6 items-start group relative z-30 pointer-events-auto"
                 >
                   <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#FDBA74] group-hover:bg-[#FDBA74] group-hover:text-black transition-all duration-500">
                     <item.icon size={20} />
                   </div>
                   <div>
                     <p className="text-[14px] uppercase tracking-widest text-gray-500 mb-1">{item.label}</p>
-                    <p className="text-base md:text-lg font-medium break-words whitespace-pre-wrap">
-                      {item.label === "Call Us" ? (
-                        item.val.split(',').map((phone: string, index: number) => (
-                          <span key={index}>
-                            <a href={`tel:${phone.trim().replace(/\s+/g, '')}`} className="text-white hover:text-[#FDBA74] transition-colors">
-                              {phone.trim()}
-                            </a>
-                            {index < item.val.split(',').length - 1 && ', '}
-                          </span>
-                        ))
-                      ) : item.label === "Email Us" ? (
-                        <a href={`mailto:${item.val}`} className="text-white hover:text-[#FDBA74] transition-colors">
+                    <div className="text-base md:text-lg font-medium pointer-events-auto">
+                      {item.type === 'phone' ? (
+                        <div className="space-y-2">
+                          {item.val.split(',').map((phone: string, index: number) => {
+                            const dialableNumber = phone.trim().replace(/[^\d+]/g, "");
+                            return (
+                              <div key={index} className="block">
+                                <a
+                                  href={`tel:${dialableNumber}`}
+                                  className="text-white hover:text-[#FDBA74] transition-colors underline decoration-[#FDBA74]/30 underline-offset-4 cursor-pointer inline-block py-1"
+                                  style={{ pointerEvents: 'auto', position: 'relative', zIndex: 40 }}
+                                >
+                                  📞 {phone.trim()}
+                                </a>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : item.type === 'email' ? (
+                        <a href={`mailto:${item.val.trim()}`} className="text-white hover:text-[#FDBA74] transition-colors cursor-pointer relative z-40">
                           {item.val}
                         </a>
                       ) : (
-                        item.val
+                        <p className="text-gray-300 leading-relaxed">{item.val}</p>
                       )}
-                    </p>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -380,10 +394,9 @@ const ArsenContact = () => {
 
       {/* MINIMAL MAP */}
       <section className="flex flex-col md:flex-row w-full gap-4 px-4 py-8">
-        {/* First Map Container */}
-        <div className="flex-1 h-[40vh] md:h-[50vh]   opacity-90 hover:opacity-100 transition-opacity overflow-hidden relative rounded-lg shadow-sm">
+        <div className="flex-1 h-[40vh] md:h-[50vh] opacity-90 hover:opacity-100 transition-opacity overflow-hidden relative rounded-lg shadow-sm">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.621277950463!2d80.13631487484295!3d13.059761787263781!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52619c21f6aaab%3A0xa0156fe70dda837c!2sARSEN%20INTERIO%20PVT%20LTD!5e0!3m2!1sen!2sin!4v1769234987540!5m2!1sen!2sin"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.581566373812!2d80.1432!3d13.0623!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDAzJzQ0LjMiTiA4MMKwMDgnMzUuNSJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
             width="100%"
             height="100%"
             style={{ border: 0 }}
@@ -393,10 +406,9 @@ const ArsenContact = () => {
           ></iframe>
         </div>
 
-        {/* Second Map Container */}
-        <div className="flex-1 h-[40vh] md:h-[50vh]   opacity-90 hover:opacity-100 transition-opacity overflow-hidden relative rounded-lg shadow-sm">
+        <div className="flex-1 h-[40vh] md:h-[50vh] opacity-90 hover:opacity-100 transition-opacity overflow-hidden relative rounded-lg shadow-sm">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.4479491420193!2d80.1419799748432!3d13.070772487253807!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a526100300a9deb%3A0x1c1e0b39f9e28648!2sArsen%20furniture%20and%20fixtures!5e0!3m2!1sen!2sin!4v1769234957244!5m2!1sen!2sin"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.35!2d80.16!3d13.08!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDA0JzQ4LjAiTiA4MMKwMDknMzYuMCJF!5e0!3m2!1sen!2sin!4v1620000000001!5m2!1sen!2sin"
             width="100%"
             height="100%"
             style={{ border: 0 }}
@@ -412,7 +424,6 @@ const ArsenContact = () => {
   );
 };
 
-// Helper Component for the elegant input style
 const FloatingInput = ({ label, name, error, ...props }: any) => (
   <div className="relative group pt-2">
     <input

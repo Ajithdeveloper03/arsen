@@ -8,8 +8,11 @@ const API_URL = `${BASE_URL}/api`;
 const api = axios.create({
     baseURL: API_URL,
     headers: {
+        // Always accept JSON responses
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        // IMPORTANT: Don't force a default Content-Type here.
+        // - For JSON bodies, Axios will automatically set 'application/json'
+        // - For FormData (file uploads), the browser will set proper multipart boundaries
     }
 });
 

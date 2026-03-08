@@ -144,68 +144,97 @@ const EliteDesignMasterpiece = () => {
           </div>
 
           {/* Featured Large Project (Sunil Reddy with Slider) */}
-          {PROJECTS.filter(p => p.featured).map((project) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              className="relative rounded-[3rem] overflow-hidden bg-black text-white h-[400px] md:h-[600px] group shadow-2xl"
-            >
-              <Swiper
-                modules={[Navigation, Autoplay, Pagination]}
-                navigation={{
-                  prevEl: '.sunil-prev-btn',
-                  nextEl: '.sunil-next-btn',
-                }}
-                pagination={{
-                  el: '.sunil-pagination',
-                  clickable: true,
-                  bulletClass: 'swiper-pagination-bullet !bg-white/50 !w-2 !h-2',
-                  bulletActiveClass: 'swiper-pagination-bullet-active !bg-[#FDBA74] !w-8',
-                }}
-                autoplay={{ delay: 4000, disableOnInteraction: false }}
-                loop={true}
-                className="h-full w-full"
-              >
-                {project.images?.map((image, index) => (
-                  <SwiperSlide key={index}>
-                    <div className="relative h-full w-full">
-                      <img 
-                        src={image} 
-                        className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-90 transition-opacity duration-700" 
-                        alt={`${project.title} - Image ${index + 1}`} 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+         {PROJECTS.filter(p => p.featured).map((project) => (
+  <motion.div
+    key={project.id}
+    initial={{ opacity: 0, scale: 0.98 }}
+    whileInView={{ opacity: 1, scale: 1 }}
+    viewport={{ once: true }}
+    className="relative rounded-[3rem] overflow-hidden bg-black text-white h-[400px] md:h-[600px] group shadow-2xl mb-12"
+  >
+    {/* Swiper Background */}
+    <Swiper
+      modules={[Navigation, Autoplay, Pagination]}
+      navigation={{
+        prevEl: '.sunil-prev-btn',
+        nextEl: '.sunil-next-btn',
+      }}
+      pagination={{
+        el: '.sunil-pagination',
+        clickable: true,
+        renderBullet: (index, className) => {
+          return `<span class="${className}"></span>`;
+        },
+      }}
+      autoplay={{ delay: 4000, disableOnInteraction: false }}
+      loop={true}
+      className="h-full w-full"
+    >
+      {project.images?.map((image, index) => (
+        <SwiperSlide key={index}>
+          <div className="relative h-full w-full">
+            <img 
+              src={image} 
+              className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-90 transition-opacity duration-700" 
+              alt={`${project.title} - Image ${index + 1}`} 
+            />
+            {/* Darker Overlay to ensure text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
 
-              {/* Content Overlay */}
-              <div className="absolute inset-0 flex items-end">
-                <div className="relative p-8 md:p-16 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
-                  <div className="max-w-xl">
-                    <span className="text-[#FDBA74] text-xs font-black uppercase tracking-[0.5em] mb-4 block opacity-100">Masterpiece Selection</span>
-                    <h3 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-white opacity-100">{project.title}</h3>
-                    <p className="text-white text-lg leading-relaxed opacity-100">{project.desc}</p>
-                  </div>
-                </div>
-              </div>
+    {/* Content Overlay - Added z-10 to bring to front */}
+    <div className="absolute inset-0 flex items-end z-10 pointer-events-none">
+      <div className="relative p-8 md:p-16 w-full flex flex-col md:flex-row md:items-end justify-between gap-6 pointer-events-auto">
+        <div className="max-w-xl">
+          <div className="bg-black/40 backdrop-blur-md rounded-3xl p-6 md:p-10 border border-white/10">
+            <span className="text-[#FDBA74] text-xs font-black uppercase path tracking-[0.5em] mb-4 block">
+              Masterpiece Selection
+            </span>
+            <h3 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-white">
+              {project.title}
+            </h3>
+            <p className="text-gray-200 text-lg leading-relaxed">
+              {project.desc}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-              {/* Navigation Controls */}
-              <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 z-20 flex justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="sunil-prev-btn p-3 md:p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-[#FDBA74] hover:text-black transition-all">
-                  <ChevronLeft size={20} className="md:w-6 md:h-6" />
-                </button>
-                <button className="sunil-next-btn p-3 md:p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-[#FDBA74] hover:text-black transition-all">
-                  <ChevronRight size={20} className="md:w-6 md:h-6" />
-                </button>
-              </div>
+    {/* Navigation Controls - Added z-20 */}
+    <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 z-20 flex justify-between px-6 opacity-0 group-hover:opacity-100 transition-all duration-300">
+      <button className="sunil-prev-btn p-3 md:p-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-[#FDBA74] hover:text-black transition-all transform hover:scale-110">
+        <ChevronLeft size={24} />
+      </button>
+      <button className="sunil-next-btn p-3 md:p-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-[#FDBA74] hover:text-black transition-all transform hover:scale-110">
+        <ChevronRight size={24} />
+      </button>
+    </div>
 
-              {/* Pagination Dots */}
-              <div className="sunil-pagination absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2" />
-            </motion.div>
-          ))}
+    {/* Pagination Dots - Added z-20 */}
+    <div className="sunil-pagination absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex gap-3" />
+
+    {/* Custom CSS for Pagination (Add this to your CSS file or use a Style tag) */}
+    <style jsx global>{`
+      .sunil-pagination .swiper-pagination-bullet {
+        background: white !important;
+        opacity: 0.5;
+        width: 8px;
+        height: 8px;
+        transition: all 0.3s ease;
+        border-radius: 4px;
+      }
+      .sunil-pagination .swiper-pagination-bullet-active {
+        background: #FDBA74 !important;
+        opacity: 1;
+        width: 32px !important;
+      }
+    `}</style>
+  </motion.div>
+))}
         </div>
       </section>
 

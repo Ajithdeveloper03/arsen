@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-    ShieldCheck, KeyRound, Mail, User, Eye, EyeOff, Lock,
+    ShieldCheck, KeyRound, Mail, Eye, EyeOff, Lock,
     Loader2, CheckCircle2, AlertTriangle, Info
 } from 'lucide-react';
 import api from '../../services/api';
@@ -72,7 +72,6 @@ const SecuritySettings = () => {
     // ── Form state ────────────────────────────────────────────────────────
     const [currentPassword, setCurrentPassword] = useState('');
     const [newEmail, setNewEmail] = useState('');
-    const [newName, setNewName] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -99,8 +98,8 @@ const SecuritySettings = () => {
     const validate = (): string | null => {
         if (!currentPassword.trim()) return 'Please enter your current password.';
 
-        const hasChanges = newEmail.trim() || newName.trim() || newPassword.trim();
-        if (!hasChanges) return 'Please enter at least one field to change (email, name, or password).';
+        const hasChanges = newEmail.trim() || newPassword.trim();
+        if (!hasChanges) return 'Please enter at least one field to change (email or password).';
 
         if (newPassword) {
             if (newPassword.length < 10) return 'New password must be at least 10 characters.';
@@ -139,7 +138,6 @@ const SecuritySettings = () => {
                 current_password: currentPassword,
             };
             if (newEmail.trim()) payload.new_email = newEmail.trim();
-            if (newName.trim()) payload.new_name = newName.trim();
             if (newPassword.trim()) {
                 payload.new_password = newPassword;
                 payload.new_password_confirmation = confirmPassword;
@@ -229,27 +227,8 @@ const SecuritySettings = () => {
                 {/* ── Section: New Credentials ── */}
                 <div className="p-8 border-b border-slate-100 space-y-5">
                     <div className="flex items-center gap-2 mb-1">
-                        <User size={18} className="text-[#022C22]" />
+                        <Mail size={18} className="text-[#022C22]" />
                         <h2 className="text-sm font-black uppercase tracking-widest text-slate-700">Step 2 — New Credentials (Fill any or all)</h2>
-                    </div>
-
-                    {/* New Name */}
-                    <div>
-                        <label htmlFor="new_name" className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">
-                            New Username / Display Name
-                        </label>
-                        <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                            <input
-                                id="new_name"
-                                type="text"
-                                value={newName}
-                                onChange={e => setNewName(e.target.value)}
-                                placeholder="e.g. Arsen Admin"
-                                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-10 py-3 text-slate-900 text-sm outline-none focus:border-[#022C22] focus:ring-2 focus:ring-[#022C22]/10 transition-all"
-                                autoComplete="off"
-                            />
-                        </div>
                     </div>
 
                     {/* New Email */}
@@ -343,7 +322,7 @@ const SecuritySettings = () => {
                 <div className="px-8 py-4 bg-slate-50 flex items-start gap-2 border-b border-slate-100">
                     <Info size={14} className="text-slate-400 mt-0.5 shrink-0" />
                     <p className="text-[11px] text-slate-400 leading-relaxed">
-                     
+
                         All active admin sessions will be forcefully terminated upon saving.
                     </p>
                 </div>
