@@ -131,7 +131,7 @@ const ArsenCommercial = () => {
         "HBR Layout (Bangalore)", "Manipal County (Bangalore)", "Vijayawada", "Guntur", "Vellore", "Pondicherry", "Pollachi"
       ]
     },
-    
+
     {
       brand: "TAFE",
       desc: "Industrial administrative interiors and corporate blocks for TAFE across 12 locations, including Corporate Offices in Nungambakkam and regional centers in Chennai and Bhopal.",

@@ -126,52 +126,54 @@ const ContactDetailsManager = () => {
 
     return (
         <div className="space-y-6 max-w-7xl mx-auto">
-            <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Contact Info</h1>
-                    <p className="text-slate-500 text-sm mt-1">Manage addresses, phones, and social links.</p>
+                    <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Contact Info</h1>
+                    <p className="text-slate-500 text-[11px] sm:text-sm mt-1">Manage addresses, phones, and social links.</p>
                 </div>
                 <button
                     onClick={() => openModal()}
-                    className="bg-[#022C22] hover:bg-[#033a2d] text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-colors flex items-center gap-2 shadow-sm"
+                    className="w-full sm:w-auto bg-[#022C22] hover:bg-[#033a2d] text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-sm"
                 >
                     <Plus size={18} /> Add Contact
                 </button>
             </div>
 
             <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                <table className="w-full text-left">
-                    <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
-                        <tr>
-                            <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">Type / Icon</th>
-                            <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">Label</th>
-                            <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">Value</th>
-                            <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                        {loading ? <tr><td colSpan={4} className="p-8 text-center text-slate-500">Loading...</td></tr> : details.map((detail) => (
-                            <tr key={detail.id} className="hover:bg-slate-50 transition-colors">
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3 text-slate-700">
-                                        <div className="p-2 bg-slate-100 rounded-lg text-[#022C22] border border-slate-200">
-                                            {getIcon(detail.icon)}
-                                        </div>
-                                        <span className="text-sm font-medium capitalize text-slate-500">{detail.type}</span>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 font-bold text-slate-900">{detail.label}</td>
-                                <td className="px-6 py-4 text-sm text-slate-500 font-mono truncate max-w-xs">{detail.value}</td>
-                                <td className="px-6 py-4 text-right">
-                                    <div className="flex justify-end gap-2">
-                                        <button onClick={() => openModal(detail)} className="p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-lg transition-colors border border-transparent hover:border-slate-200"><Edit2 size={16} /></button>
-                                        <button onClick={() => confirmDelete(detail.id)} className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition-colors border border-transparent hover:border-red-100"><Trash2 size={16} /></button>
-                                    </div>
-                                </td>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left min-w-[600px]">
+                        <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
+                            <tr>
+                                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">Type / Icon</th>
+                                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">Label</th>
+                                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">Value</th>
+                                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-right">Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                            {loading ? <tr><td colSpan={4} className="p-8 text-center text-slate-500">Loading...</td></tr> : details.map((detail) => (
+                                <tr key={detail.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3 text-slate-700">
+                                            <div className="p-2 bg-slate-100 rounded-lg text-[#022C22] border border-slate-200">
+                                                {getIcon(detail.icon)}
+                                            </div>
+                                            <span className="text-sm font-medium capitalize text-slate-500">{detail.type}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 font-bold text-slate-900">{detail.label}</td>
+                                    <td className="px-6 py-4 text-sm text-slate-500 font-mono truncate max-w-xs">{detail.value}</td>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button onClick={() => openModal(detail)} className="p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-lg transition-colors border border-transparent hover:border-slate-200"><Edit2 size={16} /></button>
+                                            <button onClick={() => confirmDelete(detail.id)} className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition-colors border border-transparent hover:border-red-100"><Trash2 size={16} /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {/* Modal */}

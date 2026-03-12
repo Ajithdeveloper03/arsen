@@ -41,10 +41,10 @@ const DashboardHome = () => {
     return (
         <div className="space-y-8 max-w-7xl mx-auto pb-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
                 <div className="relative z-10">
-                    <h1 className="text-2xl font-black text-slate-900">Dashboard Overview</h1>
-                    <p className="text-slate-500 text-sm font-medium">Manage your portfolio and banners effortlessly.</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-slate-900">Dashboard Overview</h1>
+                    <p className="text-slate-500 text-[10px] sm:text-sm font-medium">Manage your portfolio and banners effortlessly.</p>
                 </div>
                 <div className="flex gap-3 relative z-10">
                     <Link to="/admin/projects" className="bg-[#022C22] hover:bg-[#033a2d] text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 shadow-md hover:shadow-lg active:scale-95">
@@ -175,13 +175,13 @@ const DashboardHome = () => {
 };
 
 const SimpleStat = ({ title, value, icon: Icon, bg, color, link }: any) => (
-    <Link to={link} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-[#022C22]/30 transition-all group flex items-center justify-between overflow-hidden relative">
+    <Link to={link} className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-[#022C22]/30 transition-all group flex items-center justify-between overflow-hidden relative">
         <div className="relative z-10">
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-1">{title}</p>
-            <h3 className="text-4xl font-black text-slate-900 tracking-tighter">{value}</h3>
+            <p className="text-slate-400 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] mb-1">{title}</p>
+            <h3 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tighter">{value}</h3>
         </div>
-        <div className={`p-4 rounded-xl ${bg} ${color} group-hover:scale-110 transition-transform relative z-10 shadow-sm`}>
-            <Icon size={24} />
+        <div className={`p-3 sm:p-4 rounded-xl ${bg} ${color} group-hover:scale-110 transition-transform relative z-10 shadow-sm`}>
+            <Icon size={20} className="sm:w-6 sm:h-6" />
         </div>
         {/* Subtle hover effect background */}
         <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-50/50 opacity-0 group-hover:opacity-100 transition-opacity" />

@@ -1,12 +1,81 @@
 "use client";
 
-import React from "react";
-import { Facebook, Instagram, Twitter, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Facebook, Instagram, Twitter, Linkedin, Mail, MapPin, Phone, Globe, PhoneCall, Factory } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "../assets/arsen-logo.png";
+import { BASE_URL } from "../services/api";
+
+const IconMap: any = {
+  Phone: Phone,
+  PhoneCall: PhoneCall,
+  Mail: Mail,
+  MapPin: MapPin,
+  Factory: Factory,
+  Facebook: Facebook,
+  Instagram: Instagram,
+  Twitter: Twitter,
+  Linkedin: Linkedin,
+  Globe: Globe,
+};
 
 export default function InteriorFooter() {
   const currentYear = new Date().getFullYear();
+  const [apiDetails, setApiDetails] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchDetails();
+  }, []);
+
+  const fetchDetails = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/public/contact-details`);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setApiDetails(data);
+      }
+    } catch (err) {
+      console.error("Footer fetch error:", err);
+    }
+  };
+
+  // Helper to get contact info by type
+  const getContactsByType = (type: string) => apiDetails.filter((d) => d.type === type);
+
+  // Phone numbers processing
+  const phoneContacts = getContactsByType("phone");
+  const rawPhoneValue = phoneContacts.length > 0
+    ? phoneContacts.map(p => p.value).join(", ")
+    : "+91 8144555533, 8144555522";
+
+  const phoneNumbers = rawPhoneValue.split(',').map(num => {
+    const trimmed = num.trim();
+    return {
+      display: trimmed,
+      dialable: trimmed.replace(/[^\d+]/g, "")
+    };
+  });
+
+  // Email
+  const emailContacts = getContactsByType("email");
+  const emailDisplay = emailContacts.length > 0 ? emailContacts[0].value : "sales@arseninterior.in";
+
+  // Addresses (type 'map' or 'address')
+  const addressContacts = apiDetails.filter(d => d.type === 'map' || d.type === 'address');
+
+  // Socials
+  const socialDetails = getContactsByType("social");
+  const socials = socialDetails.length > 0
+    ? socialDetails.map(s => ({
+      Icon: IconMap[s.icon] || Globe,
+      href: s.value
+    }))
+    : [
+      { Icon: Facebook, href: "https://www.facebook.com/profile.php?id=100025176500300" },
+      { Icon: Twitter, href: "https://twitter.com/ArsenSenthil" },
+      { Icon: Instagram, href: "https://www.instagram.com/arseninterio/" },
+      { Icon: Linkedin, href: "https://www.linkedin.com/company/13732875/" }
+    ];
 
   return (
     <footer className="relative bg-[#010B0A] text-white pt-16 md:pt-20 pb-8 md:pb-8 overflow-hidden">
@@ -44,11 +113,11 @@ export default function InteriorFooter() {
               />
             </Link>
             <div className="space-y-2">
-               
-               <p className="text-slate-200 leading-relaxed text-base">
-                Arsen Interio Pvt Ltd specializes in full scope of commercial & residential Turnkey fit-outs including furnishing for-in commercial  Offices, Retail Showrooms, Malls and in residential Modular Kitchens, Wardrobe,TV Units and interiors. 
+
+              <p className="text-slate-200 leading-relaxed text-base">
+                Arsen Interio Pvt Ltd specializes in full scope of commercial & residential Turnkey fit-outs including furnishing for-in commercial  Offices, Retail Showrooms, Malls and in residential Modular Kitchens, Wardrobe,TV Units and interiors.
               </p>
-              
+
             </div>
           </div>
 
@@ -74,11 +143,21 @@ export default function InteriorFooter() {
                   </Link>
                 </li>
               ))}
-              <li className="flex items-center gap-4 group border-t border-white/10 pt-4">
+              <li className="flex items-center gap-4 group border-t border-white/10 pt-2">
                 <Phone className="w-5 h-5 text-[#FFA62B] shrink-0" />
-                <a href="tel:+8144555533" className="text-white text-sm font-bold group-hover:text-[#FFA62B] transition-colors">
-                  +91 8144555533 ,8144555522
-                </a>
+                <div className="text-white text-sm font-bold flex flex-wrap gap-x-2">
+                  {phoneNumbers.map((num, idx) => (
+                    <React.Fragment key={idx}>
+                      <a
+                        href={`tel:${num.dialable}`}
+                        className="hover:text-[#FFA62B] transition-colors"
+                      >
+                        {num.display}
+                      </a>
+                      {idx < phoneNumbers.length - 1 && <span className="text-white/40">,</span>}
+                    </React.Fragment>
+                  ))}
+                </div>
               </li>
             </ul>
           </div>
@@ -104,12 +183,12 @@ export default function InteriorFooter() {
                     {service.name}
                   </Link>
                 </li>
-                
+
               ))}
               <li className="flex items-center gap-4 group  border-t border-white/10 pt-4">
                 <Mail className="w-5 h-5 text-[#FFA62B] shrink-0" />
-                <a href="mailto:sales@arseninterior.in" className="text-slate-200 text-base group-hover:text-white transition-colors">
-                  sales@arseninterior.in
+                <a href={`mailto:${emailDisplay}`} className="text-slate-200 text-base group-hover:text-white transition-colors">
+                  {emailDisplay}
                 </a>
               </li>
             </ul>
@@ -121,54 +200,63 @@ export default function InteriorFooter() {
               Get In Touch
             </h3>
             <ul className="space-y-3">
-              {/* Address 1: Office */}
-              <li className="flex items-start gap-4 group">
-                <MapPin className="w-6 h-6 text-[#FFA62B] shrink-0 mt-1" />
-                <span className="text-slate-200 text-sm md:text-base leading-relaxed group-hover:text-white transition-colors">
-                  <strong className="text-[#FFA62B] block text-xs tracking-widest uppercase mb-1">Arsen interio Pvt Ltd</strong>
-                  #4, Noombal Road, Velappanchavadi<br />
-                  Chennai – 600 077.
-                </span>
-              </li>
+              {/* Addresses from API or Fallback */}
+              {addressContacts.length > 0 ? (
+                addressContacts.map((addr, i) => {
+                  const Icon = IconMap[addr.icon] || MapPin;
+                  return (
+                    <li key={i} className="flex items-start gap-4 group">
+                      <Icon className="w-6 h-6 text-[#FFA62B] shrink-0 mt-1" />
+                      <span className="text-slate-200 text-sm md:text-base leading-relaxed group-hover:text-white transition-colors">
+                        <strong className="text-[#FFA62B] block text-xs tracking-widest uppercase mb-1">{addr.label}</strong>
+                        {addr.value.split('\n').map((line: string, idx: number) => (
+                          <React.Fragment key={idx}>
+                            {line}<br />
+                          </React.Fragment>
+                        ))}
+                      </span>
+                    </li>
+                  );
+                })
+              ) : (
+                <>
+                  {/* Fallback Address 1: Office */}
+                  <li className="flex items-start gap-4 group">
+                    <MapPin className="w-6 h-6 text-[#FFA62B] shrink-0 mt-1" />
+                    <span className="text-slate-200 text-sm md:text-base leading-relaxed group-hover:text-white transition-colors">
+                      <strong className="text-[#FFA62B] block text-xs tracking-widest uppercase mb-1">Arsen Interio Pvt Ltd</strong>
+                      #4, Noombal Road, Velappanchavadi<br />
+                      Chennai – 600 077.
+                    </span>
+                  </li>
 
-              {/* Address 2: Factory */}
-              <li className="flex items-start gap-4 group">
-                <MapPin className="w-6 h-6 text-[#FFA62B] shrink-0 mt-1" />
-                <span className="text-slate-200 text-sm md:text-base leading-relaxed group-hover:text-white transition-colors">
-                  <strong className="text-[#FFA62B] block text-xs tracking-widest uppercase mb-1">Arsen Furnitures & Fixtures </strong>
-                  No.211/1B, Metro city phase 1,<br /> 
-                  Rajankuppam, Ayanambakkam,<br />
-                  Chennai - 600095
-                </span>
-              </li>
+                  {/* Fallback Address 2: Factory */}
+                  <li className="flex items-start gap-4 group">
+                    <MapPin className="w-6 h-6 text-[#FFA62B] shrink-0 mt-1" />
+                    <span className="text-slate-200 text-sm md:text-base leading-relaxed group-hover:text-white transition-colors">
+                      <strong className="text-[#FFA62B] block text-xs tracking-widest uppercase mb-1">Arsen Furnitures & Fixtures </strong>
+                      No.211/1B, Metro city phase 1,<br />
+                      Rajankuppam, Ayanambakkam,<br />
+                      Chennai - 600095
+                    </span>
+                  </li>
+                </>
+              )}
 
-              {/* <li className="flex items-center gap-4 group border-t border-white/10 pt-4">
-                <Phone className="w-5 h-5 text-[#FFA62B] shrink-0" />
-                <a href="tel:+918095015533" className="text-white text-base font-bold group-hover:text-[#FFA62B] transition-colors">
-                  +91 8144555522
-                </a>
-              </li> */}
               <div className="flex items-center justify-start gap-2 pt-2">
-              {[
-                { Icon: Facebook, href: "https://www.facebook.com/profile.php?id=100025176500300" },
-                { Icon: Twitter, href: "https://twitter.com/ArsenSenthil" },
-                { Icon: Instagram, href: "https://www.instagram.com/arseninterio/" },
-                { Icon: Linkedin, href: "https://www.linkedin.com/company/13732875/" }
-              ].map((social, i) => (
-                <a
-                  key={i}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full border border-white/20 hover:border-[#FFA62B] hover:bg-[#FFA62B]/10 transition-all duration-300"
-                >
-                  <social.Icon className="w-3 h-3 text-slate-300 hover:text-[#FFA62B]" />
-                </a>
-              ))}
-            </div>
+                {socials.map((social, i) => (
+                  <a
+                    key={i}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-full border border-white/20 hover:border-[#FFA62B] hover:bg-[#FFA62B]/10 transition-all duration-300"
+                  >
+                    <social.Icon className="w-3 h-3 text-slate-300 hover:text-[#FFA62B]" />
+                  </a>
+                ))}
+              </div>
             </ul>
-            
-            
           </div>
         </div>
 

@@ -309,25 +309,51 @@ const EliteAboutPage = () => {
         {/* Main Wrapper to contain floating elements and content together */}
         <div className="max-w-[1600px] mx-auto relative">
 
+          {/* Mobile Machines - Visible only on mobile/tablet */}
+          <div className="lg:hidden grid grid-cols-2 sm:grid-cols-3 gap-6 mb-16">
+            <style dangerouslySetInnerHTML={{
+              __html: `
+               @keyframes smoothFloat {
+                 0%, 100% { transform: translateY(0); }
+                 50% { transform: translateY(-10px); }
+               }
+               .floating-machine-mobile {
+                 animation: smoothFloat 4s ease-in-out infinite;
+               }
+             ` }} />
+            {[
+              { img: floating1, label: "Design Machine" },
+              { img: floating2, label: "Cold Press" },
+              { img: floating3, label: "Edge Binding" },
+              { img: floating4, label: "Boring Machine" },
+              { img: floating5, label: "Panel Saws" }
+            ].map((m, idx) => (
+              <div key={idx} className="floating-machine-mobile bg-white p-4 rounded-3xl shadow-sm border border-black/5 text-center">
+                <img src={m.img} className="w-full h-24 object-contain mb-3" alt={m.label} />
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#032d29]/40">{m.label}</p>
+              </div>
+            ))}
+          </div>
+
           {/* Floating Left Elements (Machines) - Visible on lg+ */}
           <div className="hidden lg:flex absolute left-0 top-[10%] flex-col gap-24 xl:gap-32 z-10 w-[150px] xl:w-[200px]">
             {/* Custom Styles for Floating Animation */}
             <style dangerouslySetInnerHTML={{
               __html: `
-               @keyframes smoothFloat {
+               @keyframes smoothFloatDesktop {
                  0%, 100% { transform: translateY(0); }
                  50% { transform: translateY(-20px); }
                }
-               .floating-machine {
-                 animation: smoothFloat 4s ease-in-out infinite;
+               .floating-machine-desktop {
+                 animation: smoothFloatDesktop 4s ease-in-out infinite;
                }
              ` }} />
 
-            <div className="floating-machine rotate-[-10deg] hover:rotate-0 transition-transform duration-500">
+            <div className="floating-machine-desktop rotate-[-10deg] hover:rotate-0 transition-transform duration-500">
               <img src={floating1} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="spencial-design-machine" />
               <p className="text-[10px] font-black uppercase text-center tracking-widest text-[#032d29]/40">Spencial-Design-Machine</p>
             </div>
-            <div className="floating-machine rotate-[5deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '1s' }}>
+            <div className="floating-machine-desktop rotate-[5deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '1s' }}>
               <img src={floating2} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="coldpress machine" />
               <p className="text-[10px] font-black uppercase text-center tracking-widest text-[#032d29]/40">Cold-Press</p>
             </div>
@@ -335,15 +361,15 @@ const EliteAboutPage = () => {
 
           {/* Floating Right Elements (Machines) - Visible on lg+ */}
           <div className="hidden lg:flex absolute right-0 top-[5%] flex-col gap-16 xl:gap-24 z-10 w-[150px] xl:w-[220px]">
-            <div className="floating-machine rotate-[8deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '0.5s' }}>
+            <div className="floating-machine-desktop rotate-[8deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '0.5s' }}>
               <img src={floating3} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="Edge Binding" />
               <p className="text-[10px] font-black uppercase pl-2 text-center tracking-widest text-[#032d29]/40">Edge Binding Machine</p>
             </div>
-            <div className="floating-machine rotate-[-5deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '1.5s' }}>
+            <div className="floating-machine-desktop rotate-[-5deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '1.5s' }}>
               <img src={floating4} className="w-full h-auto aspect-video object-contain rounded-xl mb-2" alt="multi-boring-machine" />
               <p className="text-[10px] font-black uppercase pl-2 text-center tracking-widest text-[#032d29]/40">Multi-Boring-Machine</p>
             </div>
-            <div className="floating-machine rotate-[12deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '2s' }}>
+            <div className="floating-machine-desktop rotate-[12deg] hover:rotate-0 transition-transform duration-500" style={{ animationDelay: '2s' }}>
               <img src={floating5} className="w-full h-auto aspect-video object-cover rounded-xl mb-2" alt="panel-saws-j-3200-in-pro-plus-1" />
               <p className="text-[10px] font-black uppercase text-center pl-2 tracking-widest text-[#032d29]/40">Panel-Saws-j-3200-in-pro-plus-1</p>
             </div>
@@ -446,16 +472,16 @@ const EliteAboutPage = () => {
             {/* <p className="text-white/40 font-bold uppercase tracking-widest text-xs mt-4">Transparent Feedback from our esteemed clients</p> */}
           </div>
 
-          <div className="relative h-[300px] mb-5 flex items-center">
+          <div className="relative min-h-[450px] sm:min-h-[350px] md:min-h-[300px] mb-10 md:mb-5 flex items-center">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTestimonial}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="text-center w-full"
+                className="text-center w-full px-2"
               >
-                <h2 className="text-2xl md:text-4xl font-bold text-white italic mb-5">
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-white italic mb-8 leading-relaxed">
                   "{testimonials[activeTestimonial].quote}"
                 </h2>
                 <div className="flex justify-center items-center gap-3">
